@@ -41,9 +41,34 @@ main {
     color: black;
     /* background-color: red; */
 }
-.calc__display__calculation {
+
+.calc__display__calculation-container {
+    display: inline-block;
+    /* background-color: red; */
+}
+
+.calc__display__calculation-container span {
     color: var(--grayColor);
 }
+
+.calc__display__calculation-minus-sign {
+    display: none;
+}
+
+.calc__display__calculation-minus-sign.show {
+    display: unset;
+}
+
+.calc__display__calculation-equal-sign {
+    white-space: pre;
+    opacity: 0;
+}
+
+.calc__display__calculation-equal-sign.show {
+    opacity: 1;
+}
+
+
 .calc__display__result {
     font-size: 4rem;
 }
@@ -52,9 +77,18 @@ main {
     display: flex;
     width: 100%;
     /* gap: 2px; */
-    height: 100px;
+    height: 0px;
     /* background: blue; */
     padding-bottom: 20px;
+    opacity: 0;
+    transform-origin: bottom;
+    overflow: hidden;
+    transition: all 1s;
+}
+
+.calc__bracket-container.show {
+    height: 100px;
+    opacity: 1;
 }
 
 .bracket-line-container {
@@ -62,6 +96,9 @@ main {
     width: 100%;
     /* background: red; */
 }
+
+
+
 .bracket-line-container div {
     width: 100%;
     border-color: var(--grayColor);
@@ -93,7 +130,7 @@ main {
     background-color: var(--grayColor);
 }
 
-.calc__button {
+.calc__btn {
     flex: 1 0 60px;
     display: flex;
     align-items: center;
@@ -101,7 +138,12 @@ main {
     background: #e4e1e1;
 
 }
-.calc__button:hover {
-    color: wheat;
+.calc__btn:hover {
+    color: rgb(72, 68, 60);
     background: var(--grayColor);
+}
+
+.calc__btn:active {
+    color: white;
+    background: wheat;
 }
