@@ -61,7 +61,7 @@ main {
 
 .calc__display__calculation-equal-sign {
     white-space: pre;
-    opacity: 0;
+    opacity: 1;
 }
 
 .calc__display__calculation-equal-sign.show {
