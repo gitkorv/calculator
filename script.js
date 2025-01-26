@@ -22,28 +22,42 @@ let negNumber = false;
 // Current Numbers
 let newDigit;
 let allNewDigits = "";
-let completeNumber;
 
 // Operators
 let newOpSymbol = "+";
 
 // Calc components
-let activeOperator = add;
-let sum = 0;
-let newNumber = 0;
-let newTempResult
-let calcDisplayArray = [0]
-let digitBuilderArr = []
-let allCompleteNumbers = []
-let reverseBase = 0;
 
 
-let calcObject = {
-    base: 0,
-    new: 0,
-    operator: add
+// let calcObject = {
+//     base: 0,
+//     new: 0,
+//     operator: add,
+//     sum: 0
+// }
+
+// console.log(calcObject);
+
+let calcObjectArr = []
+
+function createCalcObject(base, newValue, operator) {
+    return {
+        base: base,
+        new: newValue,
+        operator: operator,
+        sum: operator(base, newValue)
+    }
 }
 
+calcObjectArr.push(createCalcObject(0, 0, add))
+
+
+
+function runCalculator() {
+    let calcObjectAtEnd = calcObjectArr.at(-1);
+    calcObjectAtEnd.sum = calcObjectAtEnd.operator(calcObjectAtEnd.base, calcObjectAtEnd.new);
+
+}
 
 function operate(num1, num2, operator) {
     return parseFloat(operator(num1, num2))
@@ -61,126 +75,76 @@ allBtns.forEach(btn => {
         btn.classList.contains("btn-op") && opSymbol(btn);
         btn.classList.contains("btn-result") && equals(btn);
 
-        console.log(calcDisplayArray);
-        console.log(allCompleteNumbers);
+        let calcDisplayCalc = "";
 
-        let displayCalculation = "";
-        calcDisplayArray.forEach((num, i) => {
-            Number(num) && num < 0 ? num = `(${num})` : num = num;
-            i === 0 ? num = num : num = ` ${num}`;
-            displayCalculation += num
-        })
-        calculationDisplayText.textContent = displayCalculation;
+        for (let i = 0; i < calcObjectArr.length; i++) {
+            let object = calcObjectArr[i];
+            console.log(object);
+            let calcSymbol
+            // if (object.operator == "undefined") calcSymbol = ""
+            if (object.operator === add) calcSymbol = "+"
+            if (object.operator === sub) calcSymbol = "-"
+            console.log(calcSymbol);
+            if (object.new !== 0) {
+                if (i === 0) {
+                    calcDisplayCalc += `${object.new} ${calcSymbol}` ;
+    
+                } else {
+                    calcDisplayCalc += ` ${object.new} ${calcSymbol}` ;
+                }
+            }
 
-        console.log(calcDisplayArray);
-        if (calcDisplayArray.length >= 3 && calcDisplayArray[calcDisplayArray.length -1].length !== 0 ) {
-            calculationDisplayEqualSign.classList.add("show")
-
-            if (resultContainer.textContent != newTempResult) {
-                let resultFadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration);
-                console.log("its not");
-                resultContainer.classList.add("fade")
-                setTimeout(() => {
-                    resultContainer.textContent = newTempResult;
-                    resultContainer.classList.remove("fade")
-                }, resultFadeTime * 1000);
-            } 
-        } else {
-            resultContainer.textContent = ""
+            
         }
-        // console.log(digitBuilderArr);
-        console.log(calcObject);
-        console.log(resultContainer.textContent, newTempResult);
+
+        calculationDisplayText.textContent = calcDisplayCalc;
 
 
+        console.log(calcDisplayCalc);
+        console.log(calcObjectArr);
 
 
-
+        resultContainer.textContent = calcObjectArr.at(-1).sum
     })
 })
 function clearCalc() {
     newDigit = "";
     allNewDigits = "";
-    completeNumber;
 }
 
 function clearOneCalc() {
-    allCompleteNumbers.pop()
-    let reverseDigit = allCompleteNumbers.at(-1);
-    console.log(reverseDigit);
-    calcObject.new = reverseDigit;
-    calcObject.base = reverseBase;
-
-    if (calcDisplayArray.length > 1 && typeof calcDisplayArray[calcDisplayArray.length -1] === "number" ) {
-        console.log("its a number");
-        if (calcDisplayArray[calcDisplayArray.length - 1] - 9 > 0) {
-            console.log(allCompleteNumbers);
-            console.log(calcDisplayArray[calcDisplayArray.length - 1].length);
-            calcDisplayArray[calcDisplayArray.length - 1] = allCompleteNumbers[allCompleteNumbers.length - 1];
-        } else {
-            calcDisplayArray.pop();
-            allCompleteNumbers.pop()
-        }
-
-    }
-    // calcDisplayArray.pop();
-
-    newTempResult = operate(calcObject.base, calcObject.new, calcObject.operator);
-
 
 }
 
 function regNum(btn) {
     newDigit = btn.textContent;
     allNewDigits += newDigit;
-    calcWithLastCompleteNumber(allNewDigits, negNumber)
+
+    let compiledDigits = makeCompleteNumber(allNewDigits, negNumber)
+    calcObjectArr[calcObjectArr.length -1].new = compiledDigits;
+        runCalculator()
+
 }
 
 function plusMinus() {
     negNumber = !negNumber;
-    calcWithLastCompleteNumber(allNewDigits, negNumber)
+    compiledDigits = makeCompleteNumber(allNewDigits, negNumber)
+    calcObjectArr[calcObjectArr.length -1].new = compiledDigits;
+    runCalculator()
 }
 
-function calcWithLastCompleteNumber(allNewDigits, negNumber) {
-    completeNumber = makeCompleteNumber(allNewDigits, negNumber);
-    calcDisplayArray[calcDisplayArray.length -1] = completeNumber;
-    allCompleteNumbers.push(completeNumber)
-    console.log(allCompleteNumbers);
-    calcObject.new = completeNumber;
-    digitBuilderArr.push(calcObject.new)
-    newTempResult = operate(calcObject.base, calcObject.new, calcObject.operator);
-}
+
 
 const makeCompleteNumber = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
 
-function opSymbol(btn) {    
-    console.log(newOpSymbol);
-    let oldOp = newOpSymbol;
-    newOpSymbol = btn.textContent;
-
-    if (newOpSymbol !== oldOp) {
-        console.log("its the same");
-    }
-
-
-    calcObject.base = newTempResult;
-    reverseBase = calcObject.base
-
-
-    newDigit = "";
+function opSymbol(btn) {
     allNewDigits = "";
-    completeNumber = 0;
-    console.log(btn.textContent);
-    if (newOpSymbol === "-") { calcObject.operator = subtract } else { calcObject.operator = add; }
+    newOpSymbol = btn.textContent;
+    let operator
+    if (newOpSymbol === "-") { operator = sub } else { operator = add; }
+    calcObjectArr.push(createCalcObject(calcObjectArr.at(-1).sum, 0, add))
+    calcObjectArr[calcObjectArr.length -1].operator = operator;
 
-    calcObject.new = 0;
-    calcDisplayArray.push(newOpSymbol)
-    calcDisplayArray.push([])
-    negNumber = false;
-
-
-    // if (newOpSymbol === oldOp || newOpSymbol === undefined) {
-    // }
 
 }
 
@@ -193,7 +157,7 @@ function equals() {
 
 function add(a, b) { return a + b; }
 
-function subtract(a, b) { return a - b; }
+function sub(a, b) { return a - b; }
 
 function multiply(a, b) { return a * b; }
 
