@@ -61,7 +61,8 @@ main {
 
 .calc__display__calculation-equal-sign {
     white-space: pre;
-    opacity: 1;
+    opacity: 0;
+    transition: opacity 1s;
 }
 
 .calc__display__calculation-equal-sign.show {
@@ -70,7 +71,16 @@ main {
 
 
 .calc__display__result {
+    /* background-color: aqua; */
+    height: 73.5px;
     font-size: 4rem;
+    opacity: 1;
+    /* color: black; */
+    transition: opacity .5s;
+}
+.calc__display__result.fade {
+    opacity: 0;
+    /* color: red; */
 }
 
 .calc__bracket-container {

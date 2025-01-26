@@ -17,28 +17,32 @@ let equalSignWidth = calculationDisplayEqualSign.getBoundingClientRect().width;
 // console.log(equalSignWidth);
 calculationDisplayContainer.style.paddingLeft = equalSignWidth + "px";
 
-let calcResultsArray = [];
-let calcWholeNumbers = [];
-let operatorRun = [];
-let individualDigits = [];
-let decimal = false;
-let numberBuilder;
-let liveCalcResult;
-let activeOperator = add;
-let tempResult;
-let previousCalcDisplayText;
-let previousCalcDisplayTextBeforeDot;
-let lastOperatorSymbol;
-const allOperatorSymbols = ["+", "-", "x", "/", "%"];
-let joinedDigits;
-let calcDisplayArray = []
-let joinedCalcDisplayArray;
-let calcSumsArray = []
-let negDigit = false;
-let minusSign = "";
+let negNumber = false;
 
-let calcWholeNumbersLength;
-let calcResultArrayLength;
+// Current Numbers
+let newDigit;
+let allNewDigits = "";
+let completeNumber;
+
+// Operators
+let newOpSymbol = "+";
+
+// Calc components
+let activeOperator = add;
+let sum = 0;
+let newNumber = 0;
+let newTempResult
+let calcDisplayArray = [0]
+let digitBuilderArr = []
+let allCompleteNumbers = []
+let reverseBase = 0;
+
+
+let calcObject = {
+    base: 0,
+    new: 0,
+    operator: add
+}
 
 
 function operate(num1, num2, operator) {
@@ -53,103 +57,137 @@ allBtns.forEach(btn => {
         btn.classList.contains("clear-c") && clearOneCalc();
         btn.classList.contains("btn-num") && regNum(btn);
         btn.classList.contains("btn-plus-minus") && plusMinus(btn);
-        btn.classList.contains("btn-plus-minus") ? minusPlus = true : minusPlus = false;
+        // btn.classList.contains("btn-plus-minus") ? minusPlus = true : minusPlus = false;
+        btn.classList.contains("btn-op") && opSymbol(btn);
+        btn.classList.contains("btn-result") && equals(btn);
+
+        console.log(calcDisplayArray);
+        console.log(allCompleteNumbers);
+
+        let displayCalculation = "";
+        calcDisplayArray.forEach((num, i) => {
+            Number(num) && num < 0 ? num = `(${num})` : num = num;
+            i === 0 ? num = num : num = ` ${num}`;
+            displayCalculation += num
+        })
+        calculationDisplayText.textContent = displayCalculation;
+
+        console.log(calcDisplayArray);
+        if (calcDisplayArray.length >= 3 && calcDisplayArray[calcDisplayArray.length -1].length !== 0 ) {
+            calculationDisplayEqualSign.classList.add("show")
+
+            if (resultContainer.textContent != newTempResult) {
+                let resultFadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration);
+                console.log("its not");
+                resultContainer.classList.add("fade")
+                setTimeout(() => {
+                    resultContainer.textContent = newTempResult;
+                    resultContainer.classList.remove("fade")
+                }, resultFadeTime * 1000);
+            } 
+        } else {
+            resultContainer.textContent = ""
+        }
+        // console.log(digitBuilderArr);
+        console.log(calcObject);
+        console.log(resultContainer.textContent, newTempResult);
 
 
-        btn.classList.contains("btn-op") && opNum(btn, numberBuilder);
 
-        numberBuilder = parseFloat(individualDigits.reduce((acc, number) => acc * 1 + number, 0));
 
-        
-        joinedCalcDisplayArray = calcDisplayArray.join("")
-
-        calculationDisplayText.textContent = joinedCalcDisplayArray;
 
     })
 })
+function clearCalc() {
+    newDigit = "";
+    allNewDigits = "";
+    completeNumber;
+}
 
 function clearOneCalc() {
-    individualDigits.pop()
-    if (decimal) {
-        calculationDisplayText.textContent = previousCalcDisplayTextBeforeDot;
-        decimal = false;
-    } else {
-        calculationDisplayText.textContent = previousCalcDisplayText;
+    allCompleteNumbers.pop()
+    let reverseDigit = allCompleteNumbers.at(-1);
+    console.log(reverseDigit);
+    calcObject.new = reverseDigit;
+    calcObject.base = reverseBase;
+
+    if (calcDisplayArray.length > 1 && typeof calcDisplayArray[calcDisplayArray.length -1] === "number" ) {
+        console.log("its a number");
+        if (calcDisplayArray[calcDisplayArray.length - 1] - 9 > 0) {
+            console.log(allCompleteNumbers);
+            console.log(calcDisplayArray[calcDisplayArray.length - 1].length);
+            calcDisplayArray[calcDisplayArray.length - 1] = allCompleteNumbers[allCompleteNumbers.length - 1];
+        } else {
+            calcDisplayArray.pop();
+            allCompleteNumbers.pop()
+        }
+
     }
+    // calcDisplayArray.pop();
 
-}
+    newTempResult = operate(calcObject.base, calcObject.new, calcObject.operator);
 
-function opNum(btn) {
-    lastOperatorSymbol = btn.textContent;
 
-    if (allOperatorSymbols.some(symbol => ` ${symbol} ` === calcDisplayArray[calcDisplayArray.length - 1])) {
-        console.log("its two ops in row");
-        calcDisplayArray[calcDisplayArray.length - 1] = ` ${lastOperatorSymbol} `;
-    } else {
-        calcDisplayArray.push(` ${lastOperatorSymbol} `)
-    }
-    individualDigits = []
-    // calcWholeNumbers.push(parseFloat(joinedDigits))
-    joinedDigits;
-
-    if (btn.textContent === "-") { activeOperator = subtract } else { activeOperator = add; }
-}
-function plusMinus() {
-
-    let currentDigits = individualDigits;
-    console.log(currentDigits);
-
-    if (currentDigits.length === 0) {
-        console.log("its 0");
-        currentDigits.push("-")
-    } else if (currentDigits.length === 1 && currentDigits[0] === "-") {
-        console.log("its 1");
-        currentDigits.shift()
-    } else if (currentDigits.length > 1 && currentDigits[0] === "-") {
-        console.log("its over 1");
-        currentDigits.shift()
-    } else {
-        currentDigits.unshift("-")
-    }
-
-    if (currentDigits.length !== 0) {
-        individualDigits = currentDigits;   
-    }
-
-    joinedDigits = individualDigits.join("")
-
-    if (individualDigits.length < 2 && calcDisplayArray.length >= 2) {
-        calcDisplayArray.push(joinedDigits)
-        calcWholeNumbers.push(parseFloat(joinedDigits))
-    } else {
-        console.log("here");
-        calcDisplayArray[calcDisplayArray.length - 1] = joinedDigits;
-        calcWholeNumbers[calcWholeNumbers.length - 1] = parseFloat(joinedDigits);
-    }
 }
 
 function regNum(btn) {
-    let digit = btn.textContent
-    previousCalcDisplayText = calculationDisplayText.textContent;
+    newDigit = btn.textContent;
+    allNewDigits += newDigit;
+    calcWithLastCompleteNumber(allNewDigits, negNumber)
+}
 
+function plusMinus() {
+    negNumber = !negNumber;
+    calcWithLastCompleteNumber(allNewDigits, negNumber)
+}
 
-    individualDigits.push(digit)
-    joinedDigits = individualDigits.join("")
-    if (individualDigits.length < 2) {
-        calcDisplayArray.push(joinedDigits)
-        calcWholeNumbers.push(parseFloat(joinedDigits))
-    } else {
-        console.log("here");
-        calcDisplayArray[calcDisplayArray.length - 1] = joinedDigits;
-        calcWholeNumbers[calcWholeNumbers.length - 1] = parseFloat(joinedDigits);
+function calcWithLastCompleteNumber(allNewDigits, negNumber) {
+    completeNumber = makeCompleteNumber(allNewDigits, negNumber);
+    calcDisplayArray[calcDisplayArray.length -1] = completeNumber;
+    allCompleteNumbers.push(completeNumber)
+    console.log(allCompleteNumbers);
+    calcObject.new = completeNumber;
+    digitBuilderArr.push(calcObject.new)
+    newTempResult = operate(calcObject.base, calcObject.new, calcObject.operator);
+}
+
+const makeCompleteNumber = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
+
+function opSymbol(btn) {    
+    console.log(newOpSymbol);
+    let oldOp = newOpSymbol;
+    newOpSymbol = btn.textContent;
+
+    if (newOpSymbol !== oldOp) {
+        console.log("its the same");
     }
+
+
+    calcObject.base = newTempResult;
+    reverseBase = calcObject.base
+
+
+    newDigit = "";
+    allNewDigits = "";
+    completeNumber = 0;
+    console.log(btn.textContent);
+    if (newOpSymbol === "-") { calcObject.operator = subtract } else { calcObject.operator = add; }
+
+    calcObject.new = 0;
+    calcDisplayArray.push(newOpSymbol)
+    calcDisplayArray.push([])
+    negNumber = false;
+
+
+    // if (newOpSymbol === oldOp || newOpSymbol === undefined) {
+    // }
+
 }
 
-function calcLiveResult(totalTypedNow) {
 
-}
 
-function displayCalculation(totalTypedNow) {
+function equals() {
+    return operate(calcObject.base, calcObject.new, calcObject.operator)
 
 }
 
@@ -163,9 +201,3 @@ function divide(a, b) { return a / b; }
 
 // console.log(add(2,-8));
 
-function clearCalc() {
-    individualDigits = []
-    joinedDigits;
-    calcDisplayArray = []
-    joinedCalcDisplayArray;
-}
