@@ -31,8 +31,9 @@ let calcObjectArr = [];
 // Keyboard
 const calcBtnWrappers = [...document.querySelectorAll(".calc__btn-wrapper")]
 let deleteBtnTexts = ["ac", "c"];
-let operatorBtnTexts = ["%", "/", "x", "-", "+"]
-let allExtraBtns = deleteBtnTexts.concat(operatorBtnTexts);
+let operatorBtnTexts = ["/", "x", "-", "+"];
+let extraBtnTexts = ["±", "%"]
+let allExtraBtns = operatorBtnTexts.concat(extraBtnTexts).concat(deleteBtnTexts);
 console.log(allExtraBtns);
 let operatorsOpen = false;
 
@@ -230,18 +231,24 @@ function showKeyboardOperators() {
         let text = allExtraBtns[i]
         let animTime = 200;
 
-        if (i < 2) {
+        if (i < 4) {
+            element.classList.add("calc__btn", "btn-op")
+            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
+        } else if (i < 5) {
+            element.classList.add("calc__btn", "btn-plus-minus")
+            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
+        } else if (i < 6) {
+            element.classList.add("calc__btn", "op-remain")
+            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
+        } else {
             element.className = `calc__btn clear-${text}`
             text = text.toUpperCase()
-        } else {
-            element.classList.add("calc__btn", "btn-op", "op-add")
+            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
         }
 
+        element.classList.add("fold-out")
         element.textContent = text;
-        wrapper.append(element)
-        element.style.animationDuration = animTime + "ms"
-        element.style.animationDelay = animTime * i + "ms";
-        element.classList.add("fold-down")   
+        wrapper.append(element)  
     })
     allOpButtons = [...document.querySelectorAll(".calc__btn")];
     makeButtonEventsOps(allOpButtons)

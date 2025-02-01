@@ -29,7 +29,7 @@ main {
 .calc--wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     height: 500px;
     width: 300px;
     /* background-color: black; */
@@ -152,46 +152,67 @@ main {
 }
 
 .calc__keyboard {
-    display: flex;
-    /* flex-direction: column; */
+    display: grid;
+    grid-template-columns: 50px repeat(3, 1fr) 50px;
+    grid-template-rows: repeat(5, 1fr);
+
+    grid-template-areas: 
+    "o n n n e"
+    "o n n n e"
+    "o n n n ."
+    "o n n n ."
+    ". . c c ."
+    ;
+
+
     height: 300px;
-    /* gap: 10px; */
     flex-wrap: wrap;
-    /* background-color: var(--grayColor); */
+    gap: 10px;
 }
 
 .calc__keyboard > div {
     display: flex;
     flex-wrap: wrap;
-    /* background-color: aqua; */
-    /* gap: 10px; */
-}
-.calc__keyboard__numbers {
-    flex: 1;
-
-}
-.calc__keyboard__numbers div{
-    flex: 1 0 60px;
+    gap: 10px;
 }
 
-/* .calc__keyboard__operators {
-    margin: 20px 0;
-} */
 
-.calc__keyboard__operators, .calc__keyboard__deletes {
+.calc__keyboard__extras {
+    grid-area: e;
     flex-direction: column;
-    width: 40px;
+    /* width: 50px; */
+    /* background-color: blue; */
+    /* heigh t: 50%; */
 }
+
+.calc__keyboard__numbers {
+    grid-area: n;
+}
+
+.calc__keyboard__numbers div{
+    flex: 0 1 1fr;
+}
+
+.calc__keyboard__numbers div:nth-child(10){
+    visibility: hidden;
+}
+
+.calc__keyboard__operators {
+    grid-area: o;
+    flex-direction: column;
+}
+
 
 .calc__keyboard__deletes {
-    height: calc((100% /5)*2);
-    flex-direction: column;
+    grid-area: c;
 }
+
+.calc__keyboard__deletes div {
+    flex: 1;
+}
+
 .calc__btn-wrapper{
-    /* height: 0; */
     flex: 1 0 auto;
-    /* height: 60px; */
-    /* background-color: blueviolet; */
     perspective: 500px;
     overflow: hidden;
 }
@@ -202,10 +223,8 @@ main {
     /* transition: transform 1s ease-in; */
 }
 
-.calc__btn-wrapper div.fold-down {
-    /* transform: rotateX(0deg); */
-    animation: fold-down 1s ease-out forwards;
-
+.calc__btn.fold-out {
+    background-color: orange;
 }
 
 @keyframes fold-down {
@@ -218,15 +237,13 @@ main {
     }
 }
 
-
-
 .calc__btn {
     flex: 1 0 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 5px solid var(--backGroundColor);
-    /* border-radius: 10px; */
+    /* border: 5px solid var(--backGroundColor); */
+    border-radius: 10px;
     background-color: var(--grayColor);
 }
 
