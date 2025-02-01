@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.typekit.net/tln1rfi.css">
     <link rel="stylesheet" href="style.css">
     <title>Odin calc</title>
 </head>
+
 <body>
     <main class="page-wrapper">
         <div class="calc--wrapper">
             <div class="calc__display">
-                <div class="calc__display__calculation-container"><span class="calc__display__calculation-total-text"><span class="calc__display__calculation-minus-sign">-</span><span class="calc__display__calculation-text"></span></span><span class="calc__display__calculation-equal-sign"> =</span>
-                    </div>
-                <div class="calc__display__result"></div>
+                <div class="calc__display__calculation-container">
+                    <span class="calc__display__calculation-text"></span>
+                    <span class="calc__display__calculation-equal-sign"> =</span>
+                </div>
+                <div class="calc__display__result mini"></div>
             </div>
             <div class="calc__bracket-container show">
                 <div class="calc__bracket-line bracket-line-container">
@@ -25,31 +30,49 @@
                 </div>
             </div>
             <div class="calc__keyboard">
-                <div class="calc__btn clear-ac">AC</div>
-                <div class="calc__btn clear-c">C</div>
-                <div class="calc__btn btn-plus-minus">±</div>
-                <div class="calc__btn btn-op op-remain">%</div>
-                <div class="calc__btn btn-num">7</div>
-                <div class="calc__btn btn-num">8</div>
-                <div class="calc__btn btn-num">9</div>
-                <div class="calc__btn btn-op op-divide">/</div>
-                <div class="calc__btn btn-num">4</div>
-                <div class="calc__btn btn-num">5</div>
-                <div class="calc__btn btn-num">6</div>
-                <div class="calc__btn btn-op op-multi">x</div>
-                <div class="calc__btn btn-num">1</div>
-                <div class="calc__btn btn-num">2</div>
-                <div class="calc__btn btn-num">3</div>
-                <div class="calc__btn btn-op op-sub">-</div>
-                <div class="calc__btn btn-num btn-decimal">.</div>
-                <div class="calc__btn btn-num">0</div>
-                <div class="calc__btn btn-result">=</div>
-                <div class="calc__btn btn-op add">+</div>
+                <div class="calc__keyboard__deletes">
+                    <div class="calc__btn-wrapper"></div>
+                    <div class="calc__btn-wrapper"></div>
+                    <!-- <div class="calc__btn clear-ac">AC</div>
+                    <div class="calc__btn clear-c">C</div> -->
+                </div>
+                <div class="calc__keyboard__numbers">
+                    <div class="calc__btn btn-num">7</div>
+                    <div class="calc__btn btn-num">8</div>
+                    <div class="calc__btn btn-num">9</div>
+                    <div class="calc__btn btn-num">4</div>
+                    <div class="calc__btn btn-num">5</div>
+                    <div class="calc__btn btn-num">6</div>
+                    <div class="calc__btn btn-num">1</div>
+                    <div class="calc__btn btn-num">2</div>
+                    <div class="calc__btn btn-num">3</div>
+                    <div class="calc__btn btn-num btn-decimal">.</div>
+                    <div class="calc__btn btn-num">0</div>
+
+                    <div class="calc__btn btn-plus-minus">±</div>
+
+                </div>
+
+                <div class="calc__keyboard__operators">
+                    <div class="calc__btn-wrapper"></div>
+                    <div class="calc__btn-wrapper"></div>
+                    <div class="calc__btn-wrapper"></div>
+                    <div class="calc__btn-wrapper"></div>
+                    <div class="calc__btn-wrapper"></div>
+                    
+                    <!-- <div class="calc__btn btn-op op-remain">%</div>
+                    <div class="calc__btn btn-op op-divide">/</div>
+                    <div class="calc__btn btn-op op-multi">x</div>
+                    <div class="calc__btn btn-op op-sub">-</div>
+                    <div class="calc__btn btn-op op-add">+</div> -->
+                </div>
+
             </div>
 
         </div>
     </main>
-    
+
     <script src="script.js"></script>
 </body>
+
 </html>
