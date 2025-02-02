@@ -19,13 +19,14 @@ body {
 
 main {
     display: block;
-    height: 100dvh;
+    height: 100vh;
     width: 100%;
     background: #e4e1e1;
     /* background-color: aqua; */
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .calc--wrapper {
