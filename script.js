@@ -17,6 +17,10 @@ calculationDisplayContainer.style.paddingLeft = equalSignWidth + "px";
 
 let negNumber = false;
 
+// Display brackets
+const brackets = [...document.querySelectorAll(".bracket-line-container")];
+console.log(brackets);
+
 // Current Numbers
 let newDigit;
 let allNewDigits = "";
@@ -30,11 +34,32 @@ let calcObjectArr = [];
 
 // Keyboard
 const calcBtnWrappers = [...document.querySelectorAll(".calc__btn-wrapper")]
-let deleteBtnTexts = ["ac", "c"];
-let operatorBtnTexts = ["/", "x", "-", "+"];
-let extraBtnTexts = ["±", "%"]
-let allExtraBtns = operatorBtnTexts.concat(extraBtnTexts).concat(deleteBtnTexts);
-console.log(allExtraBtns);
+
+const extraButtons = {
+    operatorBtns: {
+        parentContainer: document.querySelector(".calc__keyboard__operators"),
+        btnTexts: ["/", "x", "-", "+"],
+        elClass: ["btn-op"]
+    },
+    restBtns: {
+        parentContainer: document.querySelector(".calc__keyboard__extras"),
+        btnTexts: ["±", "%"],
+        elClass: ["btn-plus-minus", "btn-reminder"]
+    },
+    deleteBtns: {
+        parentContainer: document.querySelector(".calc__keyboard__deletes"),
+        btnTexts: ["ac", "c"],
+        elClass: ["clear-ac", "clear-c"]
+    }
+}
+
+console.log(extraButtons.deleteBtns.parentContainer);
+
+// let deleteBtnTexts = ["ac", "c"];
+// let operatorBtnTexts = ["/", "x", "-", "+"];
+// let extraBtnTexts = ["±", "%"]
+// let allExtraBtns = operatorBtnTexts.concat(extraBtnTexts).concat(deleteBtnTexts);
+
 let operatorsOpen = false;
 
 
@@ -223,33 +248,42 @@ function divide(a, b) { return a / b; }
 
 let allOpButtons = []
 
+const keyboardOperatorsWrapper = document.querySelector('.calc__keyboard__operators')
+console.log(keyboardOperatorsWrapper);
 
 function showKeyboardOperators() {
     console.log("this");
-    calcBtnWrappers.forEach((wrapper, i) => {
-        let element = document.createElement("div");
-        let text = allExtraBtns[i]
-        let animTime = 200;
+    brackets.forEach(bracket => {
+        bracket.classList.add("grow")
 
-        if (i < 4) {
-            element.classList.add("calc__btn", "btn-op")
-            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
-        } else if (i < 5) {
-            element.classList.add("calc__btn", "btn-plus-minus")
-            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
-        } else if (i < 6) {
-            element.classList.add("calc__btn", "op-remain")
-            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
-        } else {
-            element.className = `calc__btn clear-${text}`
-            text = text.toUpperCase()
-            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * i}ms forwards`
-        }
-
-        element.classList.add("fold-out")
-        element.textContent = text;
-        wrapper.append(element)  
     })
+    
+    let animTime = 200;
+    let index = 0;
+    let counter = 0
+
+
+    for (let key in extraButtons) {
+        
+        let container = extraButtons[key].parentContainer;
+        let allSymbols = extraButtons[key].btnTexts;
+        let elClasses = extraButtons[key].elClass;
+        allSymbols.forEach((symbol, i) => {
+            let wrapper = document.createElement("div");
+            wrapper.className = "calc__btn-wrapper";
+            let element = document.createElement("div");
+            element.textContent = symbol;
+            let uniqueClassName = elClasses[i] ? elClasses[i]: elClasses[0];
+            element.className = `calc__btn ${uniqueClassName} fold-out`
+            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * counter}ms forwards`
+
+            wrapper.append(element)
+            container.append(wrapper)
+            counter++
+            console.log(counter);
+        })
+    }
+
     allOpButtons = [...document.querySelectorAll(".calc__btn")];
     makeButtonEventsOps(allOpButtons)
 }

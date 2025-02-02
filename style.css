@@ -6,6 +6,8 @@
 
 :root {
     --grayColor: rgb(190, 181, 169);
+    --grayColorLight: rgb(231, 221, 208);
+    --grayColorDark: hsl(36, 9%, 32%);
     --backGroundColor: #e4e1e1;
 }
 
@@ -43,9 +45,9 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
     height: 100px;
-    color: black;
+    color: var(--grayColorDark);
     /* margin-bottom: 20px; */
     /* background-color: red; */
 }
@@ -57,11 +59,6 @@ main {
     /* height: 40px; */
 }
 
-.calc__display__calculation-container span {
-    color: var(--grayColor);
-    color: black;
-    /* background-color: blueviolet; */
-}
 
 .calc__display__calculation-equal-sign {
     white-space: pre;
@@ -70,20 +67,14 @@ main {
 }
 
 .calc__display__calculation-equal-sign.show {
-    /* background-color: bisque; */
     opacity: 1;
-    /* transform: scaleX(3); */
 }
 
-
-
-
 .calc__display__result {
-    /* background-color: aqua; */
-    height: 100px;
+    height: 50px;
     font-size: 4rem;
     opacity: 1;
-    /* color: black; */
+    color: var(--grayColorDark);
     transition: opacity .5s;
     transition: font-variation-settings .4s,
                 font-size .4s;
@@ -93,7 +84,6 @@ main {
 .calc__display__result.fade {
     opacity: .5;
     font-variation-settings: "wght"300, "opsz"72;
-    /* color: red; */
 }
 
 .calc__display__result.mini {
@@ -103,15 +93,14 @@ main {
 
 .calc__bracket-container {
     display: flex;
+    align-items: end;
+    justify-content: center;
     width: 100%;
-    /* gap: 2px; */
     height: 0px;
-    /* background: blue; */
     padding-bottom: 20px;
     opacity: 0;
     transform-origin: bottom;
     overflow: hidden;
-    transition: all 1s;
 }
 
 .calc__bracket-container.show {
@@ -121,11 +110,19 @@ main {
 
 .bracket-line-container {
     display: flex;
-    width: 100%;
-    /* background: red; */
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: height .5s ease-out,
+                width 1s ease-out .25s,
+                opacity .25s linear .1s;
 }
 
-
+.bracket-line-container.grow {
+    height: 100%;
+    width: 100%;
+    opacity: 1;
+}
 
 .bracket-line-container div {
     width: 100%;
@@ -157,11 +154,11 @@ main {
     grid-template-rows: repeat(5, 1fr);
 
     grid-template-areas: 
-    "o n n n e"
+    ". n n n e"
     "o n n n e"
     "o n n n ."
     "o n n n ."
-    ". . c c ."
+    "o . . c c"
     ;
 
 
@@ -200,6 +197,7 @@ main {
 .calc__keyboard__operators {
     grid-area: o;
     flex-direction: column;
+    /* background-color: blue; */
 }
 
 
@@ -223,8 +221,29 @@ main {
     /* transition: transform 1s ease-in; */
 }
 
+.calc__btn {
+    flex: 1 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: var(--grayColorDark);
+    font-size: 1.2rem;
+    /* background-color: aqua; */
+}
+
+.btn-num {
+    border: 1px solid var(--grayColor);
+    padding-top: 4px;
+    /* line-height: .6rem; */
+    /* background-color: var(--grayColor); */
+}
+
 .calc__btn.fold-out {
-    background-color: orange;
+    /* border: 5px solid var(--backGroundColor); */
+    background-color: var(--grayColor);
+    color: var(--backGroundColor);
+    /* scale: 50%; */
 }
 
 @keyframes fold-down {
@@ -237,20 +256,10 @@ main {
     }
 }
 
-.calc__btn {
-    flex: 1 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* border: 5px solid var(--backGroundColor); */
-    border-radius: 10px;
-    background-color: var(--grayColor);
-}
-
 .calc__btn:hover {
-    color: rgb(72, 68, 60);
-    background: var(--grayColor);
-    background: red;
+    color: var(--grayColorLight);
+    background: var(--grayColorDark);
+    /* background: red; */
 }
 
 .calc__btn:active {
