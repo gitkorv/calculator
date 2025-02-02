@@ -190,11 +190,11 @@ main {
     grid-template-columns: 50px repeat(3, 1fr) 50px;
     grid-template-rows: repeat(5, 1fr);
     grid-template-areas: 
-    ". n n n e"
+    "o n n n e"
     "o n n n e"
     "o n n n ."
     "o n n n ."
-    "o . . c c"
+    ". . . c c"
     ;
 
     height: 300px;
@@ -280,6 +280,10 @@ main {
     font-variation-settings: "wght"300, "opsz"6;
 }
 
+.calc__btn.fold-out.clear {
+    background-color: var(--grayColorDark);
+}
+
 @keyframes fold-down {
     90% {
         transform: rotateX(20deg);
@@ -290,15 +294,40 @@ main {
     }
 }
 
-.calc__btn:hover {
+.btn-num:hover {
+    color: var(--grayColorDark);
+    background: var(--grayColorLight);
+}
+
+.btn-num:active {
     color: var(--grayColorLight);
     background: var(--grayColorDark);
 }
 
-.calc__btn:active {
-    color: white;
-    background: wheat;
+.calc__btn.fold-out:hover {
+    background-color: var(--grayColorDark);
+    color: var(--grayColorLight);
 }
+
+.calc__btn.fold-out.clear:hover {
+    background-color: var(--grayColor);
+    border: 1px solid var(--grayColorDark);
+    color: var(--grayColorDark);
+}
+
+.calc__btn.fold-out:active, .calc__btn.fold-out.clear:active {
+    background-color: var(--grayColorLight);
+    color: var(--grayColorDark);
+    border: 1px solid var(--grayColor);
+}
+
+
+
+/* .calc__btn.fold-out:active {
+    background-color: var(--grayColorLight);
+    color: var(--grayColorDark);
+    border: 1px solid var(--grayColor);
+} */
 
 .footer {
     display: flex;

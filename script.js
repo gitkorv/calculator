@@ -46,12 +46,12 @@ const extraButtons = {
     restBtns: {
         parentContainer: document.querySelector(".calc__keyboard__extras"),
         btnTexts: ["±", "%"],
-        elClass: ["btn-plus-minus", "btn-reminder"]
+        elClass: ["btn-plus-minus", "btn-op btn-reminder"]
     },
     deleteBtns: {
         parentContainer: document.querySelector(".calc__keyboard__deletes"),
         btnTexts: ["ac", "c"],
-        elClass: ["clear-ac", "clear-c"]
+        elClass: ["clear clear-ac", "clear clear-c"]
     }
 }
 
@@ -209,6 +209,7 @@ function opSymbol(btn) {
 
     negNumber = false;
     console.log(negNumber);
+    console.log(opSym);
 
     allNewDigits = "";
     let operator
@@ -216,6 +217,8 @@ function opSymbol(btn) {
         operator = sub;
     } else if (opSym === "x" || opSym === "*") {
         operator = multiply;
+    } else if (opSym === "%") {
+        operator = reminder;
     } else if (opSym === "/") {
         operator = divide;
     } else { operator = add; }
@@ -239,6 +242,8 @@ function sub(a, b) { return a - b; }
 function multiply(a, b) { return a * b; }
 
 function divide(a, b) { return a / b; }
+
+function reminder(a, b) { return a % b; }
 
 let allOpButtons = []
 const decimalBtn = document.querySelector(".btn-decimal")
@@ -286,6 +291,7 @@ function makeButtonEventsOps(allOpButtons) {
             btn.classList.contains("clear-c") && clearOneCalc();
             btn.classList.contains("btn-plus-minus") && plusMinus(btn);
             btn.classList.contains("btn-op") && opSymbol(btn);
+            // btn.classList.contains("btn-reminder") && opSymbol(btn);
 
             console.log(calcObjectArr.length);
 
