@@ -112,9 +112,9 @@ function displayCalcAndSum() {
         liveResult = latestCalcObject.sum
     }
 
-    if (calcObjectArr.length > 1 && calcObjectArr[1].new !== undefined) {
-        calculationDisplayEqualSign.classList.add("show")
-    }
+    // if (calcObjectArr.length > 1 && calcObjectArr[1].new !== undefined) {
+    //     calculationDisplayEqualSign.classList.add("show")
+    // }
 
     if (resultContainer.textContent != liveResult) {
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
