@@ -10,6 +10,9 @@ const calculationDisplayText = document.querySelector(".calc__display__calculati
 const calculationDisplayEqualSign = document.querySelector(".calc__display__calculation-equal-sign");
 const resultContainer = document.querySelector(".calc__display__result")
 
+// Welcome
+const welcomeText = document.querySelector(".calc__welcome-text");
+
 // Mod Displays
 const plusMinusSign = document.querySelector(".calc__display__calculation-minus-sign")
 let equalSignWidth = calculationDisplayEqualSign.getBoundingClientRect().width;
@@ -19,7 +22,6 @@ let negNumber = false;
 
 // Display brackets
 const brackets = [...document.querySelectorAll(".bracket-line-container")];
-console.log(brackets);
 
 // Current Numbers
 let newDigit;
@@ -27,7 +29,7 @@ let allNewDigits = "";
 let liveResult;
 
 // Operators
-let newOpSymbol = "+";
+let operatorsOpen = false;
 
 // Calculations
 let calcObjectArr = [];
@@ -53,17 +55,6 @@ const extraButtons = {
     }
 }
 
-console.log(extraButtons.deleteBtns.parentContainer);
-
-// let deleteBtnTexts = ["ac", "c"];
-// let operatorBtnTexts = ["/", "x", "-", "+"];
-// let extraBtnTexts = ["±", "%"]
-// let allExtraBtns = operatorBtnTexts.concat(extraBtnTexts).concat(deleteBtnTexts);
-
-let operatorsOpen = false;
-
-
-
 function createCalcObject(base, newValue, operator, opSym) {
     return {
         base: base,
@@ -77,30 +68,26 @@ function createCalcObject(base, newValue, operator, opSym) {
 function runCalculator() {
     let calcObjectAtEnd = calcObjectArr.at(-1);
     calcObjectAtEnd.sum = calcObjectAtEnd.operator(calcObjectAtEnd.base, calcObjectAtEnd.new);
-
-}
-
-function operate(num1, num2, operator) {
-    return parseFloat(operator(num1, num2))
+    console.log(calcObjectAtEnd.new);
 }
 
 function makeButtonEventsNumbers(allBtns) {
     btnNumbers.forEach(btn => {
         btn.addEventListener("click", (e) => {
             btn.classList.contains("btn-num") && regNum(btn);
-        displayCalcAndSum()
-        
+            
+            displayCalcAndSum()
+
         })
     })
 }
 
 makeButtonEventsNumbers(allBtns)
 
-
-
 function displayCalcAndSum() {
     let calcDisplayCalc = "";
     let latestCalcObject = calcObjectArr.at(-1);
+    console.log(latestCalcObject);
 
     for (let i = 0; i < calcObjectArr.length; i++) {
         let object = calcObjectArr[i];
@@ -116,7 +103,7 @@ function displayCalcAndSum() {
     }
     calculationDisplayText.textContent = calcDisplayCalc;
 
-    if (latestCalcObject.sum === Infinity || 
+    if (latestCalcObject.sum === Infinity || latestCalcObject.sum === -Infinity ||
         latestCalcObject.new === undefined ||
         (latestCalcObject.opSym === "x" && latestCalcObject.new === 0)) {
         console.log("display last sum");
@@ -125,7 +112,7 @@ function displayCalcAndSum() {
         liveResult = latestCalcObject.sum
     }
 
-    if (calcObjectArr.length > 1 && calcObjectArr[1].new !== 0) {
+    if (calcObjectArr.length > 1 && calcObjectArr[1].new !== undefined) {
         calculationDisplayEqualSign.classList.add("show")
     }
 
@@ -144,10 +131,18 @@ function displayCalcAndSum() {
     console.log(calcObjectArr);
 }
 
-
 function clearCalc() {
     newDigit = "";
     allNewDigits = "";
+    calcObjectArr = [];
+    calculationDisplayText.textContent = "";
+    resultContainer.textContent = "";
+    calculationDisplayEqualSign.classList.remove("show")
+    const foldDownBtns = [...document.querySelectorAll(".fold-out")]
+    console.log(foldDownBtns);
+    // foldDownBtns.forEach(btn => {
+    //     btn.classList.remove("fold-out")
+    // })
 }
 
 function clearOneCalc() {
@@ -188,12 +183,14 @@ function regNum(btn) {
 
     if (!operatorsOpen) {
         showKeyboardOperators()
+        welcomeText.classList.add("fly-out")
+        welcomeText.addEventListener("transitionend", e => {
+            welcomeText.remove();
+        })
         operatorsOpen = true;
     } else {
         runCalculator()
-
     }
-
 }
 
 function plusMinus() {
@@ -203,8 +200,6 @@ function plusMinus() {
 
     runCalculator()
 }
-
-
 
 const makeCompleteNumber = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
 
@@ -237,7 +232,6 @@ function opSymbol(btn) {
     }
 }
 
-
 function add(a, b) { return a + b; }
 
 function sub(a, b) { return a - b; }
@@ -247,24 +241,19 @@ function multiply(a, b) { return a * b; }
 function divide(a, b) { return a / b; }
 
 let allOpButtons = []
-
-const keyboardOperatorsWrapper = document.querySelector('.calc__keyboard__operators')
-console.log(keyboardOperatorsWrapper);
+const decimalBtn = document.querySelector(".btn-decimal")
 
 function showKeyboardOperators() {
     console.log("this");
     brackets.forEach(bracket => {
-        bracket.classList.add("grow")
-
+        bracket.classList.toggle("grow")
     })
-    
+
     let animTime = 200;
-    let index = 0;
     let counter = 0
 
-
     for (let key in extraButtons) {
-        
+
         let container = extraButtons[key].parentContainer;
         let allSymbols = extraButtons[key].btnTexts;
         let elClasses = extraButtons[key].elClass;
@@ -273,17 +262,16 @@ function showKeyboardOperators() {
             wrapper.className = "calc__btn-wrapper";
             let element = document.createElement("div");
             element.textContent = symbol;
-            let uniqueClassName = elClasses[i] ? elClasses[i]: elClasses[0];
+            let uniqueClassName = elClasses[i] ? elClasses[i] : elClasses[0];
             element.className = `calc__btn ${uniqueClassName} fold-out`
             element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * counter}ms forwards`
 
             wrapper.append(element)
             container.append(wrapper)
             counter++
-            console.log(counter);
         })
     }
-
+    decimalBtn.classList.remove("hidden")
     allOpButtons = [...document.querySelectorAll(".calc__btn")];
     makeButtonEventsOps(allOpButtons)
 }
@@ -298,11 +286,15 @@ function makeButtonEventsOps(allOpButtons) {
             btn.classList.contains("clear-c") && clearOneCalc();
             btn.classList.contains("btn-plus-minus") && plusMinus(btn);
             btn.classList.contains("btn-op") && opSymbol(btn);
-    
-            displayCalcAndSum()
-    
-            console.log(allNewDigits);
-    
+
+            console.log(calcObjectArr.length);
+
+            if (calcObjectArr.length > 0) {
+                displayCalcAndSum()
+
+            }
+
+            // displayCalcAndSum()
         })
     })
 }

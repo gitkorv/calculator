@@ -29,12 +29,32 @@ main {
 }
 
 .calc--wrapper {
+    position: relative;
     display: flex;
     flex-direction: column;
     /* justify-content: space-between; */
     height: 500px;
     width: 300px;
     /* background-color: black; */
+}
+
+.calc__welcome-text {
+    position: absolute;
+    top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    /* font-size: 1.5rem; */
+    /* background-color: aqua; */
+    font-variation-settings: "wght"400, "opsz"35;
+    transition: all .5s ease-in;
+}
+
+.calc__welcome-text.fly-out {
+    top: -500px;
+    scale: 300%;
+    opacity: 0;
 }
 
 .calc--wrapper>div {
@@ -57,6 +77,8 @@ main {
     margin-bottom: 8px;
     /* background-color: red; */
     /* height: 40px; */
+    font-variation-settings: "wght"300, "opsz"35;
+
 }
 
 
@@ -64,6 +86,7 @@ main {
     white-space: pre;
     opacity: 0;
     transition: opacity 1s;
+
 }
 
 .calc__display__calculation-equal-sign.show {
@@ -88,7 +111,6 @@ main {
 
 .calc__display__result.mini {
     font-size: .5rem;
-    font-variation-settings: "wght"300, "opsz"72;
 }
 
 .calc__bracket-container {
@@ -152,7 +174,6 @@ main {
     display: grid;
     grid-template-columns: 50px repeat(3, 1fr) 50px;
     grid-template-rows: repeat(5, 1fr);
-
     grid-template-areas: 
     ". n n n e"
     "o n n n e"
@@ -160,7 +181,6 @@ main {
     "o n n n ."
     "o . . c c"
     ;
-
 
     height: 300px;
     flex-wrap: wrap;
@@ -173,13 +193,9 @@ main {
     gap: 10px;
 }
 
-
 .calc__keyboard__extras {
     grid-area: e;
     flex-direction: column;
-    /* width: 50px; */
-    /* background-color: blue; */
-    /* heigh t: 50%; */
 }
 
 .calc__keyboard__numbers {
@@ -197,9 +213,7 @@ main {
 .calc__keyboard__operators {
     grid-area: o;
     flex-direction: column;
-    /* background-color: blue; */
 }
-
 
 .calc__keyboard__deletes {
     grid-area: c;
@@ -218,7 +232,6 @@ main {
     height: 100%;
     transform: rotateX(-95deg);
     transform-origin: top;
-    /* transition: transform 1s ease-in; */
 }
 
 .calc__btn {
@@ -229,21 +242,27 @@ main {
     border-radius: 10px;
     color: var(--grayColorDark);
     font-size: 1.2rem;
-    /* background-color: aqua; */
 }
 
 .btn-num {
     border: 1px solid var(--grayColor);
     padding-top: 4px;
-    /* line-height: .6rem; */
-    /* background-color: var(--grayColor); */
+}
+
+.btn-decimal {
+    opacity: 1;
+    transition: opacity 1s linear;
+}
+.btn-decimal.hidden {
+    opacity: 0;
+    /* transition: opacity 5s linear; */
 }
 
 .calc__btn.fold-out {
     /* border: 5px solid var(--backGroundColor); */
     background-color: var(--grayColor);
     color: var(--backGroundColor);
-    /* scale: 50%; */
+    font-variation-settings: "wght"300, "opsz"6;
 }
 
 @keyframes fold-down {
@@ -259,10 +278,22 @@ main {
 .calc__btn:hover {
     color: var(--grayColorLight);
     background: var(--grayColorDark);
-    /* background: red; */
 }
 
 .calc__btn:active {
     color: white;
     background: wheat;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    letter-spacing: 2px;
+    color: var(--grayColorDark);
+    font-size: .5rem;
+    font-variation-settings: "wght"300, "opsz"6;
+    /* background-color: aqua; */
+    height: 100px;
+
 }
