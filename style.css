@@ -34,7 +34,7 @@ main {
     display: flex;
     flex-direction: column;
     /* justify-content: space-between; */
-    height: 500px;
+    /* height: 500px; */
     width: 300px;
     /* background-color: black; */
 }
@@ -307,6 +307,6 @@ main {
     font-size: .5rem;
     font-variation-settings: "wght"300, "opsz"6;
     /* background-color: aqua; */
-    height: 100px;
+    height: 75px;
 
 }
