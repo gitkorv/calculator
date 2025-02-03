@@ -5,15 +5,16 @@
 }
 
 :root {
-    --grayColor: rgb(190, 181, 169);
-    --grayColorLight: rgb(231, 221, 208);
-    --grayColorDark: hsl(36, 9%, 32%);
-    --backGroundColor: #e4e1e1;
+    --grayColor: rgb(176, 167, 154);
+    --grayColorLight: rgb(210, 204, 198);
+    --grayColorDark: hsl(38, 8%, 46%);
+    --grayColorBlack: hsl(37, 10%, 32%);
+    --backGroundColor: rgb(226, 222, 219);
 }
 
 body {
     font-family: "maregraphe-variable", sans-serif;
-    font-variation-settings: "wght"300, "opsz"72;
+    font-variation-settings: "wght"300, "opsz"35;
     
 }
 
@@ -21,7 +22,7 @@ main {
     display: block;
     height: 100vh;
     width: 100%;
-    background: #e4e1e1;
+    background: var(--backGroundColor);
     /* background-color: aqua; */
     display: flex;
     align-items: start;
@@ -51,6 +52,7 @@ main {
     align-items: center;
     flex-direction: column;
     /* background-color: blue; */
+    height: 150px;
 }
 
 .calc__welcome-text {
@@ -60,9 +62,11 @@ main {
     align-items: center;
     justify-content: center;
     text-align: center;
+    line-height: 1.5rem;
+    color: var(--grayColorBlack);
     /* font-size: 1.5rem; */
     /* background-color: aqua; */
-    font-variation-settings: "wght"400, "opsz"35;
+    font-variation-settings: "wght"900, "opsz"6;
     transition: all .5s ease-in;
 }
 
@@ -80,7 +84,7 @@ main {
     justify-content: end;
     width: 100%;
     /* height: 100px; */
-    color: var(--grayColorDark);
+    color: var(--grayColorBlack);
     /* margin-bottom: 20px; */
     /* background-color: red; */
 }
@@ -90,7 +94,7 @@ main {
 .calc__display__calculation-container {
     display: flex;
     margin-bottom: 8px;
-    /* background-color: red; */
+    /* background-color: rgb(132, 63, 63); */
     /* height: 40px; */
     font-variation-settings: "wght"300, "opsz"35;
 
@@ -109,14 +113,13 @@ main {
 }
 
 .calc__display__result {
-    height: 50px;
+    /* height: 50px; */
     font-size: 4rem;
     opacity: 1;
-    color: var(--grayColorDark);
     text-align: center;
     font-variation-settings: "wght"900, "opsz"72;
     /* background-color: blue; */
-    width: 100%;
+    /* width: 100%; */
     transition: opacity .5s,
                 font-variation-settings .4s,
                 font-size .4s;
@@ -135,13 +138,13 @@ main {
     display: flex;
     align-items: end;
     justify-content: center;
-    width: 80%;
-    height: 75px;
+    width: 90%;
+    height: 60px;
     padding-bottom: 10px;
     /* opacity: 0; */
     transform-origin: bottom;
     overflow: hidden;
-    /* background-color: blue; */
+    /* background-color: green; */
 }
 
 /* .calc__bracket-container.show {
@@ -326,7 +329,7 @@ main {
 }
 
 .btn-fold-out.clear {
-    background-color: var(--grayColorDark);
+    background-color: var(--grayColorBlack);
 }
 
 .btn-num:hover {
@@ -346,7 +349,7 @@ main {
 
 .btn-fold-out.clear:hover {
     background-color: var(--grayColor);
-    border: 1px solid var(--grayColorDark);
+    /* border: 1px solid var(--grayColorDark); */
     color: var(--grayColorDark);
 }
 
@@ -354,6 +357,15 @@ main {
     background-color: var(--grayColorLight);
     color: var(--grayColorDark);
     border: 1px solid var(--grayColor);
+}
+
+.btn-plus-minus {
+    background-color: var(--grayColorLight);
+    color: var(--grayColorBlack);
+}
+
+.btn-plus-minus:hover {
+    background-color: var(--grayColorDark);
 }
 
 .footer {
