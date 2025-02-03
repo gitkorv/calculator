@@ -19,7 +19,7 @@ let resultContainerWidth;
 const welcomeText = document.querySelector(".calc__welcome-text");
 
 // Mod Displays
-const plusMinusSign = document.querySelector(".calc__display__calculation-minus-sign")
+// const plusMinusSign = document.querySelector(".calc__display__calculation-minus-sign")
 let equalSignWidth = calculationDisplayEqualSign.getBoundingClientRect().width;
 calculationDisplayContainer.style.paddingLeft = equalSignWidth + "px";
 
@@ -147,6 +147,8 @@ function displayCalcAndSum() {
 
 
     }
+    negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
+
     // console.log(calcObjectArr);
 }
 
@@ -157,11 +159,14 @@ function clearCalc() {
     calculationDisplayText.textContent = "";
     resultContainer.textContent = "";
     calculationDisplayEqualSign.classList.remove("show")
+    negNumber = false;
     flipExtraBtns()
     // operatorsOpen = false;
 }
 
 function clearOneCalc() {
+    // negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
+
     allNewDigits = "";
     console.log(calcObjectArr.length);
     let currentObjectNewValue = calcObjectArr.at(-1).newValue;
@@ -171,11 +176,11 @@ function clearOneCalc() {
     } else if (currentObjectNewValue === undefined) {
         console.log("value is undefined");
         calcObjectArr.pop()
-        currentObjectNewValue = calcObjectArr.at(-1).newValue
-        let newValueString = String(currentObjectNewValue).slice(0, -1);
-        let newNumber = Number(newValueString)
-        calcObjectArr.at(-1).newValueString = newValueString;
-        calcObjectArr.at(-1).newValue = newNumber;
+        // currentObjectNewValue = calcObjectArr.at(-1).newValue
+        // let newValueString = String(currentObjectNewValue).slice(0, -1);
+        // let newNumber = Number(newValueString)
+        // calcObjectArr.at(-1).newValueString = newValueString;
+        // calcObjectArr.at(-1).newValue = newNumber;
 
         runCalculator()
 
@@ -196,6 +201,14 @@ function clearOneCalc() {
 
         runCalculator()
     }
+
+    // console.log(calcObjectArr);
+
+    // if (calcObjectArr.at(-0).newValue < 0) {
+    //     console.log("its below 0");
+    //     plusMinusBtn.textContent = "(±)";
+    // }
+
 }
 
 function regNum(btn) {
@@ -222,6 +235,13 @@ function regNum(btn) {
         console.log("slice");
         allNewDigits = allNewDigits.slice(1);
     }
+
+    if (allNewDigits.charAt(0) === "-") {
+        allNewDigits = allNewDigits.slice(1);
+        negNumber = true;
+
+    }
+
 
     console.log(allNewDigits);
 
@@ -256,7 +276,6 @@ function plusMinus() {
     negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
     calcObjectArr[calcObjectArr.length - 1].newValue = compiledDigits;
     calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
-
 
     runCalculator()
 }
@@ -333,9 +352,14 @@ function createKeyboardOperators() {
             container.append(wrapper)
         })
     }
+
+
 }
 
 createKeyboardOperators()
+
+const plusMinusBtn = document.querySelector(".btn-plus-minus")
+console.log(plusMinusBtn);
 
 let buttonEventsForOpsMade = false;
 
@@ -398,6 +422,7 @@ function makeButtonEventsOps(allOpButtons) {
                 displayCalcAndSum()
             }
         })
+
     })
 }
 
