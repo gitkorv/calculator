@@ -58,20 +58,20 @@ const extraButtons = {
     }
 }
 
-function createCalcObject(base, newValue, operator, opSym) {
+function createCalcObject(baseValue, newValue, operator, opSym) {
     return {
-        base: base,
-        new: newValue,
+        baseValue: baseValue,
+        newValue: newValue,
         operator: operator,
         opSym: opSym,
-        sum: operator(base, newValue)
+        sum: operator(baseValue, newValue)
     }
 }
 
 function runCalculator() {
     let calcObjectAtEnd = calcObjectArr.at(-1);
-    calcObjectAtEnd.sum = calcObjectAtEnd.operator(calcObjectAtEnd.base, calcObjectAtEnd.new);
-    console.log(calcObjectAtEnd.new);
+    calcObjectAtEnd.sum = calcObjectAtEnd.operator(calcObjectAtEnd.baseValue, calcObjectAtEnd.newValue);
+    console.log(calcObjectAtEnd.newValue);
 }
 
 function makeButtonEventsNumbers(allBtns) {
@@ -93,11 +93,11 @@ function displayCalcAndSum() {
 
     for (let i = 0; i < calcObjectArr.length; i++) {
         let object = calcObjectArr[i];
-        let currentNewDigit = object.new < 0 ? `(${object.new})` : object.new;
+        let currentNewDigit = object.newValue < 0 ? `(${object.newValue})` : object.newValue;
 
         if (i < 1) {
             calcDisplayCalc = `${currentNewDigit}`
-        } else if (object.new === undefined || object.new === 0) {
+        } else if (object.newValue === undefined || object.newValue === 0) {
             calcDisplayCalc += ` ${object.opSym}`
         } else {
             calcDisplayCalc += ` ${object.opSym} ${currentNewDigit}`
@@ -106,8 +106,8 @@ function displayCalcAndSum() {
     calculationDisplayText.textContent = calcDisplayCalc;
 
     if (latestCalcObject.sum === Infinity || latestCalcObject.sum === -Infinity ||
-        latestCalcObject.new === undefined ||
-        (latestCalcObject.opSym === "x" && latestCalcObject.new === 0)) {
+        latestCalcObject.newValue === undefined ||
+        (latestCalcObject.opSym === "x" && latestCalcObject.newValue === 0)) {
         console.log("display last sum");
         liveResult = calcObjectArr.at(-2).sum
     } else {
@@ -117,7 +117,6 @@ function displayCalcAndSum() {
     if (resultContainer.textContent != liveResult) {
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
         resultContainer.classList.add("fade")
-        console.log("hereee");
 
         setTimeout(() => {
             resultContainer.classList.remove("fade")
@@ -127,7 +126,7 @@ function displayCalcAndSum() {
             resultContainer.textContent = liveResult;
         }, fadeTime);
     }
-    console.log(calcObjectArr);
+    // console.log(calcObjectArr);
 }
 
 function clearCalc() {
@@ -152,20 +151,20 @@ function clearCalc() {
 
 function clearOneCalc() {
     allNewDigits = "";
-    let currentObjectEntryNumber = calcObjectArr.at(-1).new
+    let currentObjectEntryNumber = calcObjectArr.at(-1).newValue
     if (currentObjectEntryNumber === undefined) {
         calcObjectArr.pop()
-        currentObjectEntryNumber = calcObjectArr.at(-1).new
+        currentObjectEntryNumber = calcObjectArr.at(-1).newValue
         let newNumber = Number(String(currentObjectEntryNumber).slice(0, -1))
-        calcObjectArr.at(-1).new = newNumber;
+        calcObjectArr.at(-1).newValue = newNumber;
         console.log("0000");
     } else if (currentObjectEntryNumber < 10) {
-        calcObjectArr.at(-1).new = undefined;
+        calcObjectArr.at(-1).newValue = undefined;
 
         console.log("its under 10");
     } else {
         let newNumber = Number(String(currentObjectEntryNumber).slice(0, -1))
-        calcObjectArr.at(-1).new = newNumber;
+        calcObjectArr.at(-1).newValue = newNumber;
         console.log(newNumber);
     }
     runCalculator()
@@ -176,15 +175,17 @@ function regNum(btn) {
 
     newDigit = btn.textContent;
     allNewDigits += newDigit;
-    console.log(allNewDigits);
+    // console.log(allNewDigits);
 
-    let compiledDigits = makeCompleteNumber(allNewDigits, negNumber)
+    let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+    let negOrNotString = negOrNotDigits.toString();
+    console.log(negOrNotString);
 
     if (calcObjectArr.length === 0) {
-        calcObjectArr.push(createCalcObject(0, compiledDigits, add, "+"))
+        calcObjectArr.push(createCalcObject(0, negOrNotDigits, add, "+"))
     }
 
-    calcObjectArr[calcObjectArr.length - 1].new = compiledDigits;
+    calcObjectArr[calcObjectArr.length - 1].newValue = negOrNotDigits;
 
     if (!btnsFoldedOut) {
         flipExtraBtns()
@@ -201,13 +202,13 @@ function regNum(btn) {
 
 function plusMinus() {
     negNumber = !negNumber;
-    compiledDigits = makeCompleteNumber(allNewDigits, negNumber)
-    calcObjectArr[calcObjectArr.length - 1].new = compiledDigits;
+    compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber)
+    calcObjectArr[calcObjectArr.length - 1].newValue = compiledDigits;
 
     runCalculator()
 }
 
-const makeCompleteNumber = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
+const makeNegNumberOrNot = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
 
 function opSymbol(btn) {
     let opSym = btn.textContent;
@@ -231,8 +232,8 @@ function opSymbol(btn) {
 
     let newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, undefined, operator, opSym);
 
-    if (newCalcObject.new === previousObject.new || newCalcObject.new === undefined
-        && newCalcObject.base === previousObject.base && newCalcObject.opSym !== previousObject.opSym) {
+    if (newCalcObject.newValue === previousObject.newValue || newCalcObject.newValue === undefined
+        && newCalcObject.baseValue === previousObject.base && newCalcObject.opSym !== previousObject.opSym) {
         calcObjectArr[calcObjectArr.length - 1] = newCalcObject;
     } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
         calcObjectArr.push(newCalcObject)
@@ -253,7 +254,6 @@ let allOpButtons = []
 const decimalBtn = document.querySelector(".btn-decimal")
 
 function createKeyboardOperators() {
-    console.log("this");
 
     for (let key in extraButtons) {
 
@@ -284,12 +284,9 @@ function flipExtraBtns() {
     brackets.forEach(bracket => {
         bracket.classList.toggle("grow")
     })
-    console.log(btnsFoldedOut);
 
     let animTime = 200;
-
     allOpButtons = [...document.querySelectorAll(".btn-fold-out")];
-    console.log(allOpButtons);
 
     if (btnsFoldedOut) {
         console.log("were folding back");
@@ -311,12 +308,8 @@ function flipExtraBtns() {
     }
 
     decimalBtn.classList.toggle("hidden")
-
     btnsFoldedOut = !btnsFoldedOut;
 
-    console.log(btnsFoldedOut);
-
-    // allOpButtons[i].classList.toggle("flip");
     if (!buttonEventsForOpsMade) {
         makeButtonEventsOps(allOpButtons)
         buttonEventsForOpsMade = true;
@@ -346,10 +339,8 @@ function makeButtonEventsOps(allOpButtons) {
             if (calcObjectArr.length > 0) {
                 displayCalcAndSum()
             }
-
-            // displayCalcAndSum()
         })
     })
 }
 
-console.log(allBtns);
+// console.log(allBtns);
