@@ -89,6 +89,7 @@ function displayCalcAndSum() {
     let calcDisplayCalc = "";
     let latestCalcObject = calcObjectArr.at(-1);
     console.log(latestCalcObject);
+    console.log(calcObjectArr);
 
     for (let i = 0; i < calcObjectArr.length; i++) {
         let object = calcObjectArr[i];
@@ -96,7 +97,7 @@ function displayCalcAndSum() {
 
         if (i < 1) {
             calcDisplayCalc = `${currentNewDigit}`
-        } else if (object.new === undefined) {
+        } else if (object.new === undefined || object.new === 0) {
             calcDisplayCalc += ` ${object.opSym}`
         } else {
             calcDisplayCalc += ` ${object.opSym} ${currentNewDigit}`
@@ -152,14 +153,14 @@ function clearCalc() {
 function clearOneCalc() {
     allNewDigits = "";
     let currentObjectEntryNumber = calcObjectArr.at(-1).new
-    if (currentObjectEntryNumber === 0) {
+    if (currentObjectEntryNumber === undefined) {
         calcObjectArr.pop()
         currentObjectEntryNumber = calcObjectArr.at(-1).new
         let newNumber = Number(String(currentObjectEntryNumber).slice(0, -1))
         calcObjectArr.at(-1).new = newNumber;
         console.log("0000");
     } else if (currentObjectEntryNumber < 10) {
-        calcObjectArr.at(-1).new = 0;
+        calcObjectArr.at(-1).new = undefined;
 
         console.log("its under 10");
     } else {
@@ -230,10 +231,8 @@ function opSymbol(btn) {
 
     let newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, undefined, operator, opSym);
 
-    console.log(previousObject);
-    console.log(newCalcObject);
-
-    if (newCalcObject.new === previousObject.new && newCalcObject.base === previousObject.base && newCalcObject.opSym !== previousObject.opSym) {
+    if (newCalcObject.new === previousObject.new || newCalcObject.new === undefined
+        && newCalcObject.base === previousObject.base && newCalcObject.opSym !== previousObject.opSym) {
         calcObjectArr[calcObjectArr.length - 1] = newCalcObject;
     } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
         calcObjectArr.push(newCalcObject)
