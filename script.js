@@ -29,29 +29,32 @@ let allNewDigits = "";
 let liveResult;
 
 // Operators
-let operatorsOpen = false;
+let btnsFoldedOut = false;
 
 // Calculations
 let calcObjectArr = [];
 
 // Keyboard
-const calcBtnWrappers = [...document.querySelectorAll(".calc__btn-wrapper")]
+const foldOutBtnContainers = [];
 
 const extraButtons = {
     operatorBtns: {
         parentContainer: document.querySelector(".calc__keyboard__operators"),
         btnTexts: ["/", "x", "-", "+"],
-        elClass: ["btn-op"]
+        elClass: ["btn-op"],
+        elements: []
     },
     restBtns: {
         parentContainer: document.querySelector(".calc__keyboard__extras"),
         btnTexts: ["±", "%"],
-        elClass: ["btn-plus-minus", "btn-op btn-reminder"]
+        elClass: ["btn-plus-minus", "btn-op btn-reminder"],
+        elements: []
     },
     deleteBtns: {
         parentContainer: document.querySelector(".calc__keyboard__deletes"),
         btnTexts: ["ac", "c"],
-        elClass: ["clear clear-ac", "clear clear-c"]
+        elClass: ["clear clear-ac", "clear clear-c"],
+        elements: []
     }
 }
 
@@ -75,9 +78,7 @@ function makeButtonEventsNumbers(allBtns) {
     btnNumbers.forEach(btn => {
         btn.addEventListener("click", (e) => {
             btn.classList.contains("btn-num") && regNum(btn);
-            
             displayCalcAndSum()
-
         })
     })
 }
@@ -112,13 +113,10 @@ function displayCalcAndSum() {
         liveResult = latestCalcObject.sum
     }
 
-    // if (calcObjectArr.length > 1 && calcObjectArr[1].new !== undefined) {
-    //     calculationDisplayEqualSign.classList.add("show")
-    // }
-
     if (resultContainer.textContent != liveResult) {
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
         resultContainer.classList.add("fade")
+        console.log("hereee");
 
         setTimeout(() => {
             resultContainer.classList.remove("fade")
@@ -136,13 +134,19 @@ function clearCalc() {
     allNewDigits = "";
     calcObjectArr = [];
     calculationDisplayText.textContent = "";
-    resultContainer.textContent = "";
-    calculationDisplayEqualSign.classList.remove("show")
-    const foldDownBtns = [...document.querySelectorAll(".fold-out")]
-    console.log(foldDownBtns);
-    // foldDownBtns.forEach(btn => {
-    //     btn.classList.remove("fold-out")
+
+    // resultContainer.classList.add("fade", "mini")
+    // resultContainer.addEventListener("transitionend", e => {
+    //     resultContainer.textContent = "";
+    //     resultContainer.classList.remove("fade", "mini")
+
     // })
+    resultContainer.textContent = "";
+
+
+    calculationDisplayEqualSign.classList.remove("show")
+    flipExtraBtns()
+    // operatorsOpen = false;
 }
 
 function clearOneCalc() {
@@ -181,13 +185,14 @@ function regNum(btn) {
 
     calcObjectArr[calcObjectArr.length - 1].new = compiledDigits;
 
-    if (!operatorsOpen) {
-        showKeyboardOperators()
+    if (!btnsFoldedOut) {
+        flipExtraBtns()
+
         welcomeText.classList.add("fly-out")
         welcomeText.addEventListener("transitionend", e => {
             welcomeText.remove();
         })
-        operatorsOpen = true;
+        // operatorsOpen = true;
     } else {
         runCalculator()
     }
@@ -248,38 +253,82 @@ function reminder(a, b) { return a % b; }
 let allOpButtons = []
 const decimalBtn = document.querySelector(".btn-decimal")
 
-function showKeyboardOperators() {
+function createKeyboardOperators() {
     console.log("this");
-    brackets.forEach(bracket => {
-        bracket.classList.toggle("grow")
-    })
-
-    let animTime = 200;
-    let counter = 0
 
     for (let key in extraButtons) {
 
         let container = extraButtons[key].parentContainer;
+        foldOutBtnContainers.push(container)
         let allSymbols = extraButtons[key].btnTexts;
         let elClasses = extraButtons[key].elClass;
+
         allSymbols.forEach((symbol, i) => {
             let wrapper = document.createElement("div");
             wrapper.className = "calc__btn-wrapper";
             let element = document.createElement("div");
             element.textContent = symbol;
             let uniqueClassName = elClasses[i] ? elClasses[i] : elClasses[0];
-            element.className = `calc__btn ${uniqueClassName} fold-out`
-            element.style.animation = `fold-down ${animTime}ms ease-out ${animTime * counter}ms forwards`
+            element.className = `calc__btn ${uniqueClassName} btn-fold-out`
 
             wrapper.append(element)
             container.append(wrapper)
-            counter++
         })
     }
-    decimalBtn.classList.remove("hidden")
-    allOpButtons = [...document.querySelectorAll(".calc__btn")];
-    makeButtonEventsOps(allOpButtons)
 }
+
+createKeyboardOperators()
+
+let buttonEventsForOpsMade = false;
+
+function flipExtraBtns() {
+    brackets.forEach(bracket => {
+        bracket.classList.toggle("grow")
+    })
+    console.log(btnsFoldedOut);
+
+    let animTime = 200;
+
+    allOpButtons = [...document.querySelectorAll(".btn-fold-out")];
+    console.log(allOpButtons);
+
+    if (btnsFoldedOut) {
+        console.log("were folding back");
+        animTime = animTime / 2;
+        for (let i = allOpButtons.length - 1; i >= 0; i--) {
+            allOpButtons[i].style.animationDuration = animTime + "ms";
+            allOpButtons[i].style.animationDelay = animTime * (allOpButtons.length - i) + "ms"
+            allOpButtons[i].classList.remove("fold-out")
+            allOpButtons[i].classList.add("fold-in")
+            console.log(i);
+        }
+    } else {
+        for (let i = 0; i < allOpButtons.length; i++) {
+            allOpButtons[i].style.animationDuration = animTime + "ms";
+            allOpButtons[i].style.animationDelay = animTime * i + "ms"
+            allOpButtons[i].classList.remove("fold-in")
+            allOpButtons[i].classList.add("fold-out")
+        }
+    }
+
+    decimalBtn.classList.toggle("hidden")
+
+    btnsFoldedOut = !btnsFoldedOut;
+
+    console.log(btnsFoldedOut);
+
+    // allOpButtons[i].classList.toggle("flip");
+    if (!buttonEventsForOpsMade) {
+        makeButtonEventsOps(allOpButtons)
+        buttonEventsForOpsMade = true;
+
+    }
+
+
+}
+
+
+
 
 
 
@@ -297,7 +346,6 @@ function makeButtonEventsOps(allOpButtons) {
 
             if (calcObjectArr.length > 0) {
                 displayCalcAndSum()
-
             }
 
             // displayCalcAndSum()
@@ -305,3 +353,4 @@ function makeButtonEventsOps(allOpButtons) {
     })
 }
 
+console.log(allBtns);

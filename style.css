@@ -78,6 +78,7 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: end;
+    width: 100%;
     /* height: 100px; */
     color: var(--grayColorDark);
     /* margin-bottom: 20px; */
@@ -112,10 +113,13 @@ main {
     font-size: 4rem;
     opacity: 1;
     color: var(--grayColorDark);
-    transition: opacity .5s;
-    transition: font-variation-settings .4s,
-                font-size .4s;
+    text-align: center;
     font-variation-settings: "wght"900, "opsz"72;
+    /* background-color: blue; */
+    width: 100%;
+    transition: opacity .5s,
+                font-variation-settings .4s,
+                font-size .4s;
 }
 
 .calc__display__result.fade {
@@ -131,7 +135,7 @@ main {
     display: flex;
     align-items: end;
     justify-content: center;
-    width: 100%;
+    width: 80%;
     height: 75px;
     padding-bottom: 10px;
     /* opacity: 0; */
@@ -243,11 +247,11 @@ main {
     perspective: 500px;
     overflow: hidden;
 }
-.calc__btn-wrapper div{
+/* .calc__btn-wrapper div{
     height: 100%;
     transform: rotateX(-95deg);
     transform-origin: top;
-}
+} */
 
 .calc__btn {
     flex: 1 0 40px;
@@ -273,25 +277,53 @@ main {
     /* transition: opacity 5s linear; */
 }
 
-.calc__btn.fold-out {
+.btn-fold-out {
+    height: 100%;
+    transform: rotateX(-95deg);
+    transform-origin: top;
     /* border: 5px solid var(--backGroundColor); */
     background-color: var(--grayColor);
     color: var(--backGroundColor);
     font-variation-settings: "wght"300, "opsz"6;
+    animation-fill-mode: forwards;
 }
 
-.calc__btn.fold-out.clear {
-    background-color: var(--grayColorDark);
+.btn-fold-out.fold-out {
+    animation: fold-out 1s ease-out 1s forwards;
 }
 
-@keyframes fold-down {
+.btn-fold-out.fold-in {
+    transform: rotateX(0deg);
+
+    animation: fold-in 1s ease-out 1s forwards;
+}
+
+@keyframes fold-out {
+    0% {
+        transform: rotateX(-95deg);
+    }
     90% {
         transform: rotateX(20deg);
     }
     100% {
         transform: rotateX(0deg);
-
     }
+}
+
+@keyframes fold-in {
+    0% {
+        transform: rotateX(0deg);
+    }
+    /* 10% {
+        transform: rotateX(20deg);
+    } */
+    100% {
+        transform: rotateX(-95deg);
+    }
+}
+
+.btn-fold-out.clear {
+    background-color: var(--grayColorDark);
 }
 
 .btn-num:hover {
@@ -304,30 +336,22 @@ main {
     background: var(--grayColorDark);
 }
 
-.calc__btn.fold-out:hover {
+.btn-fold-out:hover {
     background-color: var(--grayColorDark);
     color: var(--grayColorLight);
 }
 
-.calc__btn.fold-out.clear:hover {
+.btn-fold-out.clear:hover {
     background-color: var(--grayColor);
     border: 1px solid var(--grayColorDark);
     color: var(--grayColorDark);
 }
 
-.calc__btn.fold-out:active, .calc__btn.fold-out.clear:active {
+.btn-fold-out:active, .btn-fold-out.clear:active {
     background-color: var(--grayColorLight);
     color: var(--grayColorDark);
     border: 1px solid var(--grayColor);
 }
-
-
-
-/* .calc__btn.fold-out:active {
-    background-color: var(--grayColorLight);
-    color: var(--grayColorDark);
-    border: 1px solid var(--grayColor);
-} */
 
 .footer {
     display: flex;
