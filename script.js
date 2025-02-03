@@ -204,7 +204,8 @@ function regNum(btn) {
 
     if (calcObjectArr.length === 1) {
         if (calcObjectArr.at(-1).newValue !== undefined || calcObjectArr.at(-1).newValue !== 0 || calcObjectArr.at(-1).newValue !== NaN ) {
-            allNewDigits = calcObjectArr.at(-1).newValue
+            allNewDigits = calcObjectArr.at(-1).newValue;
+            console.log("jhdjshf");
         }
     }
 
@@ -216,6 +217,13 @@ function regNum(btn) {
     } else {
         allNewDigits += newDigit;
     }
+
+    if (allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
+        console.log("slice");
+        allNewDigits = allNewDigits.slice(1);
+    }
+
+    console.log(allNewDigits);
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     let negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
