@@ -58,9 +58,10 @@ const extraButtons = {
     }
 }
 
-function createCalcObject(baseValue, newValue, operator, opSym) {
+function createCalcObject(baseValue, newValueString, newValue, operator, opSym) {
     return {
         baseValue: baseValue,
+        newValueString: newValueString,
         newValue: newValue,
         operator: operator,
         opSym: opSym,
@@ -70,7 +71,7 @@ function createCalcObject(baseValue, newValue, operator, opSym) {
 
 function runCalculator() {
     let calcObjectAtEnd = calcObjectArr.at(-1);
-    calcObjectAtEnd.sum = calcObjectAtEnd.operator(calcObjectAtEnd.baseValue, calcObjectAtEnd.newValue);
+    calcObjectAtEnd.sum = calcObjectAtEnd.operator(parseFloat(calcObjectAtEnd.baseValue), calcObjectAtEnd.newValue);
     console.log(calcObjectAtEnd.newValue);
 }
 
@@ -93,7 +94,7 @@ function displayCalcAndSum() {
 
     for (let i = 0; i < calcObjectArr.length; i++) {
         let object = calcObjectArr[i];
-        let currentNewDigit = object.newValue < 0 ? `(${object.newValue})` : object.newValue;
+        let currentNewDigit = object.newValue < 0 ? `(${object.newValueString})` : object.newValueString;
 
         if (i < 1) {
             calcDisplayCalc = `${currentNewDigit}`
@@ -174,18 +175,26 @@ function clearOneCalc() {
 function regNum(btn) {
 
     newDigit = btn.textContent;
-    allNewDigits += newDigit;
-    // console.log(allNewDigits);
+
+    if (newDigit === "." && allNewDigits.includes(".")) {
+        console.log("it icludes a dot");
+    } else {
+        allNewDigits += newDigit;
+    }
+
+
+    console.log(allNewDigits);
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    let negOrNotString = negOrNotDigits.toString();
+    let negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
     console.log(negOrNotString);
 
     if (calcObjectArr.length === 0) {
-        calcObjectArr.push(createCalcObject(0, negOrNotDigits, add, "+"))
+        calcObjectArr.push(createCalcObject(0, negOrNotString, allNewDigits, add, "+"))
     }
 
     calcObjectArr[calcObjectArr.length - 1].newValue = negOrNotDigits;
+    calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
 
     if (!btnsFoldedOut) {
         flipExtraBtns()
@@ -202,8 +211,11 @@ function regNum(btn) {
 
 function plusMinus() {
     negNumber = !negNumber;
-    compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber)
+    compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+    negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
     calcObjectArr[calcObjectArr.length - 1].newValue = compiledDigits;
+    calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
+
 
     runCalculator()
 }
@@ -230,9 +242,9 @@ function opSymbol(btn) {
         operator = divide;
     } else { operator = add; }
 
-    let newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, undefined, operator, opSym);
+    let newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, "", undefined, operator, opSym);
 
-    if (newCalcObject.newValue === previousObject.newValue || newCalcObject.newValue === undefined
+    if (newCalcObject.newValue === previousObject.newValue || newCalcObject.newValue === ""
         && newCalcObject.baseValue === previousObject.base && newCalcObject.opSym !== previousObject.opSym) {
         calcObjectArr[calcObjectArr.length - 1] = newCalcObject;
     } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
