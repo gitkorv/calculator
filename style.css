@@ -39,7 +39,7 @@ main {
     /* justify-content: space-between; */
     /* height: 500px; */
     /* width: 300px; */
-    /* background-color: black; */
+    /* background-color: rgb(181, 94, 94); */
 }
 
 .calc--wrapper>div {
@@ -75,6 +75,7 @@ main {
     bottom: 500px;
     scale: 300%;
     opacity: 0;
+    letter-spacing: 10px;
 }
 
 .calc__display {
@@ -95,9 +96,9 @@ main {
 
 .calc__display__calculation-container {
     display: flex;
-    margin-bottom: 8px;
+    margin-bottom: var(--gap);
     max-width: 100%;
-    /* background-color: rgb(132, 63, 63); */
+    /* background-color: rgb(90, 64, 64); */
     /* height: 40px; */
     font-variation-settings: "wght"300, "opsz"35;
 
@@ -113,7 +114,11 @@ main {
     max-width: 200px;
     word-break: break-all;
     border-bottom: 1px solid var(--grayColorDark);
+    transition: font-size .5s;
+}
 
+.calc__display__calculation-text.shrink {
+    font-size: .1rem;
 }
 
 .calc__display__calculation-equal-sign {
@@ -138,7 +143,6 @@ main {
     text-align: center;
     font-variation-settings: "wght"900, "opsz"72;
     /* background-color: blue; */
-    /* width: 100%; */
     transition: opacity .5s,
                 font-variation-settings .4s,
                 font-size .4s;
