@@ -76,6 +76,7 @@ function createCalcObject(baseValue, newValue, newValueString, operator, opSym) 
 
 function runCalculator() {
     let calcObjectAtEnd = calcObjectArr.at(-1);
+    // console.log(calcObjectAtEnd);
     calcObjectAtEnd.sum = calcObjectAtEnd.operator(parseFloat(calcObjectAtEnd.baseValue), calcObjectAtEnd.newValue);
 }
 
@@ -98,8 +99,12 @@ function displayCalcAndSum() {
         let object = calcObjectArr[i];
         let currentNewDigit = object.newValue < 0 ? `(${object.newValueString})` : object.newValueString;
 
-        if (i < 1) {
+        if (i < 1 && currentNewDigit === undefined) {
+            calcDisplayCalc = "";
+            negNumber = false;
+        } else if (i < 1) {
             calcDisplayCalc = `${currentNewDigit}`
+            console.log("here");
         } else if (object.newValue === undefined || object.newValue === 0) {
             calcDisplayCalc += ` ${object.opSym}`
         } else {
@@ -108,24 +113,16 @@ function displayCalcAndSum() {
     }
     calculationDisplayText.textContent = calcDisplayCalc;
 
-    if (latestCalcObject.sum === Infinity || latestCalcObject.sum === -Infinity ||
-        latestCalcObject.newValue === undefined ||
-        (latestCalcObject.opSym === "x" && latestCalcObject.newValue === 0)) {
-        // console.log("display last sum");
-        liveResult = calcObjectArr.at(-2).sum
-    } else {
-        liveResult = latestCalcObject.sum
-    }
+    liveResult = latestCalcObject.sum || latestCalcObject.baseValue;
 
+    console.log(liveResult);
 
-
-    if (resultContainer.textContent != liveResult) {
+    if (resultContainer.textContent !== liveResult.toString()) {
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
         resultContainer.classList.add("fade")
 
         setTimeout(() => {
-            resultContainer.classList.remove("fade")
-            resultContainer.classList.remove("mini")
+            resultContainer.classList.remove("fade", "mini")
 
             liveResult = Math.round(liveResult * 100) / 100;
             resultContainer.textContent = liveResult;
@@ -140,8 +137,6 @@ function displayCalcAndSum() {
                     // resultContainer.style.fontSize = 
                 }
             })
-
-
         }, fadeTime);
 
 
@@ -170,39 +165,68 @@ function clearOneCalc() {
     allNewDigits = "";
     console.log(calcObjectArr.length);
     let currentObjectNewValue = calcObjectArr.at(-1).newValue;
+    let currentObjectNewValueLength = currentObjectNewValue.toString().length
     console.log(currentObjectNewValue);
-    if (currentObjectNewValue < 10 && calcObjectArr.length === 1) {
-        clearCalc()
-    } else if (currentObjectNewValue === undefined) {
-        console.log("value is undefined");
-        calcObjectArr.pop()
-        // currentObjectNewValue = calcObjectArr.at(-1).newValue
-        // let newValueString = String(currentObjectNewValue).slice(0, -1);
-        // let newNumber = Number(newValueString)
-        // calcObjectArr.at(-1).newValueString = newValueString;
-        // calcObjectArr.at(-1).newValue = newNumber;
+    console.log(currentObjectNewValueLength);
 
-        runCalculator()
-
-    } else if (currentObjectNewValue < 10) {
-        calcObjectArr.at(-1).newValue = undefined;
-        calcObjectArr.at(-1).newValueString = undefined;
-
-        console.log("its under 10");
-        runCalculator()
-
-    } else {
+    if (currentObjectNewValueLength > 1) {
         let newValueString = String(currentObjectNewValue).slice(0, -1);
-        calcObjectArr.at(-1).newValueString = newValueString;
+        console.log(newValueString);
+        if (newValueString === "-") {
+            calcObjectArr.at(-1).newValueString = undefined;
+            allNewDigits = ""
+            calcObjectArr.at(-1).newValue = undefined;
+        } else {
+            allNewDigits = newValueString;
+            calcObjectArr.at(-1).newValueString = newValueString;
 
-        let newNumber = Number(newValueString)
-        calcObjectArr.at(-1).newValue = newNumber;
-        console.log(newNumber);
+            let newNumber = Number(newValueString)
+            calcObjectArr.at(-1).newValue = newNumber;
+        }
 
-        runCalculator()
+
+        // console.log(newNumber);
+    } else {
+        calcObjectArr.pop()
+        allNewDigits = calcObjectArr.at(-1).newValue
     }
+    runCalculator()
+    
+    
+    
+    
+    
+    // if (currentObjectNewValue < 10 && calcObjectArr.length === 1) {
+    //     clearCalc()
+    // } else if (currentObjectNewValue === undefined) {
+    //     console.log("value is undefined");
+    //     calcObjectArr.pop()
+    //     allNewDigits = calcObjectArr.at(-1).newValue.toString()
+    //     console.log(allNewDigits);
 
-    // console.log(calcObjectArr);
+    //     runCalculator()
+
+    // } else if (currentObjectNewValue < 10) {
+    //     calcObjectArr.at(-1).newValue = undefined;
+    //     calcObjectArr.at(-1).newValueString = undefined;
+
+    //     console.log("its under 10");
+    //     runCalculator()
+
+    // } else {
+    //     console.log("else");
+    //     let newValueString = String(currentObjectNewValue).slice(0, -1);
+    //     calcObjectArr.at(-1).newValueString = newValueString;
+
+    //     let newNumber = Number(newValueString)
+    //     calcObjectArr.at(-1).newValue = newNumber;
+    //     console.log(newNumber);
+
+    //     runCalculator()
+    // }
+
+
+    console.log(calcObjectArr);
 
     // if (calcObjectArr.at(-0).newValue < 0) {
     //     console.log("its below 0");
@@ -213,42 +237,42 @@ function clearOneCalc() {
 
 function regNum(btn) {
 
-    console.log(calcObjectArr.length);
-
-    if (calcObjectArr.length === 1) {
-        if (calcObjectArr.at(-1).newValue !== undefined || calcObjectArr.at(-1).newValue !== 0 || calcObjectArr.at(-1).newValue !== NaN ) {
-            allNewDigits = calcObjectArr.at(-1).newValue;
-            console.log("jhdjshf");
-        }
-    }
-
+    // console.log(calcObjectArr.length);
 
     newDigit = btn.textContent;
 
-    if (newDigit === "." && allNewDigits.includes(".")) {
-        console.log("it icludes a dot");
-    } else {
-        allNewDigits += newDigit;
-    }
 
-    if (allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
-        console.log("slice");
-        allNewDigits = allNewDigits.slice(1);
-    }
+    // if (calcObjectArr.length === 1) {
+    //     allNewDigits = calcObjectArr[0].newValue || newDigit;
+    // }
 
-    if (allNewDigits.charAt(0) === "-") {
-        allNewDigits = allNewDigits.slice(1);
-        negNumber = true;
+    allNewDigits += newDigit
 
-    }
+    // if (newDigit === "." && allNewDigits.includes(".")) {
+    //     // console.log("it includes a dot");
+    // } else {
+    //     allNewDigits += newDigit;
+    // }
 
+    // if (allNewDigits.charAt(0) === 0 && allNewDigits.length === 1) {
+    //     // console.log("its just a 0");
+    // } else if (allNewDigits.charAt(0) === "0" && allNewDigits.length > 1 && allNewDigits.charAt(1) !== ".") {
+    //     // console.log("slice");
+    //     allNewDigits = allNewDigits.slice(1);
+    // }
 
-    console.log(allNewDigits);
+    // if (allNewDigits.charAt(0) === "-") {
+    //     allNewDigits = allNewDigits.slice(1);
+    //     negNumber = true;
+
+    // }
+
+    // console.log(allNewDigits);
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     let negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
-    console.log(negOrNotString);
-    console.log(negOrNotDigits);
+    // console.log(negOrNotString);
+    // console.log(negOrNotDigits);
 
     if (calcObjectArr.length === 0) {
         calcObjectArr.push(createCalcObject(0, negOrNotDigits, negOrNotString, add, "+"))
@@ -268,6 +292,7 @@ function regNum(btn) {
     } else {
         runCalculator()
     }
+    console.log(calcObjectArr);
 }
 
 function plusMinus() {
@@ -359,7 +384,6 @@ function createKeyboardOperators() {
 createKeyboardOperators()
 
 const plusMinusBtn = document.querySelector(".btn-plus-minus")
-console.log(plusMinusBtn);
 
 let buttonEventsForOpsMade = false;
 
@@ -401,11 +425,6 @@ function flipExtraBtns() {
 
 }
 
-
-
-
-
-
 function makeButtonEventsOps(allOpButtons) {
     allOpButtons.forEach(btn => {
 
@@ -415,8 +434,6 @@ function makeButtonEventsOps(allOpButtons) {
             btn.classList.contains("btn-plus-minus") && plusMinus(btn);
             btn.classList.contains("btn-op") && opSymbol(btn);
             // btn.classList.contains("btn-reminder") && opSymbol(btn);
-
-            console.log(calcObjectArr);
 
             if (calcObjectArr.length > 0) {
                 displayCalcAndSum()
