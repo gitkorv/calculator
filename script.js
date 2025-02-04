@@ -121,11 +121,14 @@ function displayCalcAndSum() {
 
     }
 
-    liveResult = latestCalcObject.sum || latestCalcObject.baseValue;
+    liveResult = latestCalcObject.sum ?? latestCalcObject.baseValue;
 
-    console.log(liveResult);
+    // console.log(Number.isNaN(liveResult));
 
-    if (resultContainer.textContent !== liveResult.toString()) {
+    if (Number.isNaN(liveResult)) {
+        console.log("Number is NaN");
+    } else if (resultContainer.textContent !== liveResult.toString()) {
+        console.log("this is going on");
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
         resultContainer.classList.add("fade")
 
