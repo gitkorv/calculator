@@ -10,6 +10,7 @@
     --grayColorDark: hsl(38, 8%, 46%);
     --grayColorBlack: hsl(37, 10%, 32%);
     --backGroundColor: rgb(226, 222, 219);
+    --gap: 10px;
 }
 
 body {
@@ -37,7 +38,7 @@ main {
     margin-top: 100px;
     /* justify-content: space-between; */
     /* height: 500px; */
-    width: 300px;
+    /* width: 300px; */
     /* background-color: black; */
 }
 
@@ -79,6 +80,7 @@ main {
 .calc__display {
     position: relative;
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
     justify-content: end;
@@ -194,7 +196,7 @@ main {
 
 .calc__keyboard {
     display: grid;
-    grid-template-columns: 50px repeat(3, 1fr) 50px;
+    grid-template-columns: 1fr repeat(3, 1fr) 1fr;
     grid-template-rows: repeat(5, 1fr);
     grid-template-areas: 
     "o n n n e"
@@ -204,15 +206,16 @@ main {
     ". . . c c"
     ;
 
-    height: 300px;
+    /* height: 300px; */
+    /* width: 300px; */
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--gap);
 }
 
 .calc__keyboard > div {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--gap);
 }
 
 .calc__keyboard__extras {
@@ -221,11 +224,15 @@ main {
 }
 
 .calc__keyboard__numbers {
+    width: 170px;
+    height: 200px;
     grid-area: n;
 }
 
 .calc__keyboard__numbers div{
-    flex: 0 1 1fr;
+    flex: 1 0 25%;
+    /* height: 40px; */
+    /* min-width: 30%; */
 }
 
 .calc__keyboard__numbers div:nth-child(10){
@@ -379,4 +386,37 @@ main {
     /* background-color: aqua; */
     height: 75px;
 
+}
+
+@media (min-width: 425px) {
+    .calc__keyboard__numbers {
+        width: 200px;
+        height: 250px;
+    }
+}
+
+@media (min-width: 768px) {
+    :root {
+        --gap: 15px
+    }
+    .calc__display-wrapper {
+        height: 300px;
+    }
+    .calc__bracket-container {
+        height: 150px;
+        padding-bottom: 20px;
+    }
+    .calc__keyboard__numbers {
+        width: 300px;
+        height: 400px;
+    }
+    .calc__display__calculation-container, .calc__btn {
+        font-size: 1.5rem;
+    }
+    .calc__display__result {
+        font-size: 6rem;
+    }
+    .footer {
+        font-size: 1rem;
+    }
 }

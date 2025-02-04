@@ -113,6 +113,15 @@ function displayCalcAndSum() {
     }
     calculationDisplayText.textContent = calcDisplayCalc;
 
+    console.log(calcObjectArr);
+
+    if (calcObjectArr.length > 1 && calcObjectArr.at(-1).newValue !== undefined) {
+        calculationDisplayEqualSign.classList.add("show")
+    } else {
+        calculationDisplayEqualSign.classList.remove("show")
+
+    }
+
     liveResult = latestCalcObject.sum || latestCalcObject.baseValue;
 
     console.log(liveResult);
@@ -191,60 +200,13 @@ function clearOneCalc() {
         allNewDigits = calcObjectArr.at(-1).newValue
     }
     runCalculator()
-    
-    
-    
-    
-    
-    // if (currentObjectNewValue < 10 && calcObjectArr.length === 1) {
-    //     clearCalc()
-    // } else if (currentObjectNewValue === undefined) {
-    //     console.log("value is undefined");
-    //     calcObjectArr.pop()
-    //     allNewDigits = calcObjectArr.at(-1).newValue.toString()
-    //     console.log(allNewDigits);
-
-    //     runCalculator()
-
-    // } else if (currentObjectNewValue < 10) {
-    //     calcObjectArr.at(-1).newValue = undefined;
-    //     calcObjectArr.at(-1).newValueString = undefined;
-
-    //     console.log("its under 10");
-    //     runCalculator()
-
-    // } else {
-    //     console.log("else");
-    //     let newValueString = String(currentObjectNewValue).slice(0, -1);
-    //     calcObjectArr.at(-1).newValueString = newValueString;
-
-    //     let newNumber = Number(newValueString)
-    //     calcObjectArr.at(-1).newValue = newNumber;
-    //     console.log(newNumber);
-
-    //     runCalculator()
-    // }
-
-
-    console.log(calcObjectArr);
-
-    // if (calcObjectArr.at(-0).newValue < 0) {
-    //     console.log("its below 0");
-    //     plusMinusBtn.textContent = "(±)";
-    // }
 
 }
 
 function regNum(btn) {
 
-    // console.log(calcObjectArr.length);
-
     newDigit = btn.textContent;
 
-
-    // if (calcObjectArr.length === 1) {
-    //     allNewDigits = calcObjectArr[0].newValue || newDigit;
-    // }
     console.log(allNewDigits.length);
 
     if (newDigit === "." && allNewDigits.includes(".")) {
@@ -258,33 +220,6 @@ function regNum(btn) {
         allNewDigits += newDigit;
     }
     
-    // if (allNewDigits.length > 0 && allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
-    //     console.log("wwe are slicing");
-    //     allNewDigits = allNewDigits.slice(1)
-    // }
-
-    // if (allNewDigits.length > 0 && allNewDigits.charAt(0) === 0 && allNewDigits.charAt(1) === ".") {
-    //     console.log("its just a 0");
-    // } else if (allNewDigits.charAt(0) === "0" && allNewDigits.length > 1 && allNewDigits.charAt(1) !== ".") {
-    //     // console.log("slice");
-    //     allNewDigits = allNewDigits.slice(1);
-    // }
-
-    // if (allNewDigits.charAt(0) === 0 && allNewDigits.length > 0 && allNewDigits.length === 1) {
-    //     console.log("its just a 0");
-    // } else if (allNewDigits.charAt(0) === "0" && allNewDigits.length > 1 && allNewDigits.charAt(1) !== ".") {
-    //     // console.log("slice");
-    //     allNewDigits = allNewDigits.slice(1);
-    // }
-
-    // if (allNewDigits.charAt(0) === "-") {
-    //     allNewDigits = allNewDigits.slice(1);
-    //     negNumber = true;
-
-    // }
-
-    // console.log(allNewDigits);
-
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     let negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
     // console.log(negOrNotString);
