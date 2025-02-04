@@ -96,17 +96,34 @@ main {
 .calc__display__calculation-container {
     display: flex;
     margin-bottom: 8px;
+    max-width: 100%;
     /* background-color: rgb(132, 63, 63); */
     /* height: 40px; */
     font-variation-settings: "wght"300, "opsz"35;
 
 }
 
+.calc__display__calculation-text {
+    display: flex;
+    text-align: center;
+    /* justify-content: end; */
+    align-items: end;
+    /* background-color: orange; */
+    min-width: fit-content;
+    max-width: 200px;
+    word-break: break-all;
+    border-bottom: 1px solid var(--grayColorDark);
+
+}
 
 .calc__display__calculation-equal-sign {
     white-space: pre;
     opacity: 0;
     transition: opacity 1s;
+    /* background-color: lightblue; */
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
 
 }
 

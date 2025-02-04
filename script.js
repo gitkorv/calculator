@@ -152,7 +152,7 @@ function displayCalcAndSum() {
             resultContainer.addEventListener("transitionend", e => {
                 resultContainerWidth = resultContainer.getBoundingClientRect().width;
 
-                if (resultContainerWidth + 50 > calcDisplayWidth) {
+                if (resultContainerWidth + 70 > calcDisplayWidth) {
                     resultContainerFontSize = parseInt(window.getComputedStyle(resultContainer).fontSize);
                     console.log("currentFontSize", resultContainerFontSize);
                     resultContainer.style.fontSize = resultContainerFontSize - 4 + "px";
