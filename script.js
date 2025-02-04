@@ -104,7 +104,6 @@ function displayCalcAndSum() {
             negNumber = false;
         } else if (i < 1) {
             calcDisplayCalc = `${currentNewDigit}`
-            console.log("here");
         } else if (object.newValue === undefined) {
             calcDisplayCalc += ` ${object.opSym}`
         } else {
@@ -193,13 +192,23 @@ function clearOneCalc() {
             calcObjectArr.at(-1).newValue = newNumber;
         }
 
+        
+
+        runCalculator()
 
         // console.log(newNumber);
-    } else {
+    } else if (calcObjectArr.length === 1) {
+        console.log("here");
+        // allNewDigits = "0"
+        let buttonZero = document.querySelector(".btn-zero")
+        console.log(buttonZero);
         calcObjectArr.pop()
-        allNewDigits = calcObjectArr.at(-1).newValue
+        regNum(buttonZero)
+        // clearCalc()
+    }   else {
+        calcObjectArr.pop()
+
     }
-    runCalculator()
 
 }
 
