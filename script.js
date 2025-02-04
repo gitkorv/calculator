@@ -98,19 +98,30 @@ function displayCalcAndSum() {
     for (let i = 0; i < calcObjectArr.length; i++) {
         let object = calcObjectArr[i];
         let currentNewDigit = object.newValue < 0 ? `(${object.newValueString})` : object.newValueString;
+        console.log("cur dig", currentNewDigit);
+        console.log(calcObjectArr);
 
         if (i < 1 && currentNewDigit === undefined) {
             calcDisplayCalc = "";
             negNumber = false;
         } else if (i < 1) {
+            console.log("drum");
             calcDisplayCalc = `${currentNewDigit}`
         } else if (object.newValue === undefined) {
+            console.log("undefined");
             calcDisplayCalc += ` ${object.opSym}`
         } else {
             calcDisplayCalc += ` ${object.opSym} ${currentNewDigit}`
         }
+        console.log("i is ", i);
     }
+    console.log(calcDisplayCalc);
     calculationDisplayText.textContent = calcDisplayCalc;
+
+    // if (i < 1 && object.newValue === undefined && object.opSym === "-") {
+    //     console.log("damn");
+    //     calcDisplayCalc += `${object.baseValue} ${object.opSym} `
+    // } else 
 
     console.log(calcObjectArr);
 
@@ -149,9 +160,6 @@ function displayCalcAndSum() {
                 }
             })
         }, fadeTime);
-
-
-
     }
     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
 
@@ -159,6 +167,12 @@ function displayCalcAndSum() {
 }
 
 function clearCalc() {
+    resultContainer.classList.add("mini");
+    resultContainer.addEventListener("transitionend", foldUp, true);    
+        // operatorsOpen = false;
+}
+
+function foldUp() {
     newDigit = "";
     allNewDigits = "";
     calcObjectArr = [];
@@ -167,7 +181,7 @@ function clearCalc() {
     calculationDisplayEqualSign.classList.remove("show")
     negNumber = false;
     flipExtraBtns()
-    // operatorsOpen = false;
+    resultContainer.removeEventListener("transitionend", foldUp, true);
 }
 
 function clearOneCalc() {
@@ -195,7 +209,7 @@ function clearOneCalc() {
             calcObjectArr.at(-1).newValue = newNumber;
         }
 
-        
+
 
         runCalculator()
 
@@ -208,7 +222,7 @@ function clearOneCalc() {
         calcObjectArr.pop()
         regNum(buttonZero)
         // clearCalc()
-    }   else {
+    } else {
         calcObjectArr.pop()
 
     }
@@ -231,7 +245,7 @@ function regNum(btn) {
     } else {
         allNewDigits += newDigit;
     }
-    
+
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     let negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
     // console.log(negOrNotString);
@@ -295,11 +309,13 @@ function opSymbol(btn) {
     console.log(previousObject);
     console.log(newCalcObject);
 
-
-    if (newCalcObject.newValue === previousObject.newValue || newCalcObject.newValue === undefined
+    if (calcObjectArr.length === 1 && newCalcObject.opSym === "-") {
+        calcObjectArr.push(newCalcObject)
+    } else if (newCalcObject.newValue === previousObject.newValue || newCalcObject.newValue === undefined
         && newCalcObject.baseValue === previousObject.baseValue && newCalcObject.opSym !== previousObject.opSym) {
-        console.log("here");
-        newCalcObject.baseValue = calcObjectArr.at(-2).sum
+        console.log("write over last object");
+        console.log(calcObjectArr);
+        newCalcObject.baseValue = calcObjectArr.at(-1).sum;
         calcObjectArr[calcObjectArr.length - 1] = newCalcObject;
     } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
         calcObjectArr.push(newCalcObject)
