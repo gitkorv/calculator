@@ -105,7 +105,7 @@ function displayCalcAndSum() {
         } else if (i < 1) {
             calcDisplayCalc = `${currentNewDigit}`
             console.log("here");
-        } else if (object.newValue === undefined || object.newValue === 0) {
+        } else if (object.newValue === undefined) {
             calcDisplayCalc += ` ${object.opSym}`
         } else {
             calcDisplayCalc += ` ${object.opSym} ${currentNewDigit}`
@@ -245,17 +245,33 @@ function regNum(btn) {
     // if (calcObjectArr.length === 1) {
     //     allNewDigits = calcObjectArr[0].newValue || newDigit;
     // }
+    console.log(allNewDigits.length);
 
-    allNewDigits += newDigit
-
-    // if (newDigit === "." && allNewDigits.includes(".")) {
-    //     // console.log("it includes a dot");
-    // } else {
-    //     allNewDigits += newDigit;
+    if (newDigit === "." && allNewDigits.includes(".")) {
+        console.log("it includes a dot");
+    } else if (allNewDigits.length > 0 && allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
+        allNewDigits += newDigit;
+        console.log("we are slicing");
+        console.log(allNewDigits.charAt(1));
+        allNewDigits = allNewDigits.slice(1)
+    } else {
+        allNewDigits += newDigit;
+    }
+    
+    // if (allNewDigits.length > 0 && allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
+    //     console.log("wwe are slicing");
+    //     allNewDigits = allNewDigits.slice(1)
     // }
 
-    // if (allNewDigits.charAt(0) === 0 && allNewDigits.length === 1) {
-    //     // console.log("its just a 0");
+    // if (allNewDigits.length > 0 && allNewDigits.charAt(0) === 0 && allNewDigits.charAt(1) === ".") {
+    //     console.log("its just a 0");
+    // } else if (allNewDigits.charAt(0) === "0" && allNewDigits.length > 1 && allNewDigits.charAt(1) !== ".") {
+    //     // console.log("slice");
+    //     allNewDigits = allNewDigits.slice(1);
+    // }
+
+    // if (allNewDigits.charAt(0) === 0 && allNewDigits.length > 0 && allNewDigits.length === 1) {
+    //     console.log("its just a 0");
     // } else if (allNewDigits.charAt(0) === "0" && allNewDigits.length > 1 && allNewDigits.charAt(1) !== ".") {
     //     // console.log("slice");
     //     allNewDigits = allNewDigits.slice(1);
