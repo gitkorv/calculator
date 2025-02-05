@@ -10,7 +10,7 @@
     --grayColorDark: hsl(38, 8%, 46%);
     --grayColorBlack: hsl(37, 10%, 32%);
     --backGroundColor: rgb(226, 222, 219);
-    --maroonColor: rgb(150, 29, 15);
+    --maroonColor: rgb(108, 38, 30);
     --gap: 10px;
 }
 
@@ -110,7 +110,7 @@ main {
     text-align: center;
     /* justify-content: end; */
     align-items: end;
-    /* background-color: orange; */
+    color: var(--maroonColor);
     min-width: fit-content;
     max-width: 200px;
     word-break: break-all;
@@ -194,7 +194,7 @@ main {
 
 .bracket-line-container div {
     width: 100%;
-    border-color: var(--grayColor);
+    border-color: var(--maroonColor);
 }
 
 .bracket-line-container--end {
@@ -202,16 +202,16 @@ main {
 }
 
 .bracket-line--curve-out {
-    height: calc(30% + 2px);
-    border-bottom: 2px solid;
-    border-left: 2px solid;
+    height: calc(30% + 1px);
+    border-bottom: 1px solid;
+    border-left: 5px solid;
     border-bottom-left-radius: 20px;
 }
 
 .bracket-line--curve-in {
     align-self: end;
     height: 70%;
-    border-top: 2px solid;
+    border-top: 1px solid;
     border-right: 1px solid;
     border-top-right-radius: 50px;
 }
