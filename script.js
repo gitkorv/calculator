@@ -83,10 +83,73 @@ function runCalculator() {
     calcObjectAtEnd.sum = calcObjectAtEnd.operator(parseFloat(calcObjectAtEnd.baseValue), calcObjectAtEnd.newValue);
 }
 
+let activeBtn;
+
 function makeButtonEventsNumbers(allBtns) {
     btnNumbers.forEach(btn => {
+
+        btn.addEventListener('touchstart', (event) => {
+            activeBtn = btn;
+            event.preventDefault(); // Optional: Prevents default behavior
+            console.log('Touch started on:', btn);
+            btn.classList.add("active")
+
+            // Your touchstart logic here
+        });
+
+        // Add touchmove event listener (if needed)
+        btn.addEventListener(
+            'touchmove',
+            (event) => {
+                const touch = event.touches[0]
+                const targetBtn = document.elementFromPoint(touch.clientX, touch.clientY);
+                console.log(targetBtn);
+
+                if (targetBtn && targetBtn !== activeBtn && targetBtn.classList.contains("btn-num")) {
+                    console.log("hola");
+                    if (activeBtn) activeBtn.classList.remove("active")
+
+                    activeBtn = targetBtn;
+                    console.log('Touch is moved to:', targetBtn);
+
+                    activeBtn.classList.add("active")
+                };
+            },
+            { passive: false }
+        );
+
+
+        // Add touchend event listener
+        btn.addEventListener('touchend', (event) => {
+            console.log(event);
+            if (activeBtn) {
+                console.log('Touch ended on:', activeBtn);
+
+                activeBtn.classList.contains("btn-num") && regNum(activeBtn);
+                setTimeout(() => {
+                    activeBtn.classList.remove("active")
+                }, 200);
+                displayCalcAndSum()
+
+            }
+            setTimeout(() => {
+                activeBtn = null;
+
+            }, 200);
+
+            // Your touchend logic here
+        });
+
+
+
+
         btn.addEventListener("click", (e) => {
+            console.log("click");
             btn.classList.contains("btn-num") && regNum(btn);
+            btn.classList.add("active")
+            setTimeout(() => {
+                btn.classList.remove("active")
+            }, 200);
             displayCalcAndSum()
         })
     })
@@ -274,8 +337,10 @@ function clearOneCalc() {
 }
 
 function regNum(btn) {
+    console.log(btn);
 
     newDigit = btn.textContent;
+    console.log(newDigit);
 
     if (calculationDisplayText.classList.contains("shrink")) {
         calculationDisplayText.classList.remove("shrink")
@@ -439,16 +504,73 @@ function flipExtraBtns() {
     }
 }
 
-
+let activeOpBtn;
 
 function makeButtonEventsOps(allOpButtons) {
     allOpButtons.forEach(btn => {
 
+        btn.addEventListener('touchstart', (event) => {
+            activeOpBtn = btn;
+            event.preventDefault(); // Optional: Prevents default behavior
+            console.log('Touch started on:', btn);
+            btn.classList.add("active")
+
+            // Your touchstart logic here
+        });
+
+        // Add touchmove event listener (if needed)
+        btn.addEventListener(
+            'touchmove',
+            (event) => {
+                const touch = event.touches[0]
+                const targetBtn = document.elementFromPoint(touch.clientX, touch.clientY);
+                console.log(targetBtn);
+
+                if (targetBtn && targetBtn !== activeOpBtn && targetBtn.classList.contains("btn-fold-out")) {
+                    console.log("hola");
+                    if (activeOpBtn) activeOpBtn.classList.remove("active")
+
+                    activeOpBtn = targetBtn;
+                    console.log('Touch is moved to:', targetBtn);
+
+                    activeOpBtn.classList.add("active")
+                };
+            },
+            { passive: false }
+        );
+
+
+        // Add touchend event listener
+        btn.addEventListener('touchend', (event) => {
+            console.log(event);
+            if (activeOpBtn) {
+                console.log('Touch ended on:', activeOpBtn);
+
+                activeOpBtn.classList.contains("clear-ac") && clearCalc();
+                activeOpBtn.classList.contains("clear-c") && clearOneCalc();
+                activeOpBtn.classList.contains("btn-plus-minus") && plusMinus(btn);
+                activeOpBtn.classList.contains("btn-op") && opSymbol(btn);
+                setTimeout(() => {
+                    activeOpBtn.classList.remove("active")
+                }, 200);
+                if (calcObjectArr.length > 0) {
+                    displayCalcAndSum()
+                }
+
+            }
+            setTimeout(() => {
+                activeOpBtn = null;
+
+            }, 200);
+
+            // Your touchend logic here
+        });
+
         btn.addEventListener("click", (e) => {
             btn.classList.contains("clear-ac") && clearCalc();
             btn.classList.contains("clear-c") && clearOneCalc();
-            btn.classList.contains("btn-plus-minus") && plusMinus(btn);
-            btn.classList.contains("btn-op") && opSymbol(btn);
+            btn.classList.contains("btn-plus-minus") && plusMinus(activeOpBtn);
+            btn.classList.contains("btn-op") && opSymbol(activeOpBtn);
             // btn.classList.contains("btn-reminder") && opSymbol(btn);
 
             if (calcObjectArr.length > 0) {

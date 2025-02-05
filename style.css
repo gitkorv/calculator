@@ -293,12 +293,15 @@ main {
     color: var(--grayColorDark);
     font-size: 1.2rem;
     padding-top: 4px;
+    cursor: pointer;
 
 }
 
 .btn-num {
     border: 1px solid var(--grayColor);
     padding-top: 4px;
+    transition: background-color 1s;
+
 }
 
 .btn-decimal {
@@ -365,9 +368,11 @@ main {
     background: var(--grayColorLight);
 }
 
-.btn-num:active {
+.btn-num.active {
     color: var(--grayColorLight);
     background: var(--grayColorDark);
+    /* background-color: red; */
+    transition: background-color 1s;
 }
 
 .btn-fold-out:hover {
@@ -381,10 +386,13 @@ main {
     color: var(--grayColorDark);
 }
 
-.btn-fold-out:active, .btn-fold-out.clear:active {
+.btn-fold-out.active, .btn-fold-out.clear.active {
     background-color: var(--grayColorLight);
     color: var(--grayColorDark);
     border: 1px solid var(--grayColor);
+    transition: background-color 1s;
+
+    background-color: red;
 }
 
 .btn-plus-minus {
