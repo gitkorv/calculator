@@ -10,6 +10,7 @@
     --grayColorDark: hsl(38, 8%, 46%);
     --grayColorBlack: hsl(37, 10%, 32%);
     --backGroundColor: rgb(226, 222, 219);
+    --maroonColor: rgb(150, 29, 15);
     --gap: 10px;
 }
 
@@ -300,7 +301,7 @@ main {
 .btn-num {
     border: 1px solid var(--grayColor);
     padding-top: 4px;
-    transition: background-color 1s;
+    transition: all 1s;
 
 }
 
@@ -323,6 +324,8 @@ main {
     font-variation-settings: "wght"300, "opsz"6;
     animation-fill-mode: forwards;
     font-size: 1.25rem;
+    transition: background-color 1s;
+
 }
 
 .btn-fold-out.fold-out {
@@ -366,12 +369,13 @@ main {
 .btn-num:hover {
     color: var(--grayColorDark);
     background: var(--grayColorLight);
+    border: .5px solid var(--grayColor);
 }
 
 .btn-num.active {
     color: var(--grayColorLight);
-    background: var(--grayColorDark);
-    /* background-color: red; */
+    /* background: var(--maroonColor); */
+    background-color: var(--maroonColor);
     transition: background-color 1s;
 }
 
@@ -383,16 +387,13 @@ main {
 .btn-fold-out.clear:hover {
     background-color: var(--grayColor);
     /* border: 1px solid var(--grayColorDark); */
-    color: var(--grayColorDark);
+    color: var(--grayColorLight);
 }
 
 .btn-fold-out.active, .btn-fold-out.clear.active {
-    background-color: var(--grayColorLight);
+    background-color: var(--maroonColor);
     color: var(--grayColorDark);
-    border: 1px solid var(--grayColor);
     transition: background-color 1s;
-
-    background-color: red;
 }
 
 .btn-plus-minus {

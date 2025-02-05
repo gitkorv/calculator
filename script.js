@@ -122,37 +122,48 @@ btnContainer.addEventListener("touchend", (event) => {
     if (activeBtn) {
         console.log('Touch ended on:', activeBtn);
 
-        // Perform actions based on button type
-        if (activeBtn.matches(".btn-num")) {
-            regNum(activeBtn);
-            displayCalcAndSum()
-        } else if (activeBtn.matches(".calc__btn")) {
-            // Perform specific actions for calc__btn
-            if (activeBtn.matches(".clear-ac")) clearCalc();
-            if (activeBtn.matches(".clear-c")) clearOneCalc();
-            if (activeBtn.matches(".btn-plus-minus")) plusMinus(activeBtn);
-            if (activeBtn.matches(".btn-op")) opSymbol(activeBtn);
+        pressABtn(activeBtn)
 
-            if (calcObjectArr.length > 0) {
-                displayCalcAndSum()
-            }
-
-            setTimeout(() => activeBtn.classList.remove("active"), 200);
-        }
-
-        activeBtn.classList.remove("active"); // Remove the active class
+        // activeBtn.classList.remove("active"); // Remove the active class
         activeBtn = null; // Reset activeBtn
     }
 });
 
 btnContainer.addEventListener("click", (e) => {
-    console.log("click");
-    btn.classList.contains("btn-num") && regNum(btn);
-    btn.classList.add("active")
-    setTimeout(() => {
-        btn.classList.remove("active")
-    }, 200);
-    displayCalcAndSum()
+    console.log(e.target);
+    activeBtn = e.target
+    activeBtn.classList.add("active")
+    pressABtn(activeBtn)
+})
+
+function pressABtn(activeBtn) {
+    activeBtn.style.transitionDuration = "";
+    // activeBtn.classList.remove("active"); // Remove the active class
+
+    // Perform actions based on button type
+    if (activeBtn.matches(".btn-num")) {
+        regNum(activeBtn);
+        displayCalcAndSum()
+    } else if (activeBtn.matches(".calc__btn")) {
+        // Perform specific actions for calc__btn
+        if (activeBtn.matches(".clear-ac")) clearCalc();
+        if (activeBtn.matches(".clear-c")) clearOneCalc();
+        if (activeBtn.matches(".btn-plus-minus")) plusMinus(activeBtn);
+        if (activeBtn.matches(".btn-op")) opSymbol(activeBtn);
+
+        if (calcObjectArr.length > 0) {
+            displayCalcAndSum()
+        }
+    }
+    setTimeout(() => activeBtn.classList.remove("active"), 300);
+}
+
+btnContainer.addEventListener("mouseover", e => {
+    if (e.target.matches(".calc__btn")) {
+        // console.log(e.target);
+        e.target.style.transitionDuration = ".25s";
+
+    }
 })
 
 function displayCalcAndSum() {
