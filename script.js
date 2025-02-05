@@ -22,6 +22,7 @@ let resultContainerWidth;
 
 // Welcome
 const welcomeText = document.querySelector(".calc__welcome-text");
+console.log(welcomeText);
 
 // Mod Displays
 // const plusMinusSign = document.querySelector(".calc__display__calculation-minus-sign")
@@ -85,6 +86,8 @@ function runCalculator() {
     calcObjectAtEnd.sum = calcObjectAtEnd.operator(parseFloat(calcObjectAtEnd.baseValue), calcObjectAtEnd.newValue);
 }
 
+/// BUTTON EVENTS
+
 let activeBtn;
 
 btnContainer.addEventListener("touchstart", (e) => {
@@ -131,9 +134,9 @@ btnContainer.addEventListener("touchend", (event) => {
 
 btnContainer.addEventListener("click", (e) => {
     console.log(e.target);
-    activeBtn = e.target
-    activeBtn.classList.add("active")
-    pressABtn(activeBtn)
+    let activeClickBtn = e.target
+    activeClickBtn.classList.add("active")
+    pressABtn(activeClickBtn)
 })
 
 function pressABtn(activeBtn) {
@@ -155,6 +158,7 @@ function pressABtn(activeBtn) {
             displayCalcAndSum()
         }
     }
+    console.log("werehere");
     setTimeout(() => activeBtn.classList.remove("active"), 300);
 }
 
@@ -208,8 +212,6 @@ function displayCalcAndSum() {
 
             liveResult = Math.round(liveResult * 100) / 100;
             resultContainer.textContent = liveResult;
-
-            // Add the event listener
             resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
 
         }, fadeTime);
@@ -564,11 +566,11 @@ function blobBtnNumbers(currentTime) {
     const elapsedTime = currentTime - lastTime;
 
     if (elapsedTime >= delay) {
-        console.log(btnNumbers);
+        // console.log(btnNumbers);
         let onlyShowingNumbers = btnNumbers.filter(
             (el) => el.textContent >= "0" && el.textContent <= "9"
         )
-        console.log(onlyShowingNumbers);
+        // console.log(onlyShowingNumbers);
         let randomBtn = Math.floor(Math.random() * 9) + 1
         let currentBtn = onlyShowingNumbers[randomBtn];
 
