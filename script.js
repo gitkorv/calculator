@@ -602,7 +602,6 @@ function elementsToStopTransition(...elements) {
             console.log(element);
         }
     })
-    
 }
 
 window.addEventListener('load', () => {
@@ -613,4 +612,4 @@ window.addEventListener('load', () => {
 
 allBtns = [...document.querySelectorAll(".calc__btn")];
 
-elementsToStopTransition(allBtns, welcomeText)
+elementsToStopTransition(allBtns, welcomeText, brackets)
