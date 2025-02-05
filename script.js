@@ -212,33 +212,6 @@ function displayCalcAndSum() {
             // Add the event listener
             resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
 
-
-
-
-            // resultContainer.addEventListener(
-            //     "transitionend",
-            //     (e) => {
-            //         resultContainerWidth = resultContainer.getBoundingClientRect().width;
-
-            //         if (resultContainerWidth + 70 > calcDisplayWidth) {
-            //             resultContainerFontSize = parseInt(window.getComputedStyle(resultContainer).fontSize);
-            //             console.log("currentFontSize", resultContainerFontSize);
-            //             resultContainer.style.fontSize = resultContainerFontSize - 4 + "px";
-            //         }
-            //     },
-            //     { once: true } // Automatically removes the listener after the first execution
-            // );
-
-            // resultContainer.addEventListener("transitionend", e => {
-            //     resultContainerWidth = resultContainer.getBoundingClientRect().width;
-
-            //     if (resultContainerWidth + 70 > calcDisplayWidth) {
-            //         resultContainerFontSize = parseInt(window.getComputedStyle(resultContainer).fontSize);
-            //         console.log("currentFontSize", resultContainerFontSize);
-            //         resultContainer.style.fontSize = resultContainerFontSize - 4 + "px";
-            //         // resultContainer.style.fontSize = 
-            //     }
-            // })
         }, fadeTime);
     }
     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
@@ -263,22 +236,8 @@ function handleResultTransitionEnd() {
 function clearCalc() {
     calculationDisplayText.classList.add("shrink");
 
-    // console.log(resultContainer.attributes);
-    // resultContainer.removeAttribute("font-size")
     resultContainer.style.fontSize = "";
     resultContainer.classList.add("mini");
-
-    // newDigit = "";
-    // allNewDigits = "";
-    // calcObjectArr = [];
-    // calculationDisplayText.textContent = "";
-    // resultContainer.textContent = "";
-
-    // calculationDisplayEqualSign.classList.remove("show")
-    // negNumber = false;
-    // flipExtraBtns()
-    // // resultContainer.addEventListener("transitionend", foldUp, true);    
-    // operatorsOpen = false;
 
     resultContainer.addEventListener(
         "transitionend",
@@ -294,23 +253,12 @@ function clearCalc() {
             calculationDisplayEqualSign.classList.remove("show")
             negNumber = false;
             flipExtraBtns()
+            loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
         },
         { once: true } // Automatically removes the listener after the first execution
     );
-
+    
     console.log("delete!");
-}
-
-function foldUp() {
-    newDigit = "";
-    allNewDigits = "";
-    calcObjectArr = [];
-    calculationDisplayText.textContent = "";
-    calculationDisplayEqualSign.classList.remove("show")
-    negNumber = false;
-    flipExtraBtns()
-    resultContainer.removeEventListener("transitionend", foldUp, true);
-
 }
 
 function clearOneCalc() {
@@ -346,6 +294,7 @@ function clearOneCalc() {
 }
 
 function regNum(btn) {
+    cancelAnimationFrame(loopBtnAnim)
     console.log(btn);
 
     newDigit = btn.textContent;
@@ -377,7 +326,10 @@ function regNum(btn) {
     calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
 
     if (!btnsFoldedOut) {
-        flipExtraBtns()
+        setTimeout(() => {
+            flipExtraBtns()
+
+        }, 1000);
 
         welcomeText.classList.add("fly-out")
         welcomeText.addEventListener("transitionend", e => {
@@ -467,20 +419,19 @@ function createKeyboardOperators() {
             container.append(wrapper)
         })
     }
-
-
 }
 
 createKeyboardOperators()
 
 const plusMinusBtn = document.querySelector(".btn-plus-minus")
-
 let buttonEventsForOpsMade = false;
 
 function flipExtraBtns() {
     brackets.forEach(bracket => {
         bracket.classList.toggle("grow")
     })
+    decimalBtn.style.pointerEvents = decimalBtn.style.pointerEvents === "none" ? "" : "none";
+
 
     let animTime = 200;
     allOpButtons = [...document.querySelectorAll(".btn-fold-out")];
@@ -507,109 +458,137 @@ function flipExtraBtns() {
     btnsFoldedOut = !btnsFoldedOut;
 
     if (!buttonEventsForOpsMade) {
-        // makeButtonEventsOps(allOpButtons)
         buttonEventsForOpsMade = true;
 
     }
 }
 
-let activeOpBtn;
-
-function makeButtonEventsOps(allOpButtons) {
-    allOpButtons.forEach(btn => {
-
-        btn.addEventListener('touchstart', (event) => {
-            activeOpBtn = btn;
-            event.preventDefault(); // Optional: Prevents default behavior
-            console.log('Touch started on:', btn);
-            btn.classList.add("active")
-
-            // Your touchstart logic here
-        });
-
-        // Add touchmove event listener (if needed)
-        btn.addEventListener(
-            'touchmove',
-            (event) => {
-                const touch = event.touches[0]
-                const targetBtn = document.elementFromPoint(touch.clientX, touch.clientY);
-                console.log(targetBtn);
-
-                if (targetBtn && targetBtn !== activeOpBtn && targetBtn.classList.contains("btn-fold-out")) {
-                    console.log("hola");
-                    if (activeOpBtn) activeOpBtn.classList.remove("active")
-
-                    activeOpBtn = targetBtn;
-                    console.log('Touch is moved to:', targetBtn);
-
-                    activeOpBtn.classList.add("active")
-                };
-            },
-            { passive: false }
-        );
-
-
-        // Add touchend event listener
-        btn.addEventListener('touchend', (event) => {
-            console.log(event);
-            if (activeOpBtn) {
-                console.log('Touch ended on:', activeOpBtn);
-
-                activeOpBtn.classList.contains("clear-ac") && clearCalc();
-                activeOpBtn.classList.contains("clear-c") && clearOneCalc();
-                activeOpBtn.classList.contains("btn-plus-minus") && plusMinus(btn);
-                activeOpBtn.classList.contains("btn-op") && opSymbol(btn);
-                setTimeout(() => {
-                    activeOpBtn.classList.remove("active")
-                }, 200);
-                if (calcObjectArr.length > 0) {
-                    displayCalcAndSum()
-                }
-
-            }
-            setTimeout(() => {
-                activeOpBtn = null;
-
-            }, 200);
-
-            // Your touchend logic here
-        });
-
-        btn.addEventListener("click", (e) => {
-            btn.classList.contains("clear-ac") && clearCalc();
-            btn.classList.contains("clear-c") && clearOneCalc();
-            btn.classList.contains("btn-plus-minus") && plusMinus(activeOpBtn);
-            btn.classList.contains("btn-op") && opSymbol(activeOpBtn);
-            // btn.classList.contains("btn-reminder") && opSymbol(btn);
-
-            if (calcObjectArr.length > 0) {
-                displayCalcAndSum()
-            }
-        })
-
-    })
-}
-
 function elementsToStopTransition(...elements) {
     elements.forEach(element => {
-        if (element.length > 1) {
+        if (Array.isArray(element)) {
             element.forEach(el => {
-                el.style.transition === "none" ? el.style.transition = "" : el.style.transition = "none";
-                console.log(el);
+                el.style.transition = el.style.transition === "none" ? "" : "none";
             })
         } else {
-            element.style.transition === "none" ? element.style.transition = "" : element.style.transition = "none";
-            console.log(element);
+            element.style.transition = element.style.transition === "none" ? "" : "none";
         }
     })
 }
 
-window.addEventListener('load', () => {
-
-    elementsToStopTransition(allBtns)
-
-}); 
-
 allBtns = [...document.querySelectorAll(".calc__btn")];
+const stopTransElements = [allBtns, welcomeText, brackets]
 
-elementsToStopTransition(allBtns, welcomeText, brackets)
+window.addEventListener('load', () => {
+    elementsToStopTransition(...stopTransElements)
+
+    if (welcomeText) {
+        welcomeText.style.transitionDuration = "1s"
+        welcomeText.classList.remove("fade-in")
+
+        welcomeText.addEventListener("transitionend", () => {
+            welcomeText.style.transitionDuration = "";
+        }, { once: true })
+    }
+});
+
+elementsToStopTransition(...stopTransElements)
+welcomeText.classList.add("fade-in")
+decimalBtn.style.pointerEvents = "none"
+
+const btnOperators = [...document.querySelectorAll(".btn-op")]
+
+let key1Pressed = false;
+let key2Pressed = false;
+
+const key1 = "Shift"
+const key2 = "Backspace"
+
+document.addEventListener("keydown", (event) => {
+
+    if (event.key === key1) {
+        key1Pressed = true;
+    } else if (event.key === key2) {
+        key2Pressed = true;
+    }
+
+    if (key1Pressed && key2Pressed) {
+        clearCalc()
+        console.log("both are pressed");
+    } else if (event.key >= "0" && event.key <= "9" || event.key === ".") {
+        const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
+        console.log(matchedElement);
+        regNum(matchedElement)
+        displayCalcAndSum()
+    } else if (event.key === "Backspace") {
+        console.log("Backspace pressed!");
+        if (btnsFoldedOut) {
+            clearOneCalc()
+            if (calcObjectArr.length > 0) {
+                displayCalcAndSum()
+            }
+        }
+        event.preventDefault()
+    } else if (["+", "-", "*", "x", "/", "%"].includes(event.key)) {
+        console.log(`Operator pressed: ${event.key}`);
+        let operatorSymbol = event.key;
+        operatorSymbol = operatorSymbol === "*" ? "x" : operatorSymbol;
+        const matchedElement = btnOperators.find(element => element.textContent.trim() === operatorSymbol)
+        if (btnsFoldedOut) {
+            opSymbol(matchedElement)
+            if (calcObjectArr.length > 0) {
+                displayCalcAndSum()
+            }
+        }
+    }
+});
+
+document.addEventListener("keyup", event => {
+    if (event.key === key1) {
+        key1Pressed = false;
+    } else if (event.key === key2) {
+        key2Pressed = false;
+    }
+})
+
+let blob = false
+
+let lastTime = 0;
+let delay = 300;
+
+let loopBtnAnim;
+
+function blobBtnNumbers(currentTime) {
+
+    if (!lastTime) lastTime = currentTime;
+
+    const elapsedTime = currentTime - lastTime;
+
+    if (elapsedTime >= delay) {
+        console.log(btnNumbers);
+        let onlyShowingNumbers = btnNumbers.filter(
+            (el) => el.textContent >= "0" && el.textContent <= "9"
+        )
+        console.log(onlyShowingNumbers);
+        let randomBtn = Math.floor(Math.random() * 9) + 1
+        let currentBtn = onlyShowingNumbers[randomBtn];
+
+
+        if (currentBtn.classList.contains("blob")) {
+            currentBtn.classList.remove("blob")
+        } else {
+            currentBtn.classList.add("blob")
+            setTimeout(() => {
+                currentBtn.classList.remove("blob")
+            }, 2000);
+        }
+        lastTime = currentTime;
+    }
+
+
+    loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
+}
+
+loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
+
+// blobBtnNumbers()
+

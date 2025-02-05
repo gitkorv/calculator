@@ -73,8 +73,24 @@ main {
     /* background-color: aqua; */
     font-variation-settings: "wght"900, "opsz"6;
     transition: all .5s ease-in;
+    animation: updown 2s ease-in-out alternate infinite forwards;
+    pointer-events: none;
 }
 
+@keyframes updown {
+    to {
+        transform: translateY(40px);
+        /* scale: 120%; */
+    }
+}
+
+.calc__welcome-text.fade-in {
+    opacity: 0;
+    font-variation-settings: "wght"300, "opsz"6;
+
+    /* transition: opacity 5s 1s; */
+
+}
 .calc__welcome-text.fly-out {
     bottom: 500px;
     scale: 300%;
@@ -305,7 +321,13 @@ main {
     border: 1px solid var(--grayColor);
     padding-top: 4px;
     transition: all 1s;
+}
 
+.btn-num.blob {
+    background-color: var(--grayColorLight);
+    font-size: 1.5rem;
+    font-variation-settings: "wght"600, "opsz"72;
+    /* color: var(--grayColorLight); */
 }
 
 .btn-decimal {
