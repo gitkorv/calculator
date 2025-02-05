@@ -2,6 +2,8 @@
 const calcWrapper = document.querySelector(".calc--wrapper")
 
 // Btns
+const btnContainer = document.querySelector(".calc__keyboard")
+console.log(btnContainer);
 let allBtns = [...document.querySelectorAll(".calc__btn")];
 const btnNumbers = [...document.querySelectorAll(".btn-num")];
 const clearAllBtn = document.querySelector(".clear-ac")
@@ -85,77 +87,73 @@ function runCalculator() {
 
 let activeBtn;
 
-function makeButtonEventsNumbers(allBtns) {
-    btnNumbers.forEach(btn => {
+btnContainer.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Optional: Prevents default behavior
 
-        btn.addEventListener('touchstart', (event) => {
-            activeBtn = btn;
-            event.preventDefault(); // Optional: Prevents default behavior
-            console.log('Touch started on:', btn);
-            btn.classList.add("active")
+    const target = e.target;
 
-            // Your touchstart logic here
-        });
+    // Ensure the target is a button
+    if (target.classList.contains("calc__btn")) {
+        if (activeBtn) activeBtn.classList.remove("active"); // Reset previous active button
+        activeBtn = target; // Set the new active button
+        activeBtn.classList.add("active");
+        console.log('Touch started on:', activeBtn);
+    }
+});
 
-        // Add touchmove event listener (if needed)
-        btn.addEventListener(
-            'touchmove',
-            (event) => {
-                const touch = event.touches[0]
-                const targetBtn = document.elementFromPoint(touch.clientX, touch.clientY);
-                console.log(targetBtn);
+btnContainer.addEventListener(
+    "touchmove",
+    (event) => {
+        const touch = event.touches[0];
+        const targetBtn = document.elementFromPoint(touch.clientX, touch.clientY);
 
-                if (targetBtn && targetBtn !== activeBtn && targetBtn.classList.contains("btn-num")) {
-                    console.log("hola");
-                    if (activeBtn) activeBtn.classList.remove("active")
+        // If swiping over a new button, update activeBtn
+        if (targetBtn && targetBtn !== activeBtn && targetBtn.classList.contains("calc__btn")) {
+            if (activeBtn) activeBtn.classList.remove("active"); // Remove "active" from previous button
+            activeBtn = targetBtn; // Update the new active button
+            activeBtn.classList.add("active");
+            console.log("Touch moved to:", activeBtn);
+        }
+    },
+    { passive: false } // Prevent scrolling while touching
+);
 
-                    activeBtn = targetBtn;
-                    console.log('Touch is moved to:', targetBtn);
+btnContainer.addEventListener("touchend", (event) => {
+    if (activeBtn) {
+        console.log('Touch ended on:', activeBtn);
 
-                    activeBtn.classList.add("active")
-                };
-            },
-            { passive: false }
-        );
-
-
-        // Add touchend event listener
-        btn.addEventListener('touchend', (event) => {
-            console.log(event);
-            if (activeBtn) {
-                console.log('Touch ended on:', activeBtn);
-
-                activeBtn.classList.contains("btn-num") && regNum(activeBtn);
-                setTimeout(() => {
-                    activeBtn.classList.remove("active")
-                }, 200);
-                displayCalcAndSum()
-
-            }
-            setTimeout(() => {
-                activeBtn = null;
-
-            }, 200);
-
-            // Your touchend logic here
-        });
-
-
-
-
-        btn.addEventListener("click", (e) => {
-            console.log("click");
-            btn.classList.contains("btn-num") && regNum(btn);
-            btn.classList.add("active")
-            setTimeout(() => {
-                btn.classList.remove("active")
-            }, 200);
+        // Perform actions based on button type
+        if (activeBtn.matches(".btn-num")) {
+            regNum(activeBtn);
             displayCalcAndSum()
-        })
-    })
-}
+        } else if (activeBtn.matches(".calc__btn")) {
+            // Perform specific actions for calc__btn
+            if (activeBtn.matches(".clear-ac")) clearCalc();
+            if (activeBtn.matches(".clear-c")) clearOneCalc();
+            if (activeBtn.matches(".btn-plus-minus")) plusMinus(activeBtn);
+            if (activeBtn.matches(".btn-op")) opSymbol(activeBtn);
 
-makeButtonEventsNumbers(allBtns)
+            if (calcObjectArr.length > 0) {
+                displayCalcAndSum()
+            }
+
+            setTimeout(() => activeBtn.classList.remove("active"), 200);
+        }
+
+        activeBtn.classList.remove("active"); // Remove the active class
+        activeBtn = null; // Reset activeBtn
+    }
+});
+
+btnContainer.addEventListener("click", (e) => {
+    console.log("click");
+    btn.classList.contains("btn-num") && regNum(btn);
+    btn.classList.add("active")
+    setTimeout(() => {
+        btn.classList.remove("active")
+    }, 200);
+    displayCalcAndSum()
+})
 
 function displayCalcAndSum() {
 
@@ -498,7 +496,7 @@ function flipExtraBtns() {
     btnsFoldedOut = !btnsFoldedOut;
 
     if (!buttonEventsForOpsMade) {
-        makeButtonEventsOps(allOpButtons)
+        // makeButtonEventsOps(allOpButtons)
         buttonEventsForOpsMade = true;
 
     }
