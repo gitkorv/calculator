@@ -16,8 +16,11 @@
 
 body {
     font-family: "maregraphe-variable", sans-serif;
-    font-variation-settings: "wght"300, "opsz"35;
-    
+    font-variation-settings: "wght"300, "opsz"35;   
+}
+
+.no-transitions {
+    transition: none !important;
 }
 
 main {

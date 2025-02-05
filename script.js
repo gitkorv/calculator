@@ -589,3 +589,13 @@ function makeButtonEventsOps(allOpButtons) {
 
     })
 }
+
+window.addEventListener('load', () => {
+    // Remove the class that disables transitions
+    document.body.classList.remove('no-transitions');
+
+    // Apply transitions (e.g., make elements visible)
+    // document.querySelectorAll('.box').forEach((el) => {
+    //     el.classList.add('visible');
+    // });
+});
