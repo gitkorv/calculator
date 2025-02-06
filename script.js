@@ -192,7 +192,7 @@ btnContainer.addEventListener("mouseover", e => {
 
 function displayCalcAndSum() {
 
-    let calcDisplayCalc = "";
+    let displayCalculation = "";
     let latestCalcObject = calcObjectArr.at(-1);
 
     for (let i = 0; i < calcObjectArr.length; i++) {
@@ -200,17 +200,18 @@ function displayCalcAndSum() {
         let currentNewDigit = object.newValue < 0 ? `(${object.newValueString})` : object.newValueString;
 
         if (i < 1 && currentNewDigit === undefined) {
-            calcDisplayCalc = "";
+            displayCalculation = "";
             negNumber = false;
         } else if (i < 1) {
-            calcDisplayCalc = `${currentNewDigit}`
+            displayCalculation = `${currentNewDigit}`
         } else if (object.newValue === undefined) {
-            calcDisplayCalc += ` ${object.opSym}`
+            displayCalculation += ` ${object.opSym}`
         } else {
-            calcDisplayCalc += ` ${object.opSym} ${currentNewDigit}`
+            displayCalculation += ` ${object.opSym} ${currentNewDigit}`
         }
     }
-    calculationDisplayText.textContent = calcDisplayCalc;
+
+    calculationDisplayText.textContent = displayCalculation;
 
     if (calcObjectArr.length > 1 && calcObjectArr.at(-1).newValue !== undefined) {
         calculationDisplayEqualSign.classList.add("show")
@@ -270,7 +271,7 @@ function clearCalc() {
             allNewDigits = "";
             calcObjectArr = [];
             calculationDisplayText.textContent = "";
-            calculationDisplayText.classList.remove("shrink");
+            // calculationDisplayText.classList.remove("shrink");
 
             resultContainer.textContent = "";
             calculationDisplayEqualSign.classList.remove("show")
@@ -324,7 +325,9 @@ function regNum(btn) {
     console.log(newDigit);
 
     if (calculationDisplayText.classList.contains("shrink")) {
-        calculationDisplayText.classList.remove("shrink")
+        setTimeout(() => {
+            calculationDisplayText.classList.remove("shrink")
+        }, 1000);
     }
 
 
