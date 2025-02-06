@@ -11,6 +11,7 @@
     --grayColorBlack: hsl(37, 10%, 32%);
     --backGroundColor: rgb(226, 222, 219);
     --maroonColor: rgb(108, 38, 30);
+    --green: rgb(48, 107, 79);
     --gap: 10px;
 }
 
@@ -323,6 +324,12 @@ main {
     transition: all 1s;
 }
 
+.btn-num.hover {
+    color: var(--grayColorDark);
+    background: var(--grayColorLight);
+    border: .5px solid var(--grayColor);
+}
+
 .btn-num.blob {
     background-color: var(--grayColorLight);
     font-size: 1.5rem;
@@ -332,7 +339,7 @@ main {
 
 .btn-decimal {
     opacity: 1;
-    transition: opacity 1s linear;
+    transition: all 1s linear;
 }
 .btn-decimal.hidden {
     opacity: 0;
@@ -350,7 +357,6 @@ main {
     animation-fill-mode: forwards;
     font-size: 1.25rem;
     transition: background-color 1s;
-
 }
 
 .btn-fold-out.fold-out {
@@ -359,7 +365,6 @@ main {
 
 .btn-fold-out.fold-in {
     transform: rotateX(0deg);
-
     animation: fold-in 1s ease-out 1s forwards;
 }
 
@@ -379,46 +384,33 @@ main {
     0% {
         transform: rotateX(0deg);
     }
-    /* 10% {
-        transform: rotateX(20deg);
-    } */
     100% {
         transform: rotateX(-95deg);
     }
+}
+
+.btn-fold-out.hover {
+    background-color: var(--grayColorDark);
+    color: var(--grayColorLight);
 }
 
 .btn-fold-out.clear {
     background-color: var(--grayColorBlack);
 }
 
-.btn-num:hover {
-    color: var(--grayColorDark);
-    background: var(--grayColorLight);
-    border: .5px solid var(--grayColor);
-}
-
-.btn-num.active {
-    color: var(--grayColorLight);
-    /* background: var(--maroonColor); */
+.btn-fold-out.clear.hover {
     background-color: var(--maroonColor);
-    transition: background-color 1s;
-}
-
-.btn-fold-out:hover {
-    background-color: var(--grayColorDark);
     color: var(--grayColorLight);
 }
 
-.btn-fold-out.clear:hover {
+.btn-fold-out.clear.active {
     background-color: var(--grayColor);
-    /* border: 1px solid var(--grayColorDark); */
     color: var(--grayColorLight);
 }
 
-.btn-fold-out.active, .btn-fold-out.clear.active {
+.calc__btn.active {
+    color: var(--backGroundColor);
     background-color: var(--maroonColor);
-    color: var(--grayColorDark);
-    transition: background-color 1s;
 }
 
 .btn-plus-minus {
@@ -426,8 +418,17 @@ main {
     color: var(--grayColorBlack);
 }
 
-.btn-plus-minus:hover {
+.btn-plus-minus.hover {
     background-color: var(--grayColorDark);
+}
+
+.btn-plus-minus.is-on {
+    background-color: var(--green);
+    color: var(--grayColor);
+}
+
+.btn-plus-minus.is-on.hover {
+    background-color: var(--grayColorBlack);
 }
 
 .footer {

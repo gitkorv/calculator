@@ -139,6 +139,26 @@ btnContainer.addEventListener("click", (e) => {
     pressABtn(activeClickBtn)
 })
 
+btnContainer.addEventListener("mouseover", (e) => {
+    // console.log(e.target);
+    let hoveredBtn = e.target;
+    if (hoveredBtn.classList.contains("calc__btn")) {
+        console.log(hoveredBtn);
+        hoveredBtn.classList.add("hover")
+
+    }
+})
+
+btnContainer.addEventListener("mouseout", (e) => {
+    // console.log(e.target);
+    let hoveredBtn = e.target;
+    if (hoveredBtn.classList.contains("calc__btn")) {
+        console.log("leaving ", hoveredBtn);
+        hoveredBtn.classList.remove("hover")
+
+    }
+})
+
 function pressABtn(activeBtn) {
     activeBtn.style.transitionDuration = "";
     // activeBtn.classList.remove("active"); // Remove the active class
@@ -216,6 +236,7 @@ function displayCalcAndSum() {
 
         }, fadeTime);
     }
+
     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
 }
 
@@ -350,6 +371,8 @@ function plusMinus() {
     calcObjectArr[calcObjectArr.length - 1].newValue = compiledDigits;
     calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
 
+    negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
+
     runCalculator()
 }
 
@@ -360,6 +383,8 @@ function opSymbol(btn) {
     let previousObject = calcObjectArr[calcObjectArr.length - 1]
 
     negNumber = false;
+    negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
+
 
     allNewDigits = "";
     let operator
