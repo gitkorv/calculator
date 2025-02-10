@@ -69,7 +69,7 @@ main {
     justify-content: center;
     text-align: center;
     line-height: 1.5rem;
-    color: var(--grayColorBlack);
+    color: var(--maroonColor);
     /* font-size: 1.5rem; */
     /* background-color: aqua; */
     font-variation-settings: "wght"900, "opsz"6;
@@ -332,6 +332,7 @@ main {
 
 .btn-num.blob {
     background-color: var(--grayColorLight);
+    color: var(--maroonColor);
     font-size: 2rem;
     font-variation-settings: "wght"600, "opsz"72;
     /* color: var(--grayColorLight); */
@@ -441,7 +442,7 @@ main {
 
 .footer__text {
     letter-spacing: 2px;
-    color: var(--grayColorDark);
+    color: var(--maroonColor);
     font-size: .5rem;
     font-variation-settings: "wght"300, "opsz"6;
     padding-left: 8px;
