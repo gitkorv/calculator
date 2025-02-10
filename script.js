@@ -454,7 +454,10 @@ function multiply(a, b) { return a * b; }
 
 function divide(a, b) { return a / b; }
 
-function reminder(a, b) { return a % b; }
+function reminder(a, b) { 
+    let result = a % b;
+    return result < 0 ? Math.abs(result) : result;
+}
 
 let allOpButtons = []
 const decimalBtn = document.querySelector(".btn-decimal")
