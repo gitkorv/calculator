@@ -435,18 +435,19 @@ main {
 .footer {
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: stretch;
     /* background-color: aqua; */
     height: 50px;
 }
 
 .footer__text {
+    align-content: end;
     letter-spacing: 2px;
     color: var(--maroonColor);
     font-size: .5rem;
-    font-variation-settings: "wght"300, "opsz"6;
+    font-variation-settings: "wght"400, "opsz"6;
     padding-left: 8px;
-    /* background-color: blue; */
+    /* background-color: rgb(134, 134, 160); */
 }
 
 @media (min-width: 425px) {
