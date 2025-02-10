@@ -282,7 +282,7 @@ function clearCalc() {
 
             resultContainer.textContent = "";
             calculationDisplayEqualSign.classList.remove("show")
-            welcomeText.innerHTML = `You stink at maths!<br>Try again.`
+            welcomeText.innerHTML = `You stink at maths!<br>Let's try again`
             welcomeText.classList.remove("fly-out")
 
             negNumber = false;
