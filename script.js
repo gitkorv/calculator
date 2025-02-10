@@ -3,7 +3,6 @@ const calcWrapper = document.querySelector(".calc--wrapper")
 
 // Btns
 const btnContainer = document.querySelector(".calc__keyboard")
-console.log(btnContainer);
 let allBtns = [...document.querySelectorAll(".calc__btn")];
 const btnNumbers = [...document.querySelectorAll(".btn-num")];
 const clearAllBtn = document.querySelector(".clear-ac")
@@ -22,7 +21,6 @@ let resultContainerWidth;
 
 // Welcome
 const welcomeText = document.querySelector(".calc__welcome-text");
-console.log(welcomeText);
 
 // Mod Displays
 // const plusMinusSign = document.querySelector(".calc__display__calculation-minus-sign")
@@ -86,8 +84,6 @@ function runCalculator() {
 
     sum = isNaN(sum) ? calcObjectAtEnd.baseValue : sum;
     calcObjectAtEnd.sum = sum;
-    // console.log(calcObjectAtEnd);
-    // calcObjectAtEnd.sum = calcObjectAtEnd.operator(parseFloat(calcObjectAtEnd.baseValue), calcObjectAtEnd.newValue);
     console.log(calcObjectAtEnd);
 }
 
@@ -102,10 +98,9 @@ btnContainer.addEventListener("touchstart", (e) => {
 
     // Ensure the target is a button
     if (target.classList.contains("calc__btn")) {
-        if (activeBtn) activeBtn.classList.remove("active"); // Reset previous active button
-        activeBtn = target; // Set the new active button
+        if (activeBtn) activeBtn.classList.remove("active");
+        activeBtn = target;
         activeBtn.classList.add("active");
-        // console.log('Touch started on:', activeBtn);
     }
 });
 
@@ -115,65 +110,49 @@ btnContainer.addEventListener(
         const touch = event.touches[0];
         const targetBtn = document.elementFromPoint(touch.clientX, touch.clientY);
 
-        // If swiping over a new button, update activeBtn
         if (targetBtn && targetBtn !== activeBtn && targetBtn.classList.contains("calc__btn")) {
-            if (activeBtn) activeBtn.classList.remove("active"); // Remove "active" from previous button
-            activeBtn = targetBtn; // Update the new active button
+            if (activeBtn) activeBtn.classList.remove("active"); 
+            activeBtn = targetBtn;
             activeBtn.classList.add("active");
-            // console.log("Touch moved to:", activeBtn);
         }
     },
-    { passive: false } // Prevent scrolling while touching
+    { passive: false }
 );
 
 btnContainer.addEventListener("touchend", (event) => {
     if (activeBtn) {
-        // console.log('Touch ended on:', activeBtn);
-
         pressABtn(activeBtn)
-
-        // activeBtn.classList.remove("active"); // Remove the active class
-        activeBtn = null; // Reset activeBtn
+        activeBtn = null;
     }
 });
 
 btnContainer.addEventListener("click", (e) => {
-    // console.log(e.target);
     let activeClickBtn = e.target
     activeClickBtn.classList.add("active")
     pressABtn(activeClickBtn)
 })
 
 btnContainer.addEventListener("mouseover", (e) => {
-    // console.log(e.target);
     let hoveredBtn = e.target;
     if (hoveredBtn.classList.contains("calc__btn")) {
-        // console.log(hoveredBtn);
         hoveredBtn.classList.add("hover")
-
     }
 })
 
 btnContainer.addEventListener("mouseout", (e) => {
-    // console.log(e.target);
     let hoveredBtn = e.target;
     if (hoveredBtn.classList.contains("calc__btn")) {
-        // console.log("leaving ", hoveredBtn);
         hoveredBtn.classList.remove("hover")
-
     }
 })
 
 function pressABtn(activeBtn) {
     activeBtn.style.transitionDuration = "";
-    // activeBtn.classList.remove("active"); // Remove the active class
 
-    // Perform actions based on button type
     if (activeBtn.matches(".btn-num")) {
         regNum(activeBtn);
         displayCalcAndSum()
     } else if (activeBtn.matches(".calc__btn")) {
-        // Perform specific actions for calc__btn
         if (activeBtn.matches(".clear-ac")) clearCalc();
         if (activeBtn.matches(".clear-c")) clearOneCalc();
         if (activeBtn.matches(".btn-plus-minus")) plusMinus(activeBtn);
@@ -188,9 +167,7 @@ function pressABtn(activeBtn) {
 
 btnContainer.addEventListener("mouseover", e => {
     if (e.target.matches(".calc__btn")) {
-        // console.log(e.target);
         e.target.style.transitionDuration = ".25s";
-
     }
 })
 
@@ -221,14 +198,15 @@ function displayCalcAndSum() {
         calculationDisplayEqualSign.classList.add("show")
     } else {
         calculationDisplayEqualSign.classList.remove("show")
-
     }
+    console.log(latestCalcObject.sum);
 
-    liveResult = latestCalcObject.sum || latestCalcObject.baseValue;
+    liveResult = latestCalcObject.sum ?? latestCalcObject.baseValue;
 
     if (Number.isNaN(liveResult)) {
         console.log("Number is NaN");
     } else if (resultContainer.textContent !== liveResult.toString()) {
+        console.log("damn");
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
         resultContainer.classList.add("fade")
 
@@ -256,8 +234,6 @@ function handleResultTransitionEnd() {
         console.log("currentFontSize", resultContainerFontSize);
         resultContainer.style.fontSize = resultContainerFontSize - shrinkFont + "px";
     }
-
-    // Remove the event listener after handling
     resultContainer.removeEventListener("transitionend", handleResultTransitionEnd);
 }
 
@@ -280,12 +256,8 @@ function clearCalc() {
     resultContainer.addEventListener(
         "transitionend",
         (e) => {
-            console.log("trans end");
-
             calculationDisplayText.textContent = "";
-            // calculationDisplayText.classList.remove("shrink");
             calculationDisplayEqualSign.style.transitionDuration = ""
-
 
             resultContainer.textContent = "";
             welcomeText.innerHTML = `You stink at maths!<br>Let's try again`
@@ -295,46 +267,45 @@ function clearCalc() {
             flipExtraBtns()
             loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
         },
-        { once: true } // Automatically removes the listener after the first execution
+        { once: true }
     );
     
     console.log("delete!");
 }
 
-let savedDigitBeforePop;
+let digitsFromPreviousObject;
 
 function clearOneCalc() {
-    // negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
-
     allNewDigits = "";
     let currentObjectNewValue = calcObjectArr.at(-1).newValue;
     let currentObjectNewValueLength = currentObjectNewValue?.toString().length;
 
     console.log(calcObjectArr.length);
     console.log(currentObjectNewValue);
+    console.log(calcObjectArr);
 
+    // Object has no value
     if (currentObjectNewValue === undefined) {
 
         calcObjectArr.pop()
-        savedDigitBeforePop = calcObjectArr.at(-1).newValue.toString();
-        console.log("undef", savedDigitBeforePop);
-        allNewDigits = savedDigitBeforePop
+        digitsFromPreviousObject = calcObjectArr.at(-1).newValue.toString();
+        console.log("undef", digitsFromPreviousObject);
+        allNewDigits = digitsFromPreviousObject
 
         negNumber = false;
         plusMinusBtn.classList.remove("is-on")
-        console.log(calcObjectArr);
-        // runCalculator()
-        // displayCalcAndSum()
+
+    // Object value is more than one digit long
     } else if (currentObjectNewValueLength > 1) {
-        console.log("hereeee");
+        // Take last digit out from value
         let newValueString = String(currentObjectNewValue).slice(0, -1);
+        // Object value is just a "-"
         if (newValueString === "-") {
-            console.log("one");
             calcObjectArr.at(-1).newValueString = undefined;
             allNewDigits = ""
             calcObjectArr.at(-1).newValue = undefined;
         } else {
-            console.log("two");
+            console.log("yo");
             allNewDigits = newValueString;
             calcObjectArr.at(-1).newValueString = newValueString;
 
@@ -342,27 +313,25 @@ function clearOneCalc() {
             calcObjectArr.at(-1).newValue = newNumber;
         }
         runCalculator()
-
+    // Only one digit left in value
     } else if (calcObjectArr.length === 1) {
-        console.log("the one");
         let buttonZero = document.querySelector(".btn-zero")
-        console.log("darn");
         calcObjectArr.pop()
         regNum(buttonZero)
     } else {
+        console.log("there");
         calcObjectArr.at(-1).newValue = undefined;
+        calcObjectArr.at(-1).sum = undefined;
+        runCalculator()
     }
-
 }
 
 function regNum(btn) {
     cancelAnimationFrame(loopBtnAnim)
-    console.log(btn);
-
-    console.log(calcObjectArr);
-
+    btnNumbers.forEach(btn => {
+        btn.classList.remove("disco-trans")
+    })
     newDigit = btn.textContent;
-    console.log(newDigit);
 
     if (calculationDisplayText.classList.contains("shrink")) {
         setTimeout(() => {
@@ -370,17 +339,23 @@ function regNum(btn) {
         }, 1000);
     }
 
-
     if (newDigit === "." && allNewDigits.includes(".")) {
-        // console.log("it includes a dot");
-    } else if (allNewDigits.length > 0 && allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
-        allNewDigits += newDigit;
-        // console.log("we are slicing");
-        allNewDigits = allNewDigits.slice(1)
+        // Do nothing to prevent multiple decimal points
+    } else if (allNewDigits === "0" && newDigit !== ".") {
+        // Replace leading "0" if the new digit isn’t a "."
+        allNewDigits = newDigit;
     } else {
+        // Append the new digit
         allNewDigits += newDigit;
     }
-
+    // if (newDigit === "." && allNewDigits.includes(".")) {
+    // } else if (allNewDigits.length > 0 && allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
+    //     allNewDigits += newDigit;
+    //     // console.log("we are slicing");
+    //     allNewDigits = allNewDigits.slice(1)
+    // } else {
+    //     allNewDigits += newDigit;
+    // }
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     let negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
 
@@ -621,14 +596,15 @@ document.addEventListener("keyup", event => {
     }
 })
 
-let blob = false
-
 let lastTime = 0;
-let delay = 300;
+let delay = 500;
 
 let loopBtnAnim;
-
+console.log(btnNumbers);
 function blobBtnNumbers(currentTime) {
+    btnNumbers.forEach(btn => {
+        btn.classList.add("disco-trans")
+    })
 
     if (!lastTime) lastTime = currentTime;
 
@@ -642,6 +618,7 @@ function blobBtnNumbers(currentTime) {
         // console.log(onlyShowingNumbers);
         let randomBtn = Math.floor(Math.random() * 9) + 1
         let currentBtn = onlyShowingNumbers[randomBtn];
+        currentBtn.style.transitionDuration = ""
 
 
         if (currentBtn.classList.contains("blob")) {

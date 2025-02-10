@@ -133,7 +133,7 @@ main {
     color: var(--maroonColor);
     min-width: fit-content;
     max-width: 200px;
-    word-break: break-all;
+    /* word-break: break-all; */
     border-bottom: 1px solid var(--grayColorDark);
     transition: font-size .5s;
 }
@@ -265,10 +265,13 @@ main {
     flex-direction: column;
 }
 
-.calc__keyboard__numbers {
+div.calc__keyboard__numbers {
     width: 170px;
     height: 220px;
     grid-area: n;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, auto);
 }
 
 .calc__keyboard__numbers div{
@@ -321,13 +324,13 @@ main {
 .btn-num {
     border: 1px solid var(--grayColor);
     padding-top: 4px;
-    transition: all 1s;
+    /* height: 25%; */
+    transition: border 1s, background-color 1s, color 1s, font-size 1s, font-variation-settings 1s, height 1s ;
 }
 
-.btn-num.hover {
-    color: var(--grayColorDark);
-    background: var(--grayColorLight);
-    border: .5px solid var(--grayColor);
+.btn-num.disco-trans {
+    transition: border 2s, background-color 3s, color 3s, font-size 3s, font-variation-settings 3s, height 2s ;
+
 }
 
 .btn-num.blob {
@@ -335,7 +338,13 @@ main {
     color: var(--maroonColor);
     font-size: 2rem;
     font-variation-settings: "wght"600, "opsz"72;
-    /* color: var(--grayColorLight); */
+    border: .5px solid var(--grayColor);    /* color: var(--grayColorLight); */
+}
+
+.btn-num.hover {
+    color: var(--maroonColor);
+    background-color: var(--grayColorLight);
+    border: .5px solid var(--grayColor);
 }
 
 .btn-decimal {
@@ -451,7 +460,7 @@ main {
 }
 
 @media (min-width: 425px) {
-    .calc__keyboard__numbers {
+    div.calc__keyboard__numbers {
         width: 200px;
         height: 250px;
     }
@@ -473,7 +482,7 @@ main {
         height: 100px;
         padding-bottom: 20px;
     }
-    .calc__keyboard__numbers {
+    div.calc__keyboard__numbers {
         width: 250px;
         height: 300px;
     }
