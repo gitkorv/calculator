@@ -262,6 +262,13 @@ function handleResultTransitionEnd() {
 }
 
 function clearCalc() {
+    newDigit = "";
+    allNewDigits = "";
+    calcObjectArr = [];
+    calculationDisplayEqualSign.style.transitionDuration = ".25s"
+    calculationDisplayEqualSign.classList.remove("show")
+
+
     calculationDisplayText.classList.add("shrink");
     negNumber = false;
     plusMinusBtn.classList.remove("is-on");
@@ -274,14 +281,13 @@ function clearCalc() {
         "transitionend",
         (e) => {
             console.log("trans end");
-            newDigit = "";
-            allNewDigits = "";
-            calcObjectArr = [];
+
             calculationDisplayText.textContent = "";
             // calculationDisplayText.classList.remove("shrink");
+            calculationDisplayEqualSign.style.transitionDuration = ""
+
 
             resultContainer.textContent = "";
-            calculationDisplayEqualSign.classList.remove("show")
             welcomeText.innerHTML = `You stink at maths!<br>Let's try again`
             welcomeText.classList.remove("fly-out")
 
