@@ -84,8 +84,6 @@ function runCalculator() {
 
     sum = isNaN(sum) ? calcObjectAtEnd.baseValue : sum;
     calcObjectAtEnd.sum = sum;
-    console.log(calcObjectAtEnd);
-    console.log(calcObjectArr);
 }
 
 /// BUTTON EVENTS
@@ -202,14 +200,14 @@ function displayCalcAndSum() {
     } else {
         calculationDisplayEqualSign.classList.remove("show")
     }
-    console.log(calcObjectArr);
+    // console.log(calcObjectArr);
 
     liveResult = latestCalcObject.sum ?? latestCalcObject.baseValue;
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("Number is NaN or Undefined");
     } else if (resultContainer.textContent !== liveResult.toString()) {
-        console.log("damn");
+        console.log("result is not same as last result");
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
         resultContainer.classList.add("fade")
 
@@ -283,12 +281,9 @@ function clearOneCalc() {
     let currentObjectNewValue = calcObjectArr.at(-1).newValue;
     let currentObjectNewValueLength = currentObjectNewValue?.toString().length;
 
-    console.log(calcObjectArr.length);
-    console.log(currentObjectNewValue);
-    console.log(calcObjectArr);
-
     // Object has no value
     if (currentObjectNewValue === undefined) {
+        console.log("undefined");
 
         calcObjectArr.pop()
         digitsFromPreviousObject = calcObjectArr.at(-1).newValue.toString();
@@ -300,6 +295,7 @@ function clearOneCalc() {
 
     // Object value is more than one digit long
     } else if (currentObjectNewValueLength > 1) {
+        console.log("newValue is over 1 in length");
         // Take last digit out from value
         let newValueString = String(currentObjectNewValue).slice(0, -1);
         // Object value is just a "-"
@@ -322,7 +318,7 @@ function clearOneCalc() {
         calcObjectArr.pop()
         regNum(buttonZero)
     } else {
-        console.log("there");
+        calcObjectHasNoValue = true;
         calcObjectArr.at(-1).newValue = undefined;
         calcObjectArr.at(-1).sum = undefined;
         runCalculator()
