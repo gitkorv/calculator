@@ -179,7 +179,9 @@ function displayCalcAndSum() {
 
     for (let i = 0; i < calcObjectArr.length; i++) {
         let object = calcObjectArr[i];
-        let currentNewDigit = object.newValue < 0 ? `(${object.newValueString})` : object.newValueString;
+        let currentNewDigit = object.newValue < 0 ? `${object.newValueString}` : object.newValueString;
+        // let currentNewDigit = negNumber ? `(${object.newValueString})` : object.newValueString;
+        
 
         if (i < 1 && currentNewDigit === undefined) {
             displayCalculation = "";
@@ -202,7 +204,7 @@ function displayCalcAndSum() {
     }
     console.log(calcObjectArr);
 
-    liveResult = latestCalcObject.sum || latestCalcObject.baseValue;
+    liveResult = latestCalcObject.sum ?? latestCalcObject.baseValue;
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("Number is NaN or Undefined");
@@ -328,9 +330,10 @@ function clearOneCalc() {
 }
 
 function regNum(btn) {
+    calcObjectHasNoValue = false;
+
     cancelAnimationFrame(loopBtnAnim)
     newDigit = btn.textContent;
-    console.log("new digit");
 
     if (calculationDisplayText.classList.contains("shrink")) {
         setTimeout(() => {
@@ -356,7 +359,7 @@ function regNum(btn) {
     //     allNewDigits += newDigit;
     // }
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    let negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
+    let negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
 
     if (calcObjectArr.length === 0) {
         calcObjectArr.push(createCalcObject(0, negOrNotDigits, negOrNotString, add, "+"))
@@ -381,7 +384,7 @@ function regNum(btn) {
 function plusMinus() {
     negNumber = !negNumber;
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    negOrNotString = negNumber ? `-${allNewDigits}` : allNewDigits;
+    negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
     calcObjectArr[calcObjectArr.length - 1].newValue = compiledDigits;
     calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
 
@@ -391,6 +394,8 @@ function plusMinus() {
 }
 
 const makeNegNumberOrNot = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
+
+let calcObjectHasNoValue;
 
 function opSymbol(btn) {
     let opSym = btn.textContent;
@@ -412,41 +417,46 @@ function opSymbol(btn) {
         operator = divide;
     } else { operator = add; }
 
-    let newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, undefined, undefined, operator, opSym);
-
-    console.log(previousObject);
-
-    console.log(newCalcObject);
+    let newCalcObject 
 
     // If there is no new value but different operator
-    if (calcObjectArr.length > 1 && 
-        newCalcObject.opSym !== previousObject.opSym && 
-        newCalcObject.newValue === undefined) {
-        console.log("replacing");
-        let ppp = previousObject.newValue;
-        console.log(ppp);
-        newCalcObject.baseValue = ppp;
-        calcObjectArr[calcObjectArr.length - 1].operator = newCalcObject.operator;
-        calcObjectArr[calcObjectArr.length - 1].opSym = newCalcObject.opSym;
-        // If objects are not identical
-    } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
-        calcObjectArr.push(newCalcObject)
-    }
-    console.log(calcObjectArr);
 
-    // if (calcObjectArr.length === 1 && newCalcObject.opSym === "-") {
-    //     console.log("pushing");
-    //     calcObjectArr.push(newCalcObject)
-    // } else if (newCalcObject.newValue === previousObject.newValue || 
-    //     newCalcObject.newValue === undefined
-    //     && newCalcObject.baseValue === previousObject.baseValue && newCalcObject.opSym !== previousObject.opSym) {
-    //     console.log("write over last object");
-    //     console.log(calcObjectArr.at(-1).sum);
-    //     newCalcObject.baseValue = calcObjectArr.at(-1).sum || 0;
-    //     calcObjectArr[calcObjectArr.length - 1] = newCalcObject;
+    if (calcObjectHasNoValue === true) {
+        console.log("object has no value");
+        previousObject.opSym = opSym;
+        previousObject.operator = operator;
+        // runCalculator()
+    } else {
+        newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, undefined, undefined, operator, opSym);
+
+        if (calcObjectArr.length === 1 && newCalcObject.opSym === "-") {
+            console.log("pushing");
+            calcObjectArr.push(newCalcObject)
+        } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
+            calcObjectArr.push(newCalcObject)
+        }
+        calcObjectHasNoValue = true;
+
+    }
+
+
+    // if (calcObjectArr.length > 1 && 
+    //     newCalcObject.opSym !== previousObject.opSym && 
+    //     newCalcObject.newValue === undefined &&
+    //     newCalcObject.baseValue === previousObject.baseValue) {
+    //     console.log("replacing");
+    //     let ppp = previousObject.newValue;
+    //     console.log(ppp);
+    //     newCalcObject.baseValue = ppp;
+    //     calcObjectArr[calcObjectArr.length - 1].operator = newCalcObject.operator;
+    //     calcObjectArr[calcObjectArr.length - 1].opSym = newCalcObject.opSym;
+    //     // If objects are not identical
     // } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
     //     calcObjectArr.push(newCalcObject)
     // }
+    // console.log(calcObjectArr);
+
+
 }
 
 function add(a, b) { return a + b; }
@@ -622,7 +632,6 @@ let lastTime = 0;
 let delay = 500;
 
 let loopBtnAnim;
-console.log(btnNumbers);
 function blobBtnNumbers(currentTime) {
 
     if (!lastTime) lastTime = currentTime;
