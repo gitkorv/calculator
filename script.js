@@ -85,6 +85,7 @@ function runCalculator() {
     sum = isNaN(sum) ? calcObjectAtEnd.baseValue : sum;
     calcObjectAtEnd.sum = sum;
     console.log(calcObjectAtEnd);
+    console.log(calcObjectArr);
 }
 
 /// BUTTON EVENTS
@@ -199,12 +200,12 @@ function displayCalcAndSum() {
     } else {
         calculationDisplayEqualSign.classList.remove("show")
     }
-    console.log(latestCalcObject.sum);
+    console.log(calcObjectArr);
 
-    liveResult = latestCalcObject.sum ?? latestCalcObject.baseValue;
+    liveResult = latestCalcObject.sum || latestCalcObject.baseValue;
 
-    if (Number.isNaN(liveResult)) {
-        console.log("Number is NaN");
+    if (Number.isNaN(liveResult) || liveResult === undefined) {
+        console.log("Number is NaN or Undefined");
     } else if (resultContainer.textContent !== liveResult.toString()) {
         console.log("damn");
         let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
@@ -328,10 +329,8 @@ function clearOneCalc() {
 
 function regNum(btn) {
     cancelAnimationFrame(loopBtnAnim)
-    btnNumbers.forEach(btn => {
-        btn.classList.remove("disco-trans")
-    })
     newDigit = btn.textContent;
+    console.log("new digit");
 
     if (calculationDisplayText.classList.contains("shrink")) {
         setTimeout(() => {
@@ -415,16 +414,39 @@ function opSymbol(btn) {
 
     let newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, undefined, undefined, operator, opSym);
 
-    if (calcObjectArr.length === 1 && newCalcObject.opSym === "-") {
-        calcObjectArr.push(newCalcObject)
-    } else if (newCalcObject.newValue === previousObject.newValue || newCalcObject.newValue === undefined
-        && newCalcObject.baseValue === previousObject.baseValue && newCalcObject.opSym !== previousObject.opSym) {
-        // console.log("write over last object");
-        newCalcObject.baseValue = calcObjectArr.at(-1).sum;
-        calcObjectArr[calcObjectArr.length - 1] = newCalcObject;
+    console.log(previousObject);
+
+    console.log(newCalcObject);
+
+    // If there is no new value but different operator
+    if (calcObjectArr.length > 1 && 
+        newCalcObject.opSym !== previousObject.opSym && 
+        newCalcObject.newValue === undefined) {
+        console.log("replacing");
+        let ppp = previousObject.newValue;
+        console.log(ppp);
+        newCalcObject.baseValue = ppp;
+        calcObjectArr[calcObjectArr.length - 1].operator = newCalcObject.operator;
+        calcObjectArr[calcObjectArr.length - 1].opSym = newCalcObject.opSym;
+        // If objects are not identical
     } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
         calcObjectArr.push(newCalcObject)
     }
+    console.log(calcObjectArr);
+
+    // if (calcObjectArr.length === 1 && newCalcObject.opSym === "-") {
+    //     console.log("pushing");
+    //     calcObjectArr.push(newCalcObject)
+    // } else if (newCalcObject.newValue === previousObject.newValue || 
+    //     newCalcObject.newValue === undefined
+    //     && newCalcObject.baseValue === previousObject.baseValue && newCalcObject.opSym !== previousObject.opSym) {
+    //     console.log("write over last object");
+    //     console.log(calcObjectArr.at(-1).sum);
+    //     newCalcObject.baseValue = calcObjectArr.at(-1).sum || 0;
+    //     calcObjectArr[calcObjectArr.length - 1] = newCalcObject;
+    // } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
+    //     calcObjectArr.push(newCalcObject)
+    // }
 }
 
 function add(a, b) { return a + b; }
@@ -602,9 +624,6 @@ let delay = 500;
 let loopBtnAnim;
 console.log(btnNumbers);
 function blobBtnNumbers(currentTime) {
-    btnNumbers.forEach(btn => {
-        btn.classList.add("disco-trans")
-    })
 
     if (!lastTime) lastTime = currentTime;
 
@@ -618,7 +637,7 @@ function blobBtnNumbers(currentTime) {
         // console.log(onlyShowingNumbers);
         let randomBtn = Math.floor(Math.random() * 9) + 1
         let currentBtn = onlyShowingNumbers[randomBtn];
-        currentBtn.style.transitionDuration = ""
+        currentBtn.style.transitionDuration = "2s"
 
 
         if (currentBtn.classList.contains("blob")) {
@@ -627,6 +646,8 @@ function blobBtnNumbers(currentTime) {
             currentBtn.classList.add("blob")
             setTimeout(() => {
                 currentBtn.classList.remove("blob")
+                currentBtn.style.transitionDuration = ""
+
             }, 2000);
         }
         lastTime = currentTime;

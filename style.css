@@ -252,6 +252,7 @@ main {
     /* width: 300px; */
     flex-wrap: wrap;
     gap: var(--gap);
+    scroll-behavior: none;
 }
 
 .calc__keyboard > div {
@@ -274,7 +275,7 @@ div.calc__keyboard__numbers {
     grid-template-rows: repeat(4, auto);
 }
 
-.calc__keyboard__numbers div{
+div.calc__keyboard__numbers div{
     flex: 1 0 25%;
     /* height: 40px; */
     /* min-width: 30%; */
@@ -322,15 +323,16 @@ div.calc__keyboard__numbers {
 }
 
 .btn-num {
-    border: 1px solid var(--grayColor);
+    border: solid var(--grayColor);
+    border-width: 1px;
     padding-top: 4px;
     /* height: 25%; */
-    transition: border 1s, background-color 1s, color 1s, font-size 1s, font-variation-settings 1s, height 1s ;
-}
-
-.btn-num.disco-trans {
-    transition: border 2s, background-color 3s, color 3s, font-size 3s, font-variation-settings 3s, height 2s ;
-
+    transition: border-width 1s, 
+                background-color 1s, 
+                color 1s, 
+                font-size 1s, 
+                font-variation-settings 1s, 
+                height 1s ;
 }
 
 .btn-num.blob {
@@ -338,13 +340,13 @@ div.calc__keyboard__numbers {
     color: var(--maroonColor);
     font-size: 2rem;
     font-variation-settings: "wght"600, "opsz"72;
-    border: .5px solid var(--grayColor);    /* color: var(--grayColorLight); */
+    /* border-width: 2px; */
 }
 
 .btn-num.hover {
     color: var(--maroonColor);
     background-color: var(--grayColorLight);
-    border: .5px solid var(--grayColor);
+    border-width: .5px;
 }
 
 .btn-decimal {
