@@ -215,7 +215,8 @@ function displayCalcAndSum() {
             resultContainer.classList.remove("fade", "mini")
 
             liveResult = Math.round(liveResult * 100) / 100;
-            resultContainer.textContent = liveResult;
+            let formattedNumber = new Intl.NumberFormat('us-US').format(liveResult);
+            resultContainer.textContent = formattedNumber;
             resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
 
         }, fadeTime);
