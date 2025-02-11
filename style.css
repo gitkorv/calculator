@@ -276,9 +276,11 @@ div.calc__keyboard__numbers {
 }
 
 div.calc__keyboard__numbers div{
-    flex: 1 0 25%;
+    flex: 1 1 25%;
+    /* background-color: white; */
     /* height: 40px; */
-    /* min-width: 30%; */
+    /* min-height: 30%; */
+    /* transition: height .2s; */
 }
 
 .calc__keyboard__numbers div:nth-child(10){
