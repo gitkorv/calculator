@@ -289,8 +289,8 @@ function clearOneCalc() {
         digitsFromPreviousObject = calcObjectArr.at(-1).newValue.toString();
         console.log("undef", digitsFromPreviousObject);
         allNewDigits = digitsFromPreviousObject
-
-        negNumber = false;
+        console.log(allNewDigits);
+        // negNumber = false;
         plusMinusBtn.classList.remove("is-on")
 
     // Object value is more than one digit long
@@ -300,17 +300,32 @@ function clearOneCalc() {
         let newValueString = String(currentObjectNewValue).slice(0, -1);
         // Object value is just a "-"
         if (newValueString === "-") {
-            calcObjectArr.at(-1).newValueString = undefined;
+            // negNumber = true;
+            console.log("new value string is -");
+            calcObjectArr.at(-1).newValueString = "";
             allNewDigits = ""
-            calcObjectArr.at(-1).newValue = undefined;
+            calcObjectArr.at(-1).newValue = "";
+            calcObjectHasNoValue = true;
+            plusMinus()
         } else {
             console.log("yo");
+            console.log("newValueString", newValueString);
             allNewDigits = newValueString;
-            calcObjectArr.at(-1).newValueString = newValueString;
+            console.log(allNewDigits);
+            console.log(negNumber);
 
-            let newNumber = Number(newValueString)
+            allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
+
+
+            negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+            negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
+
+            calcObjectArr.at(-1).newValueString = negOrNotString;
+
+            let newNumber = Number(negOrNotDigits)
             calcObjectArr.at(-1).newValue = newNumber;
         }
+        displayCalcAndSum()
         runCalculator()
     // Only one digit left in value
     } else if (calcObjectArr.length === 1) {
@@ -336,7 +351,7 @@ function regNum(btn) {
             calculationDisplayText.classList.remove("shrink")
         }, 1000);
     }
-
+    console.log(allNewDigits);
     if (newDigit === "." && allNewDigits.includes(".")) {
         // Do nothing to prevent multiple decimal points
     } else if (allNewDigits === "0" && newDigit !== ".") {
@@ -354,6 +369,8 @@ function regNum(btn) {
     // } else {
     //     allNewDigits += newDigit;
     // }
+    allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
+
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     let negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
 
@@ -363,6 +380,8 @@ function regNum(btn) {
 
     calcObjectArr[calcObjectArr.length - 1].newValue = negOrNotDigits;
     calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
+
+    console.log(calcObjectArr);
 
     if (!btnsFoldedOut) {
         flipExtraBtns()
