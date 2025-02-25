@@ -86,6 +86,35 @@ function runCalculator() {
     calcObjectAtEnd.sum = sum;
 }
 
+function runCalcOnAllObjects() {
+    console.log(calcObjectArr);
+    const sum = calcObjectArr
+        // .sort((a,b => b.operator === add || b.operator === sub - ))
+        .reduce((acc, currentValue) => {
+        currentValue.sum = currentValue.operator(acc, currentValue.newValue)
+        return currentValue.sum
+    },0)
+    console.log(sum);
+    return sum
+}
+
+function makeCalcDisplayForAllObjects() {
+    const calcString = calcObjectArr.map((calculation, i) => {
+        // Check if the next element exists in the array (i + 1)
+        if (calcObjectArr[i + 1]) {
+            console.log("hoho");
+            return `${calculation.newValueString} ${calcObjectArr[i + 1].opSym}`;
+        } else {
+            console.log("haha");
+            return calculation.newValueString;
+        }        
+    }).join(" ");    
+    console.log(calcString);
+    return calcString
+}
+
+
+
 /// BUTTON EVENTS
 
 let activeBtn;
@@ -162,6 +191,10 @@ function pressABtn(activeBtn) {
         }
     }
     setTimeout(() => activeBtn.classList.remove("active"), 300);
+
+    runCalcOnAllObjects()
+    makeCalcDisplayForAllObjects()
+
 }
 
 btnContainer.addEventListener("mouseover", e => {
@@ -193,7 +226,7 @@ function displayCalcAndSum() {
         }
     }
 
-    calculationDisplayText.textContent = displayCalculation;
+    calculationDisplayText.textContent = makeCalcDisplayForAllObjects();
 
     if (calcObjectArr.length > 1 && calcObjectArr.at(-1).newValue !== undefined) {
         calculationDisplayEqualSign.classList.add("show")
@@ -202,27 +235,35 @@ function displayCalcAndSum() {
     }
     // console.log(calcObjectArr);
 
-    liveResult = latestCalcObject.sum ?? latestCalcObject.baseValue;
+    liveResult = runCalcOnAllObjects() ?? latestCalcObject.baseValue;
+
+    console.log(liveResult);
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("Number is NaN or Undefined");
+        liveResult = calcObjectArr.at(-1).sum || calcObjectArr.at(-2).sum;
+        fadeInLiveResult()
     } else if (resultContainer.textContent !== liveResult.toString()) {
         console.log("result is not same as last result");
-        let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
-        resultContainer.classList.add("fade")
-
-        setTimeout(() => {
-            resultContainer.classList.remove("fade", "mini")
-
-            liveResult = Math.round(liveResult * 100) / 100;
-            let formattedNumber = new Intl.NumberFormat('us-US').format(liveResult);
-            resultContainer.textContent = formattedNumber;
-            resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
-
-        }, fadeTime);
+        fadeInLiveResult()
     }
 
     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
+}
+
+function fadeInLiveResult() {
+    let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
+        resultContainer.classList.add("fade")
+
+    setTimeout(() => {
+        resultContainer.classList.remove("fade", "mini")
+
+        liveResult = Math.round(liveResult * 100) / 100;
+        let formattedNumber = new Intl.NumberFormat('us-US').format(liveResult);
+        resultContainer.textContent = formattedNumber;
+        resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
+
+    }, fadeTime);
 }
 
 function handleResultTransitionEnd() {
@@ -282,6 +323,7 @@ function clearOneCalc() {
     let currentObjectNewValue = calcObjectArr.at(-1).newValue;
     let currentObjectNewValueLength = currentObjectNewValue?.toString().length;
 
+
     // Object has no value
     if (currentObjectNewValue === undefined) {
         console.log("undefined");
@@ -326,19 +368,23 @@ function clearOneCalc() {
             let newNumber = Number(negOrNotDigits)
             calcObjectArr.at(-1).newValue = newNumber;
         }
-        displayCalcAndSum()
-        runCalculator()
+
     // Only one digit left in value
     } else if (calcObjectArr.length === 1) {
+        console.log("calcArr length 1");
+
         let buttonZero = document.querySelector(".btn-zero")
         calcObjectArr.pop()
         regNum(buttonZero)
     } else {
+        console.log("calcArr length 1 else");
+
         calcObjectHasNoValue = true;
         calcObjectArr.at(-1).newValue = undefined;
         calcObjectArr.at(-1).sum = undefined;
         runCalculator()
     }
+    displayCalcAndSum()
 }
 
 function regNum(btn) {
