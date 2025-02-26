@@ -42,6 +42,7 @@ let btnsFoldedOut = false;
 
 // Calculations
 let calcObjectArr = [];
+let newCalcArray = [];
 
 // Keyboard
 const foldOutBtnContainers = [];
@@ -87,15 +88,91 @@ function runCalculator() {
 }
 
 function runCalcOnAllObjects() {
-    console.log(calcObjectArr);
-    const sum = calcObjectArr
-        // .sort((a,b => b.operator === add || b.operator === sub - ))
-        .reduce((acc, currentValue) => {
-        currentValue.sum = currentValue.operator(acc, currentValue.newValue)
-        return currentValue.sum
-    },0)
-    console.log(sum);
-    return sum
+
+    function splitByAdditionAndSubtraction(arr) {
+        let result = [];
+        let temp = [];
+    
+        for (let i = 0; i < arr.length; i++) {
+            let item = arr[i];
+    
+            if (item === add || item === sub) {
+                result.push(temp);  // Store previous group
+                result.push([item]); // Store the operator separately
+                temp = [];           // Start a new group
+            } else {
+                temp.push(item);
+            }
+        }
+    
+        if (temp.length) {
+            result.push(temp);  // Add the last group
+        }
+    
+        return result;
+    }
+    
+    // Example usage:
+    // const arr = [2, "x", 3, "+", 5, "/", 7, "-", 1];
+    let thisOne = splitByAdditionAndSubtraction(newCalcArray);
+    console.log(thisOne);
+    
+    
+
+
+    function reorderNumbersWithOperators(arr, priorityOps = [multiply, divide]) {
+        // Step 1: Identify priority numbers (numbers before "multiply" or "divide")
+        let priorityPairs = [];
+        let otherPairs = [];
+
+        let orderedCalcArray = []
+
+        for (let i = 0; i < arr.length - 2; i++) {
+            let num = arr[i];
+            let op = arr[i + 1];
+            let nextNum = arr[i + 2];
+
+            if (i === 1) {
+                orderedCalcArray.push(num)
+            } else {
+                if (op === multiply || op === divide) {
+
+                }
+            }
+    
+            // if (priorityOps.includes(op)) {
+            //     if (priorityPairs.some(pair => priorityOps.includes(pair[1]))) {
+            //         priorityPairs.push([op, nextNum]);
+            //     } else {
+            //         priorityPairs.push([num, op, nextNum]);
+            //     }
+            // } else {
+            //     otherPairs.push([op, num]);
+            // }
+            
+        }
+
+        // The last number is not followed by an operator, add it separately
+        let lastNum = arr[arr.length - 1];
+
+        // Step 2: Sort priority numbers
+        // priorityPairs.sort((a, b) => a[0] - b[0]); // Sort by number
+
+        // Step 3: Merge priority and other pairs back
+        let sortedArr = [...priorityPairs.flat(), ...otherPairs.flat()];
+
+        // if (arr.length % 2 !== 0) {
+        //     sortedArr.push(arr[arr.length - 1]);
+        // }
+
+        console.log(sortedArr);
+
+    }
+
+    // reorderNumbersWithOperators(newCalcArray);
+
+
+    
 }
 
 function makeCalcDisplayForAllObjects() {
@@ -107,8 +184,8 @@ function makeCalcDisplayForAllObjects() {
         } else {
             console.log("haha");
             return calculation.newValueString;
-        }        
-    }).join(" ");    
+        }
+    }).join(" ");
     console.log(calcString);
     return calcString
 }
@@ -139,7 +216,7 @@ btnContainer.addEventListener(
         const targetBtn = document.elementFromPoint(touch.clientX, touch.clientY);
 
         if (targetBtn && targetBtn !== activeBtn && targetBtn.classList.contains("calc__btn")) {
-            if (activeBtn) activeBtn.classList.remove("active"); 
+            if (activeBtn) activeBtn.classList.remove("active");
             activeBtn = targetBtn;
             activeBtn.classList.add("active");
         }
@@ -194,6 +271,7 @@ function pressABtn(activeBtn) {
 
     runCalcOnAllObjects()
     makeCalcDisplayForAllObjects()
+    console.log(newCalcArray);
 
 }
 
@@ -212,7 +290,7 @@ function displayCalcAndSum() {
         let object = calcObjectArr[i];
         let currentNewDigit = object.newValue < 0 ? `${object.newValueString}` : object.newValueString;
         // let currentNewDigit = negNumber ? `(${object.newValueString})` : object.newValueString;
-        
+
 
         if (i < 1 && currentNewDigit === undefined) {
             displayCalculation = "";
@@ -253,7 +331,7 @@ function displayCalcAndSum() {
 
 function fadeInLiveResult() {
     let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
-        resultContainer.classList.add("fade")
+    resultContainer.classList.add("fade")
 
     setTimeout(() => {
         resultContainer.classList.remove("fade", "mini")
@@ -312,7 +390,7 @@ function clearCalc() {
         },
         { once: true }
     );
-    
+
     console.log("delete!");
 }
 
@@ -336,7 +414,7 @@ function clearOneCalc() {
         // negNumber = false;
         plusMinusBtn.classList.remove("is-on")
 
-    // Object value is more than one digit long
+        // Object value is more than one digit long
     } else if (currentObjectNewValueLength > 1) {
         console.log("newValue is over 1 in length");
         // Take last digit out from value
@@ -369,7 +447,7 @@ function clearOneCalc() {
             calcObjectArr.at(-1).newValue = newNumber;
         }
 
-    // Only one digit left in value
+        // Only one digit left in value
     } else if (calcObjectArr.length === 1) {
         console.log("calcArr length 1");
 
@@ -425,8 +503,23 @@ function regNum(btn) {
         calcObjectArr.push(createCalcObject(0, negOrNotDigits, negOrNotString, add, "+"))
     }
 
+    if (newCalcArray.length === 0 || typeof(newCalcArray.at(-1)) === "function") {
+        newCalcArray.push(negOrNotDigits)
+
+    } else {
+        newCalcArray[newCalcArray.length - 1] = negOrNotDigits
+
+    }
+
+
+    console.log(newCalcArray);
+
     calcObjectArr[calcObjectArr.length - 1].newValue = negOrNotDigits;
     calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
+
+
+
+
 
     console.log(calcObjectArr);
 
@@ -449,6 +542,10 @@ function plusMinus() {
     negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
     calcObjectArr[calcObjectArr.length - 1].newValue = compiledDigits;
     calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
+
+
+    newCalcArray[newCalcArray.length - 1] = compiledDigits
+
 
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
 
@@ -479,7 +576,17 @@ function opSymbol(btn) {
         operator = divide;
     } else { operator = add; }
 
-    let newCalcObject 
+    let newCalcObject
+
+    // console.log(typeof(newCalcArray.at(-1)));
+
+    if (typeof (newCalcArray.at(-1)) === "function") {
+        console.log("its a function");
+        newCalcArray[newCalcArray.length - 1] = operator
+    } else {
+        newCalcArray.push(operator)
+    }
+
 
     // If there is no new value but different operator
 
@@ -529,7 +636,7 @@ function multiply(a, b) { return a * b; }
 
 function divide(a, b) { return a / b; }
 
-function reminder(a, b) { 
+function reminder(a, b) {
     let result = a % b;
     return result < 0 ? Math.abs(result) : result;
 }
