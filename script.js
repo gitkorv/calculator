@@ -41,7 +41,6 @@ let liveResult;
 let btnsFoldedOut = false;
 
 // Calculations
-let calcObjectArr = [];
 let newCalcArray = [];
 
 // Keyboard
@@ -67,135 +66,6 @@ const extraButtons = {
         elements: []
     }
 }
-
-function createCalcObject(baseValue, newValue, newValueString, operator, opSym) {
-    return {
-        baseValue: baseValue,
-        newValue: newValue,
-        newValueString: newValueString,
-        operator: operator,
-        opSym: opSym,
-        sum: operator(baseValue, newValue)
-    }
-}
-
-function runCalculator() {
-    let calcObjectAtEnd = calcObjectArr.at(-1);
-    let sum = calcObjectAtEnd.operator(parseFloat(calcObjectAtEnd.baseValue), calcObjectAtEnd.newValue);
-
-    sum = isNaN(sum) ? calcObjectAtEnd.baseValue : sum;
-    calcObjectAtEnd.sum = sum;
-}
-
-function runCalcOnAllObjects() {
-
-    function splitByAdditionAndSubtraction(arr) {
-        let result = [];
-        let temp = [];
-    
-        for (let i = 0; i < arr.length; i++) {
-            let item = arr[i];
-    
-            if (item === add || item === sub) {
-                result.push(temp);  // Store previous group
-                result.push([item]); // Store the operator separately
-                temp = [];           // Start a new group
-            } else {
-                temp.push(item);
-            }
-        }
-    
-        if (temp.length) {
-            result.push(temp);  // Add the last group
-        }
-    
-        return result;
-    }
-    
-    // Example usage:
-    // const arr = [2, "x", 3, "+", 5, "/", 7, "-", 1];
-
-    let completeCalc = splitByAdditionAndSubtraction(newCalcArray);
-
-    console.log(completeCalc);
-
-    let addAndSubLeft = []
-
-    if (completeCalc.length === 1) {
-        completeCalc[0].forEach(item => {
-            addAndSubLeft.push(item);
-        });
-    } else {
-        completeCalc.forEach(calcItem => {
-            if (calcItem.length > 2) {
-                const sum = calcItem.reduce((acc, curr, i, arr) => {
-                    if (typeof curr === "function" && i > 0) { 
-                        return curr(acc, arr[i + 1]); // Apply function on next number
-                    }
-                    return acc;
-                }, calcItem[0]); // Start with the first number
-                
-                addAndSubLeft.push(sum);
-            } else {
-                addAndSubLeft.push(calcItem[0]); // Just push the number if only one exists
-            }
-        });
-    }
-
-    console.log(addAndSubLeft);
-
-
-    let finalResult = addAndSubLeft.reduce((acc, curr, index, array) => {
-        if (typeof curr === "function") {
-            return curr(acc, array[index + 1]); // Call the function with next number
-        }
-        return acc; // Skip numbers (they are handled by previous operator)
-    }, addAndSubLeft[0]); // Start with the first number
-    
-    console.log(finalResult);
-    return finalResult
-}
-
-// console.log(runCalcOnAllObjects);
-
-function makeCalcDisplayForAllObjects() {
-    // const calcString = calcObjectArr.map((calculation, i) => {
-    //     // Check if the next element exists in the array (i + 1)
-    //     if (calcObjectArr[i + 1]) {
-    //         return `${calculation.newValueString} ${calcObjectArr[i + 1].opSym}`;
-    //     } else {
-    //         return calculation.newValueString;
-    //     }
-    // }).join(" ");
-    // return calcString
-
-        console.log(newCalcArray);
-
-        let displayString = "";
-
-        newCalcArray.forEach(item => {
-            if (typeof item === "function" ) {
-                if (item.name === "multiply") displayString += "x ";
-                if (item.name === "divide") displayString += "/ ";
-                if (item.name === "add") displayString += "+ ";
-                if (item.name === "sub") displayString += "- ";
-            } else {
-                if (item < 0) {
-                    displayString +=`(${item}) `;
-
-                } else {
-                    displayString += item + " ";
-                }
-            }
-        })
-
-        console.log(displayString);
-
-        return displayString
-
-}
-
-
 
 /// BUTTON EVENTS
 
@@ -257,26 +127,20 @@ btnContainer.addEventListener("mouseout", (e) => {
 })
 
 function pressABtn(activeBtn) {
+    console.log("we pressed a btn");
     activeBtn.style.transitionDuration = "";
 
-    if (activeBtn.matches(".btn-num")) {
-        regNum(activeBtn);
-        displayCalcAndSum()
-    } else if (activeBtn.matches(".calc__btn")) {
-        if (activeBtn.matches(".clear-ac")) clearCalc();
-        if (activeBtn.matches(".clear-c")) clearOneCalc();
+    if (activeBtn.matches(".clear-ac")) {
+        clearCalc();
+    } else if (activeBtn.matches(".clear-c")) {
+        clearOneCalc()
+    }  else {   
+        if (activeBtn.matches(".btn-num")) regNum(activeBtn);
         if (activeBtn.matches(".btn-plus-minus")) plusMinus(activeBtn);
         if (activeBtn.matches(".btn-op")) opSymbol(activeBtn);
-
-        if (calcObjectArr.length > 0) {
-            displayCalcAndSum()
-        }
+        displayCalcAndSum()
     }
     setTimeout(() => activeBtn.classList.remove("active"), 300);
-
-    runCalcOnAllObjects()
-    makeCalcDisplayForAllObjects()
-
 }
 
 btnContainer.addEventListener("mouseover", e => {
@@ -285,30 +149,118 @@ btnContainer.addEventListener("mouseover", e => {
     }
 })
 
+
+function runCalcOnAllObjects() {
+
+    function splitByAdditionAndSubtraction(arr) {
+        let result = [];
+        let temp = [];
+    
+        for (let i = 0; i < arr.length; i++) {
+            let item = arr[i];
+    
+            if (item === add || item === sub) {
+                result.push(temp);  // Store previous group
+                result.push([item]); // Store the operator separately
+                temp = [];           // Start a new group
+            } else {
+                temp.push(item);
+            }
+        }
+    
+        if (temp.length) {
+            result.push(temp);  // Add the last group
+        }
+    
+        return result;
+    }
+
+    let completeCalc = splitByAdditionAndSubtraction(newCalcArray);
+
+    console.log(completeCalc);
+
+    let addAndSubLeft = []
+
+    if (completeCalc.length === 1) {
+        completeCalc[0].forEach(item => {
+            addAndSubLeft.push(item);
+        });
+    } else {
+        completeCalc.forEach(calcItem => {
+            if (calcItem.length > 2) {
+                const sum = calcItem.reduce((acc, curr, i, arr) => {
+                    if (typeof curr === "function" && i > 0) { 
+                        return curr(acc, arr[i + 1]); // Apply function on next number
+                    }
+                    return acc;
+                }, calcItem[0]); // Start with the first number
+                
+                addAndSubLeft.push(sum);
+            } else {
+                addAndSubLeft.push(calcItem[0]); // Just push the number if only one exists
+            }
+        });
+    }
+    console.log(addAndSubLeft);
+
+    let finalResult = addAndSubLeft.reduce((acc, curr, index, array) => {
+        if (typeof curr === "function") {
+            return curr(acc, array[index + 1]); // Call the function with next number
+        }
+        return acc; // Skip numbers (they are handled by previous operator)
+    }, addAndSubLeft[0]); // Start with the first number
+    
+    console.log(finalResult);
+    return finalResult
+}
+
+// console.log(runCalcOnAllObjects);
+
+function showCalculation() {
+
+        console.log(newCalcArray);
+        let displayString = "";
+
+        newCalcArray.forEach(item => {
+            if (typeof item === "function" ) {
+                if (item.name === "multiply") displayString += "x ";
+                if (item.name === "divide") displayString += "/ ";
+                if (item.name === "add") displayString += "+ ";
+                if (item.name === "sub") displayString += "- ";
+            } else {
+                if (item < 0) {
+                    displayString +=`(${item}) `;
+
+                } else {
+                    displayString += `${item} `;
+                }
+            }
+        })
+        console.log(displayString);
+        return displayString
+
+}
+
 function displayCalcAndSum() {
 
-
-
-    calculationDisplayText.textContent = makeCalcDisplayForAllObjects();
-
-    if (calcObjectArr.length > 1 && calcObjectArr.at(-1).newValue !== undefined) {
+    console.log(newCalcArray.length);
+    if (newCalcArray.length === 0) {
+        clearCalc()
+    } else if (newCalcArray.length > 2) {
         calculationDisplayEqualSign.classList.add("show")
     } else {
         calculationDisplayEqualSign.classList.remove("show")
     }
-    // console.log(calcObjectArr);
 
-    liveResult = runCalcOnAllObjects() ?? "placeholder";
-
-    console.log("live result is " + liveResult);
+    calculationDisplayText.textContent = showCalculation();
+    liveResult = runCalcOnAllObjects();
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
-        liveResult = calcObjectArr.at(-1).sum || calcObjectArr.at(-2).sum;
-        fadeInLiveResult()
+        console.log("Result is NaN");
     } else if (resultContainer.textContent !== liveResult.toString()) {
+        console.log("live result is " + liveResult);
         fadeInLiveResult()
     }
-
     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
 }
 
@@ -318,12 +270,10 @@ function fadeInLiveResult() {
 
     setTimeout(() => {
         resultContainer.classList.remove("fade", "mini")
-
         liveResult = Math.round(liveResult * 100) / 100;
         let formattedNumber = new Intl.NumberFormat('us-US').format(liveResult);
         resultContainer.textContent = formattedNumber;
         resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
-
     }, fadeTime);
 }
 
@@ -344,19 +294,14 @@ function handleResultTransitionEnd() {
 function clearCalc() {
     newDigit = "";
     allNewDigits = "";
-    calcObjectArr = [];
+    newCalcArray = [];
     calculationDisplayEqualSign.style.transitionDuration = ".25s"
     calculationDisplayEqualSign.classList.remove("show")
-
-
     calculationDisplayText.classList.add("shrink");
     negNumber = false;
     plusMinusBtn.classList.remove("is-on");
-
-
     resultContainer.style.fontSize = "";
     resultContainer.classList.add("mini");
-
     resultContainer.addEventListener(
         "transitionend",
         (e) => {
@@ -373,18 +318,11 @@ function clearCalc() {
         },
         { once: true }
     );
-
-    console.log("delete!");
+    console.log("delete all!");
 }
-
-let digitsFromPreviousObject;
 
 function clearOneCalc() {
     allNewDigits = "";
-    let currentObjectNewValue = calcObjectArr.at(-1).newValue;
-    let currentObjectNewValueLength = currentObjectNewValue?.toString().length;
-
-    console.log(newCalcArray.at(-1));
 
     if (typeof newCalcArray.at(-1) === "number") {
         let number = newCalcArray.at(-1);
@@ -403,81 +341,11 @@ function clearOneCalc() {
     } else if (typeof newCalcArray.at(-1) === "function") {
         console.log("its a function");
         newCalcArray.pop(); // Properly remove last item
-
-    }
-
-    console.log(newCalcArray);
-    
-    runCalcOnAllObjects()
-    makeCalcDisplayForAllObjects()
-
-
-
-    // Object has no value
-    if (currentObjectNewValue === undefined) {
-        console.log("undefined");
-
-        calcObjectArr.pop()
-        digitsFromPreviousObject = calcObjectArr.at(-1).newValue.toString();
-        console.log("undef", digitsFromPreviousObject);
-        allNewDigits = digitsFromPreviousObject
-        console.log(allNewDigits);
-        // negNumber = false;
-        plusMinusBtn.classList.remove("is-on")
-
-        // Object value is more than one digit long
-    } else if (currentObjectNewValueLength > 1) {
-        console.log("newValue is over 1 in length");
-        // Take last digit out from value
-        let newValueString = String(currentObjectNewValue).slice(0, -1);
-        // Object value is just a "-"
-        if (newValueString === "-") {
-            // negNumber = true;
-            console.log("new value string is -");
-            calcObjectArr.at(-1).newValueString = "";
-            allNewDigits = ""
-            calcObjectArr.at(-1).newValue = "";
-            calcObjectHasNoValue = true;
-            plusMinus()
-        } else {
-            console.log("yo");
-            console.log("newValueString", newValueString);
-            allNewDigits = newValueString;
-            console.log(allNewDigits);
-            console.log(negNumber);
-
-            allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
-
-
-            negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-            negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
-
-            calcObjectArr.at(-1).newValueString = negOrNotString;
-
-            let newNumber = Number(negOrNotDigits)
-            calcObjectArr.at(-1).newValue = newNumber;
-        }
-
-        // Only one digit left in value
-    } else if (calcObjectArr.length === 1) {
-        console.log("calcArr length 1");
-
-        let buttonZero = document.querySelector(".btn-zero")
-        calcObjectArr.pop()
-        regNum(buttonZero)
-    } else {
-        console.log("calcArr length 1 else");
-
-        calcObjectHasNoValue = true;
-        calcObjectArr.at(-1).newValue = undefined;
-        calcObjectArr.at(-1).sum = undefined;
-        runCalculator()
     }
     displayCalcAndSum()
 }
 
 function regNum(btn) {
-    calcObjectHasNoValue = false;
 
     cancelAnimationFrame(loopBtnAnim)
     newDigit = btn.textContent;
@@ -487,6 +355,7 @@ function regNum(btn) {
             calculationDisplayText.classList.remove("shrink")
         }, 1000);
     }
+
     if (newDigit === "." && allNewDigits.includes(".")) {
         // Do nothing to prevent multiple decimal points
     } else if (allNewDigits === "0" && newDigit !== ".") {
@@ -496,77 +365,37 @@ function regNum(btn) {
         // Append the new digit
         allNewDigits += newDigit;
     }
-    // if (newDigit === "." && allNewDigits.includes(".")) {
-    // } else if (allNewDigits.length > 0 && allNewDigits.charAt(0) === "0" && allNewDigits.charAt(1) !== ".") {
-    //     allNewDigits += newDigit;
-    //     // console.log("we are slicing");
-    //     allNewDigits = allNewDigits.slice(1)
-    // } else {
-    //     allNewDigits += newDigit;
-    // }
+
     allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    let negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
-
-    if (calcObjectArr.length === 0) {
-        calcObjectArr.push(createCalcObject(0, negOrNotDigits, negOrNotString, add, "+"))
-    }
 
     if (newCalcArray.length === 0 || typeof(newCalcArray.at(-1)) === "function") {
         newCalcArray.push(negOrNotDigits)
-
     } else {
         newCalcArray[newCalcArray.length - 1] = negOrNotDigits
-
     }
-
-
-
-    calcObjectArr[calcObjectArr.length - 1].newValue = negOrNotDigits;
-    calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
-
 
     if (!btnsFoldedOut) {
         flipExtraBtns()
-
         welcomeText.classList.add("fly-out")
-        welcomeText.addEventListener("transitionend", e => {
-            // welcomeText.remove();
-        })
-        // operatorsOpen = true;
-    } else {
-        runCalculator()
-    }
+    } 
 }
 
 function plusMinus() {
     negNumber = !negNumber;
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    negOrNotString = negNumber ? `(-${allNewDigits})` : allNewDigits;
-    calcObjectArr[calcObjectArr.length - 1].newValue = compiledDigits;
-    calcObjectArr[calcObjectArr.length - 1].newValueString = negOrNotString;
-
-
     newCalcArray[newCalcArray.length - 1] = compiledDigits
-
-
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
-
-    runCalculator()
 }
 
 const makeNegNumberOrNot = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
 
-let calcObjectHasNoValue;
-
 function opSymbol(btn) {
     let opSym = btn.textContent;
-    let previousObject = calcObjectArr[calcObjectArr.length - 1]
 
     negNumber = false;
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
-
 
     allNewDigits = "";
     let operator
@@ -580,64 +409,17 @@ function opSymbol(btn) {
         operator = divide;
     } else { operator = add; }
 
-    let newCalcObject
-
-    // console.log(typeof(newCalcArray.at(-1)));
-
     if (typeof (newCalcArray.at(-1)) === "function") {
         console.log("its a function");
         newCalcArray[newCalcArray.length - 1] = operator
     } else {
         newCalcArray.push(operator)
     }
-
-
-    // If there is no new value but different operator
-
-    if (calcObjectHasNoValue === true) {
-        console.log("object has no value");
-        previousObject.opSym = opSym;
-        previousObject.operator = operator;
-        // runCalculator()
-    } else {
-        newCalcObject = createCalcObject(calcObjectArr.at(-1).sum, undefined, undefined, operator, opSym);
-
-        if (calcObjectArr.length === 1 && newCalcObject.opSym === "-") {
-            console.log("pushing");
-            calcObjectArr.push(newCalcObject)
-        } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
-            calcObjectArr.push(newCalcObject)
-        }
-        calcObjectHasNoValue = true;
-
-    }
-
-
-    // if (calcObjectArr.length > 1 && 
-    //     newCalcObject.opSym !== previousObject.opSym && 
-    //     newCalcObject.newValue === undefined &&
-    //     newCalcObject.baseValue === previousObject.baseValue) {
-    //     console.log("replacing");
-    //     let ppp = previousObject.newValue;
-    //     console.log(ppp);
-    //     newCalcObject.baseValue = ppp;
-    //     calcObjectArr[calcObjectArr.length - 1].operator = newCalcObject.operator;
-    //     calcObjectArr[calcObjectArr.length - 1].opSym = newCalcObject.opSym;
-    //     // If objects are not identical
-    // } else if (JSON.stringify(newCalcObject) !== JSON.stringify(previousObject)) {
-    //     calcObjectArr.push(newCalcObject)
-    // }
-    // console.log(calcObjectArr);
-
-
 }
 
 function add(a, b) { return a + b; }
-
 function sub(a, b) { return a - b; }
-
 function multiply(a, b) { return a * b; }
-
 function divide(a, b) { return a / b; }
 
 function reminder(a, b) {
@@ -651,7 +433,6 @@ const decimalBtn = document.querySelector(".btn-decimal")
 function createKeyboardOperators() {
 
     for (let key in extraButtons) {
-
         let container = extraButtons[key].parentContainer;
         foldOutBtnContainers.push(container)
         let allSymbols = extraButtons[key].btnTexts;
@@ -664,20 +445,18 @@ function createKeyboardOperators() {
             element.textContent = symbol;
             let uniqueClassName = elClasses[i] ? elClasses[i] : elClasses[0];
             element.className = `calc__btn ${uniqueClassName} btn-fold-out`
-
             wrapper.append(element)
             container.append(wrapper)
         })
     }
 }
-
 createKeyboardOperators()
 
 const plusMinusBtn = document.querySelector(".btn-plus-minus")
-
 let isRunning = false;
 
 function flipExtraBtns() {
+    console.log('flippin');
     if (isRunning) return;
     isRunning = true;
 
@@ -685,7 +464,6 @@ function flipExtraBtns() {
         bracket.classList.toggle("grow")
     })
     decimalBtn.style.pointerEvents = decimalBtn.style.pointerEvents === "none" ? "" : "none";
-
 
     let animTime = 200;
     allOpButtons = [...document.querySelectorAll(".btn-fold-out")];
@@ -707,10 +485,8 @@ function flipExtraBtns() {
             allOpButtons[i].classList.add("fold-out")
         }
     }
-
     decimalBtn.classList.toggle("hidden")
     btnsFoldedOut = !btnsFoldedOut;
-
     isRunning = false;
 }
 
@@ -735,7 +511,6 @@ window.addEventListener('load', () => {
     if (welcomeText) {
         welcomeText.style.transitionDuration = "1s"
         welcomeText.classList.remove("fade-in")
-
         welcomeText.addEventListener("transitionend", () => {
             welcomeText.style.transitionDuration = "";
         }, { once: true })
@@ -808,7 +583,6 @@ let loopBtnAnim;
 function blobBtnNumbers(currentTime) {
 
     if (!lastTime) lastTime = currentTime;
-
     const elapsedTime = currentTime - lastTime;
 
     if (elapsedTime >= delay) {
@@ -821,7 +595,6 @@ function blobBtnNumbers(currentTime) {
         let currentBtn = onlyShowingNumbers[randomBtn];
         currentBtn.style.transitionDuration = "2s"
 
-
         if (currentBtn.classList.contains("blob")) {
             currentBtn.classList.remove("blob")
         } else {
@@ -829,17 +602,11 @@ function blobBtnNumbers(currentTime) {
             setTimeout(() => {
                 currentBtn.classList.remove("blob")
                 currentBtn.style.transitionDuration = ""
-
             }, 2000);
         }
         lastTime = currentTime;
     }
-
-
     loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
 }
 
 loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
-
-// blobBtnNumbers()
-
