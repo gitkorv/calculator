@@ -23,7 +23,6 @@ let resultContainerWidth;
 const welcomeText = document.querySelector(".calc__welcome-text");
 
 // Mod Displays
-// const plusMinusSign = document.querySelector(".calc__display__calculation-minus-sign")
 let equalSignWidth = calculationDisplayEqualSign.getBoundingClientRect().width;
 calculationDisplayContainer.style.paddingLeft = equalSignWidth + "px";
 
@@ -173,47 +172,48 @@ function runCalcOnAllObjects(newCalcArray) {
         return result;
     }
 
-    let completeCalc = splitByAdditionAndSubtraction(newCalcArray);
-    console.log(completeCalc);
+    console.log(newCalcArray);
+    const numberedNewCalcArr = newCalcArray.map(item =>
+        typeof item === "string" ? parseFloat(item) : item
+    );
+
+    let calcArrSplitByAddSub = splitByAdditionAndSubtraction(numberedNewCalcArr);
+    console.log(calcArrSplitByAddSub);
     let addAndSubLeft = []
 
-    if (completeCalc.length === 1) {
-        completeCalc[0].forEach(item => {
+    if (calcArrSplitByAddSub.length === 1) {
+        calcArrSplitByAddSub[0].forEach(item => {
             addAndSubLeft.push(item);
         });
     } else {
-        completeCalc.forEach(calcItem => {
+        calcArrSplitByAddSub.forEach(calcItem => {
             if (calcItem.length > 2) {
                 const sum = calcItem.reduce((acc, curr, i, arr) => {
                     if (typeof curr === "function" && i > 0) { 
-                        return curr(acc, arr[i + 1]); // Apply function on next number
+                        return curr(acc, arr[i + 1]);
                     }
                     return acc;
-                }, calcItem[0]); // Start with the first number
-                
+                }, calcItem[0]);
                 addAndSubLeft.push(sum);
             } else {
-                addAndSubLeft.push(calcItem[0]); // Just push the number if only one exists
+                addAndSubLeft.push(calcItem[0]);
             }
         });
     }
-    console.log(addAndSubLeft);
 
     let finalResult = addAndSubLeft.reduce((acc, curr, index, array) => {
         if (typeof curr === "function") {
-            return curr(acc, array[index + 1]); // Call the function with next number
+            return curr(acc, array[index + 1]);
         }
-        return acc; // Skip numbers (they are handled by previous operator)
-    }, addAndSubLeft[0]); // Start with the first number
+        return acc;
+    }, addAndSubLeft[0]);
     
-    console.log(finalResult);
     return finalResult
 }
 
 function showCalculation() {
-
-        console.log(newCalcArray);
         let displayString = "";
+        console.log(newCalcArray);
 
         newCalcArray.forEach(item => {
             if (typeof item === "function" ) {
@@ -224,22 +224,18 @@ function showCalculation() {
             } else {
                 if (item < 0) {
                     displayString +=`(${item}) `;
-
                 } else {
                     displayString += `${item} `;
                 }
             }
         })
-        console.log(displayString);
         return displayString
-
 }
 
 let lastLiveResult = []
 
 function displayCalcAndSum() {
 
-    console.log(newCalcArray.length);
     if (newCalcArray.length === 0) {
         clearCalc()
     } else if (newCalcArray.length > 2) {
@@ -250,8 +246,7 @@ function displayCalcAndSum() {
 
     calculationDisplayText.textContent = showCalculation();
     liveResult = runCalcOnAllObjects(newCalcArray);
-
-    console.log(newCalcArray);
+    console.log(typeof liveResult);
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("Result is NaN");
@@ -263,8 +258,6 @@ function displayCalcAndSum() {
         console.log("live result is " + liveResult);
         fadeInLiveResult(liveResult)
     }
-    console.log(lastLiveResult);
-
     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
 }
 
@@ -289,7 +282,6 @@ function handleResultTransitionEnd() {
 
     if (resultContainerWidth + 100 > calcDisplayWidth) {
         resultContainerFontSize = parseInt(window.getComputedStyle(resultContainer).fontSize);
-        console.log("currentFontSize", resultContainerFontSize);
         resultContainer.style.fontSize = resultContainerFontSize - shrinkFont + "px";
     }
     resultContainer.removeEventListener("transitionend", handleResultTransitionEnd);
@@ -328,23 +320,22 @@ function clearCalc() {
 function clearOneCalc() {
     allNewDigits = "";
 
-    if (typeof newCalcArray.at(-1) === "number") {
-        let number = newCalcArray.at(-1);
-        console.log(`The number is ${number}`);
+    if (typeof newCalcArray.at(-1) === "string") {
+        let stringNumber = newCalcArray.at(-1);
+        console.log(`Clear one: The stringNumber to delete from is ${stringNumber}`);
     
-        if (Math.abs(number) >= 10) {  // Better check for two-digit numbers
-            function removeLastDigit(num) {
-                return Math.trunc(num / 10);  // Just remove the last digit
-            }
-    
-            let newTruncNumber = removeLastDigit(number);
-            newCalcArray[newCalcArray.length - 1] = newTruncNumber; // Correct assignment
+        if (stringNumber.length >= 2) {  // Better check for two-digit numbers
+            let newSlicedNumber = stringNumber.slice(0, -1);
+            newCalcArray[newCalcArray.length - 1] = newSlicedNumber; // Correct assignment
+            allNewDigits = newSlicedNumber;
         } else {
             newCalcArray.pop(); // Properly remove last item
+            allNewDigits = "";
         }
     } else if (typeof newCalcArray.at(-1) === "function") {
-        console.log("its a function");
+        console.log("Clear one: its a function");
         newCalcArray.pop(); // Properly remove last item
+        allNewDigits = newCalcArray.at(-1) ?? null;
     }
     displayCalcAndSum()
 }
@@ -361,18 +352,18 @@ function regNum(btn) {
     }
 
     if (newDigit === "." && allNewDigits.includes(".")) {
-        // Do nothing to prevent multiple decimal points
     } else if (allNewDigits === "0" && newDigit !== ".") {
-        // Replace leading "0" if the new digit isn’t a "."
         allNewDigits = newDigit;
     } else {
-        // Append the new digit
         allNewDigits += newDigit;
     }
+
+    console.log(allNewDigits);
 
     allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+    console.log(negOrNotDigits);
 
     if (newCalcArray.length === 0 || typeof(newCalcArray.at(-1)) === "function") {
         newCalcArray.push(negOrNotDigits)
@@ -393,7 +384,11 @@ function plusMinus() {
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
 }
 
-const makeNegNumberOrNot = (allNewDigits, negNumber) => parseFloat(negNumber ? `-${allNewDigits}` : allNewDigits);
+function makeNegNumberOrNot(allNewDigits, negNumber) {
+    const newDigs = negNumber ? `-${allNewDigits}` : allNewDigits;
+    return newDigs; // Keep as string until calculation is required
+}
+
 
 function opSymbol(btn) {
     let opSym = btn.textContent;
@@ -403,18 +398,13 @@ function opSymbol(btn) {
 
     allNewDigits = "";
     let operator
-    if (opSym === "-") {
-        operator = sub;
-    } else if (opSym === "x" || opSym === "*") {
-        operator = multiply;
-    } else if (opSym === "%") {
-        operator = reminder;
-    } else if (opSym === "/") {
-        operator = divide;
-    } else { operator = add; }
+    if (opSym === "-") {operator = sub;} 
+    else if (opSym === "x" || opSym === "*") {operator = multiply;} 
+    else if (opSym === "%") {operator = reminder;} 
+    else if (opSym === "/") {operator = divide;} 
+    else { operator = add; }
 
     if (typeof (newCalcArray.at(-1)) === "function") {
-        console.log("its a function");
         newCalcArray[newCalcArray.length - 1] = operator
     } else {
         newCalcArray.push(operator)
@@ -460,7 +450,7 @@ const plusMinusBtn = document.querySelector(".btn-plus-minus")
 let isRunning = false;
 
 function flipExtraBtns() {
-    console.log('flippin');
+    console.log('flippin extra buttons');
     if (isRunning) return;
     isRunning = true;
 
@@ -473,7 +463,6 @@ function flipExtraBtns() {
     allOpButtons = [...document.querySelectorAll(".btn-fold-out")];
 
     if (btnsFoldedOut) {
-        console.log("were folding back");
         animTime = animTime / 2;
         for (let i = allOpButtons.length - 1; i >= 0; i--) {
             allOpButtons[i].style.animationDuration = animTime + "ms";
@@ -532,6 +521,7 @@ let key2Pressed = false;
 
 const key1 = "Shift"
 const key2 = "Backspace"
+let keyDown = false;
 
 document.addEventListener("keydown", (event) => {
 
@@ -543,31 +533,28 @@ document.addEventListener("keydown", (event) => {
 
     if (key1Pressed && key2Pressed) {
         clearCalc()
-        console.log("both are pressed");
-    } else if (event.key >= "0" && event.key <= "9" || event.key === ".") {
+    } else if (!keyDown && event.key >= "0" && event.key <= "9" || event.key === ".") {
         const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
         console.log(matchedElement);
         regNum(matchedElement)
         displayCalcAndSum()
+        keyDown = true;
     } else if (event.key === "Backspace") {
-        console.log("Backspace pressed!");
         if (btnsFoldedOut) {
-            clearOneCalc()
-            if (calcObjectArr.length > 0) {
-                displayCalcAndSum()
+            if (newCalcArray.length === 0) {
+                clearCalc()
+            } else {
+                clearOneCalc()
             }
         }
         event.preventDefault()
     } else if (["+", "-", "*", "x", "/", "%"].includes(event.key)) {
-        console.log(`Operator pressed: ${event.key}`);
         let operatorSymbol = event.key;
         operatorSymbol = operatorSymbol === "*" ? "x" : operatorSymbol;
         const matchedElement = btnOperators.find(element => element.textContent.trim() === operatorSymbol)
         if (btnsFoldedOut) {
             opSymbol(matchedElement)
-            if (calcObjectArr.length > 0) {
-                displayCalcAndSum()
-            }
+            displayCalcAndSum()
         }
     }
 });
@@ -578,6 +565,7 @@ document.addEventListener("keyup", event => {
     } else if (event.key === key2) {
         key2Pressed = false;
     }
+    keyDown = false;
 })
 
 let lastTime = 0;
@@ -590,11 +578,9 @@ function blobBtnNumbers(currentTime) {
     const elapsedTime = currentTime - lastTime;
 
     if (elapsedTime >= delay) {
-        // console.log(btnNumbers);
         let onlyShowingNumbers = btnNumbers.filter(
             (el) => el.textContent >= "0" && el.textContent <= "9"
         )
-        // console.log(onlyShowingNumbers);
         let randomBtn = Math.floor(Math.random() * 9) + 1
         let currentBtn = onlyShowingNumbers[randomBtn];
         currentBtn.style.transitionDuration = "2s"
