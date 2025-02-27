@@ -70,11 +70,10 @@ const extraButtons = {
 let activeBtn;
 
 btnContainer.addEventListener("touchstart", (e) => {
-    e.preventDefault(); // Optional: Prevents default behavior
+    e.preventDefault(); 
 
     const target = e.target;
 
-    // Ensure the target is a button
     if (target.classList.contains("calc__btn")) {
         if (activeBtn) activeBtn.classList.remove("active");
         activeBtn = target;
@@ -158,15 +157,15 @@ function runCalcOnAllObjects(newCalcArray) {
             let item = arr[i];
     
             if (item === add || item === sub) {
-                result.push(temp);  // Store previous group
-                result.push([item]); // Store the operator separately
-                temp = [];           // Start a new group
+                result.push(temp);
+                result.push([item]);
+                temp = [];
             } else {
                 temp.push(item);
             }
         }
         if (temp.length) {
-            result.push(temp);  // Add the last group
+            result.push(temp);
         }
         return result;
     }
@@ -220,6 +219,7 @@ function showCalculation() {
                 if (item.name === "divide") displayString += "/ ";
                 if (item.name === "add") displayString += "+ ";
                 if (item.name === "sub") displayString += "- ";
+                if (item.name === "reminder") displayString += "% ";
             } else {
                 if (item < 0) {
                     displayString +=`(${item}) `;
