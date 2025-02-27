@@ -150,7 +150,7 @@ btnContainer.addEventListener("mouseover", e => {
 })
 
 
-function runCalcOnAllObjects() {
+function runCalcOnAllObjects(newCalcArray) {
 
     function splitByAdditionAndSubtraction(arr) {
         let result = [];
@@ -167,18 +167,14 @@ function runCalcOnAllObjects() {
                 temp.push(item);
             }
         }
-    
         if (temp.length) {
             result.push(temp);  // Add the last group
         }
-    
         return result;
     }
 
     let completeCalc = splitByAdditionAndSubtraction(newCalcArray);
-
     console.log(completeCalc);
-
     let addAndSubLeft = []
 
     if (completeCalc.length === 1) {
@@ -214,8 +210,6 @@ function runCalcOnAllObjects() {
     return finalResult
 }
 
-// console.log(runCalcOnAllObjects);
-
 function showCalculation() {
 
         console.log(newCalcArray);
@@ -241,6 +235,8 @@ function showCalculation() {
 
 }
 
+let lastLiveResult = []
+
 function displayCalcAndSum() {
 
     console.log(newCalcArray.length);
@@ -253,18 +249,26 @@ function displayCalcAndSum() {
     }
 
     calculationDisplayText.textContent = showCalculation();
-    liveResult = runCalcOnAllObjects();
+    liveResult = runCalcOnAllObjects(newCalcArray);
+
+    console.log(newCalcArray);
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("Result is NaN");
+        let slicedResult = runCalcOnAllObjects(newCalcArray.slice(0, -1));
+        if (slicedResult) {
+            fadeInLiveResult(slicedResult)            
+        }
     } else if (resultContainer.textContent !== liveResult.toString()) {
         console.log("live result is " + liveResult);
-        fadeInLiveResult()
+        fadeInLiveResult(liveResult)
     }
+    console.log(lastLiveResult);
+
     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
 }
 
-function fadeInLiveResult() {
+function fadeInLiveResult(liveResult) {
     let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
     resultContainer.classList.add("fade")
 
