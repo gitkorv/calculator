@@ -18,7 +18,6 @@ const resultContainer = document.querySelector(".calc__display__result")
 let resultContainerFontSize = window.getComputedStyle(resultContainer).fontSize;
 let resultContainerWidth;
 
-
 // Welcome
 const welcomeText = document.querySelector(".calc__welcome-text");
 
