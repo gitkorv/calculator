@@ -70,7 +70,7 @@ const extraButtons = {
 let activeBtn;
 
 btnContainer.addEventListener("touchstart", (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const target = e.target;
 
@@ -124,16 +124,15 @@ btnContainer.addEventListener("mouseout", (e) => {
 })
 
 function pressABtn(activeBtn) {
-    console.log("we pressed a btn");
     activeBtn.style.transitionDuration = "";
 
     if (activeBtn.matches(".clear-ac")) {
         clearCalc();
     } else if (activeBtn.matches(".clear-c")) {
         clearOneCalc()
-    }  else {   
+    } else {
         if (activeBtn.matches(".btn-num")) regNum(activeBtn);
-        if (activeBtn.matches(".btn-plus-minus")) plusMinus(activeBtn);
+        if (activeBtn.matches(".btn-plus-minus")) plusMinus();
         if (activeBtn.matches(".btn-op")) opSymbol(activeBtn);
         displayCalcAndSum()
     }
@@ -153,10 +152,10 @@ function runCalcOnAllObjects(newCalcArray, clgMsg) {
     function splitByAdditionAndSubtraction(arr) {
         let result = [];
         let temp = [];
-    
+
         for (let i = 0; i < arr.length; i++) {
             let item = arr[i];
-    
+
             if (item === add || item === sub) {
                 result.push(temp);
                 result.push([item]);
@@ -171,71 +170,40 @@ function runCalcOnAllObjects(newCalcArray, clgMsg) {
         return result;
     }
 
-    console.log(clgMsg, newCalcArray);
     const numberedNewCalcArr = newCalcArray.map(item =>
         typeof item === "string" ? parseFloat(item) : item
     );
-    console.log(numberedNewCalcArr);
 
     let calcArrSplitByAddSub = splitByAdditionAndSubtraction(numberedNewCalcArr);
-    console.log(calcArrSplitByAddSub);
     let addAndSubLeft = []
 
     if (calcArrSplitByAddSub.length === 1) {
-        console.log("object");
         calcArrSplitByAddSub[0].forEach(item => {
             addAndSubLeft.push(item);
         });
     } else {
         calcArrSplitByAddSub.forEach(calcItem => {
-            if (calcItem.length > 2) {
-                console.log("2 long plus");
-                const sum = reduceThisBlock(calcItem)
+            if (calcItem.length > 1) {
+                const sum = reduceThisItem(calcItem)
                 addAndSubLeft.push(sum);
             } else {
-                console.log("elseeee");
                 addAndSubLeft.push(calcItem[0]);
             }
         });
     }
 
-    let finalResult = reduceThisBlock(addAndSubLeft)
-
-    function reduceThisBlock(arr) {
-        const sum = arr.reduce((acc, curr, i, arr) => {
-            if (typeof curr === "function") {
-                let currFunc = curr;
-                if (currFunc.name = "reminder" && typeof arr[i + 1] === "function") {
-                    let result = arr[i + 1](acc / 100, arr[i + 2])
-                    return result;
-                } else if (arr[i-1].name === "reminder") {
-                    return acc;
-                } else {
-                    return curr(acc, arr[i + 1]);
-                }
-            }
-            return acc;
-        }, arr[0]);
-        return sum;
-    }
+    let finalResult = reduceThisItem(addAndSubLeft)
 
     // function reduceThisBlock(arr) {
     //     const sum = arr.reduce((acc, curr, i, arr) => {
     //         if (typeof curr === "function") {
-    //             console.log(curr);
     //             let currFunc = curr;
     //             if (currFunc.name = "reminder" && typeof arr[i + 1] === "function") {
-    //                 console.log(clgMsg, "the func is a reminder, and the next i is a func");
-    //                 console.log("acc is", acc);
-    //                 // return acc;
     //                 let result = arr[i + 1](acc / 100, arr[i + 2])
-    //                 console.log(clgMsg, result);
     //                 return result;
-    //             } else if (arr[i-1].name === "reminder" ) {
-    //                 console.log("prev func was a reminder");
+    //             } else if (arr[i-1].name === "reminder") {
     //                 return acc;
     //             } else {
-    //                 console.log("we went here");
     //                 return curr(acc, arr[i + 1]);
     //             }
     //         }
@@ -243,31 +211,55 @@ function runCalcOnAllObjects(newCalcArray, clgMsg) {
     //     }, arr[0]);
     //     return sum;
     // }
-    
+
+    function reduceThisItem(arr) {
+        const sum = arr.reduce((acc, curr, i, arr) => {
+            if (arr.length === 2 && arr.at(-1).name === "reminder") {
+                return arr[0] / 100;
+            }
+
+            if (typeof curr === "function") {
+                let currFunc = curr;
+                if (currFunc.name = "reminder" && typeof arr[i + 1] === "function") {
+                    // return acc;
+                    let result = arr[i + 1](acc / 100, arr[i + 2])
+                    return result;
+                } else if (arr[i - 1].name === "reminder") {
+                    return acc;
+                } else {
+                    return curr(acc, arr[i + 1]);
+                }
+            }
+
+            return acc;
+        }, arr[0]);
+        return sum;
+    }
+
     return finalResult
 
 }
 
 function showCalculation() {
-        let displayString = "";
-        console.log(newCalcArray);
+    let displayString = "";
 
-        newCalcArray.forEach(item => {
-            if (typeof item === "function" ) {
-                if (item.name === "multiply") displayString += "x ";
-                if (item.name === "divide") displayString += "/ ";
-                if (item.name === "add") displayString += "+ ";
-                if (item.name === "sub") displayString += "- ";
-                if (item.name === "reminder") displayString += "% ";
+    newCalcArray.forEach(item => {
+        if (typeof item === "function") {
+            if (item.name === "multiply") displayString += "x ";
+            if (item.name === "divide") displayString += "/ ";
+            if (item.name === "add") displayString += "+ ";
+            if (item.name === "sub") displayString += "- ";
+            if (item.name === "reminder") displayString += "% ";
+        } else {
+            if (item < 0) {
+                displayString += `(${item}) `;
             } else {
-                if (item < 0) {
-                    displayString +=`(${item}) `;
-                } else {
-                    displayString += `${item} `;
-                }
+                displayString += `${item} `;
             }
-        })
-        return displayString
+        }
+    })
+    console.log(typeof displayString);
+    return displayString
 }
 
 let lastLiveResult = []
@@ -288,10 +280,10 @@ function displayCalcAndSum() {
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("Result is NaN");
-        let slicedResult = runCalcOnAllObjects(newCalcArray.slice(0, -1), "slice");
-        if (slicedResult) {
-            fadeInLiveResult(slicedResult)            
-        }
+        // let slicedResult = runCalcOnAllObjects(newCalcArray.slice(0, -1), "slice");
+        // if (slicedResult) {
+        //     fadeInLiveResult(slicedResult)            
+        // }
     } else if (resultContainer.textContent !== liveResult.toString()) {
         console.log("live result is " + liveResult);
         fadeInLiveResult(liveResult)
@@ -358,23 +350,43 @@ function clearCalc() {
 function clearOneCalc() {
     allNewDigits = "";
 
+    console.log(newCalcArray);
+
     if (typeof newCalcArray.at(-1) === "string") {
         let stringNumber = newCalcArray.at(-1);
         console.log(`Clear one: The stringNumber to delete from is ${stringNumber}`);
-    
-        if (stringNumber.length >= 2) { 
+
+        console.log(stringNumber);
+
+        if (stringNumber.length >= 2) {
             console.log("we are slicing");
             let newSlicedNumber = stringNumber.slice(0, -1);
-            newCalcArray[newCalcArray.length - 1] = newSlicedNumber; 
+            newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
             allNewDigits = newSlicedNumber;
         } else {
-            newCalcArray.pop(); 
+            newCalcArray.pop();
             allNewDigits = "";
+            negNumber = false;
+        }
+    } else if (typeof newCalcArray.at(-1) === "number") {
+        let number = newCalcArray.at(-1);
+        console.log(`The number to cut is ${number}`);
+    
+        if (Math.abs(number) >= 10) {  // Better check for two-digit numbers
+            function removeLastDigit(num) {
+                return Math.trunc(num / 10);  // Just remove the last digit
+            }
+    
+            let newTruncNumber = removeLastDigit(number);
+            newCalcArray[newCalcArray.length - 1] = newTruncNumber; // Correct assignment
+            allNewDigits = newTruncNumber;
+        } else {
+            newCalcArray.pop(); // Properly remove last item
         }
     } else if (typeof newCalcArray.at(-1) === "function") {
         console.log("Clear one: its a function");
         newCalcArray.pop();
-        
+
         if (typeof newCalcArray.at(-1) === "function") {
             allNewDigits = "";
         } else {
@@ -396,21 +408,20 @@ function regNum(btn) {
         }, 1000);
     }
 
+
     if (newDigit === "." && allNewDigits.includes(".")) {
     } else if (allNewDigits === "0" && newDigit !== ".") {
         allNewDigits = newDigit;
     } else {
         allNewDigits += newDigit;
     }
-
     console.log(allNewDigits);
 
-    allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
+    // allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    console.log(negOrNotDigits);
 
-    if (newCalcArray.length === 0 || typeof(newCalcArray.at(-1)) === "function") {
+    if (newCalcArray.length === 0 || typeof (newCalcArray.at(-1)) === "function") {
         newCalcArray.push(negOrNotDigits)
     } else {
         newCalcArray[newCalcArray.length - 1] = negOrNotDigits
@@ -419,19 +430,26 @@ function regNum(btn) {
     if (!btnsFoldedOut) {
         flipExtraBtns()
         welcomeText.classList.add("fly-out")
-    } 
+    }
+    console.log(newCalcArray);
 }
 
 function plusMinus() {
     negNumber = !negNumber;
+    // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    newCalcArray[newCalcArray.length - 1] = compiledDigits
+
+    if (negNumber && allNewDigits === "") {
+        newCalcArray.push("( )")
+    } else {
+        newCalcArray[newCalcArray.length - 1] = compiledDigits
+    }
+
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
 }
 
 function makeNegNumberOrNot(allNewDigits, negNumber) {
-    const newDigs = negNumber ? `-${allNewDigits}` : allNewDigits;
-    return newDigs; // Keep as string until calculation is required
+    return allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
 }
 
 
@@ -443,19 +461,21 @@ function opSymbol(btn) {
 
     allNewDigits = "";
     let operator
-    if (opSym === "-") {operator = sub;} 
-    else if (opSym === "x" || opSym === "*") {operator = multiply;} 
-    else if (opSym === "%") {operator = reminder;} 
-    else if (opSym === "/") {operator = divide;} 
+    if (opSym === "-") { operator = sub; }
+    else if (opSym === "x" || opSym === "*") { operator = multiply; }
+    else if (opSym === "%") { operator = reminder; }
+    else if (opSym === "/") { operator = divide; }
     else { operator = add; }
 
     if (typeof (newCalcArray.at(-1)) === "function") {
-        let currOperator = newCalcArray.at(-1)
-        if (currOperator.name === "reminder") {
-            console.log("its a reminder");
-            newCalcArray.push(operator)
-        } else {
+        let prevOperator = newCalcArray.at(-1)
+        if (prevOperator.name !== "reminder" && typeof newCalcArray.at(-2) !== "function") {
             newCalcArray[newCalcArray.length - 1] = operator
+        } else if (prevOperator.name === "reminder" && typeof newCalcArray.at(-2) !== "function") {
+            newCalcArray.push(operator)
+        } else if (newCalcArray.at(-2).name === "reminder" && operator.name !== "reminder") {
+            newCalcArray[newCalcArray.length - 1] = operator
+        } else if (newCalcArray.at(-2).name === "reminder" && operator.name === "reminder") {
         }
     } else {
         newCalcArray.push(operator)
@@ -501,7 +521,7 @@ const plusMinusBtn = document.querySelector(".btn-plus-minus")
 let isRunning = false;
 
 function flipExtraBtns() {
-    console.log('flippin extra buttons');
+    // console.log('flippin extra buttons');
     if (isRunning) return;
     isRunning = true;
 
@@ -586,7 +606,7 @@ document.addEventListener("keydown", (event) => {
         clearCalc()
     } else if (!keyDown && event.key >= "0" && event.key <= "9" || event.key === ".") {
         const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
-        console.log(matchedElement);
+        // console.log(matchedElement);
         regNum(matchedElement)
         displayCalcAndSum()
         keyDown = true;
