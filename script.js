@@ -196,6 +196,10 @@ function runCalcOnAllObjects(arr, clgMsg) {
             if (arr.length > 1 && arr.at(-1).name === "reminder" && typeof arr.at(-2) !== "function") {
                 return arr.at(-2) / 100;
             }
+            if (arr.length > 1 && curr.name === "reminder" && arr.at(-2).name === "reminder") {
+                console.log("hereeee");
+                return reminder(arr.at(-2)/100, arr.at(+1))
+            }
             if (typeof curr === "function") {
                 let currFunc = curr;
                 if (currFunc.name = "reminder" && typeof arr[i + 1] === "function") {
@@ -440,12 +444,16 @@ function opSymbol(btn) {
     if (typeof (newCalcArray.at(-1)) === "function") {
         let prevOperator = newCalcArray.at(-1)
         if (prevOperator.name !== "reminder" && typeof newCalcArray.at(-2) !== "function") {
+            console.log("one");
             newCalcArray[newCalcArray.length - 1] = operator
-        } else if (prevOperator.name === "reminder" && typeof newCalcArray.at(-2) !== "function") {
+        } else if (prevOperator.name === "reminder" && typeof newCalcArray.at(-2) !== "function" && operator.name !== "reminder") {
+            console.log("two");
             newCalcArray.push(operator)
         } else if (newCalcArray.at(-2).name === "reminder" && operator.name !== "reminder") {
+            console.log("three");
             newCalcArray[newCalcArray.length - 1] = operator
         } else if (newCalcArray.at(-2).name === "reminder" && operator.name === "reminder") {
+            console.log("four");
         }
     } else {
         newCalcArray.push(operator)
