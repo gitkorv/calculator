@@ -146,10 +146,10 @@ btnContainer.addEventListener("mouseover", e => {
 })
 
 
-function runCalcOnAllObjects(newCalcArray, clgMsg) {
+function runCalcOnAllObjects(arr, clgMsg) {
     clgMsg = clgMsg || "original";
 
-    function splitByAdditionAndSubtraction(arr) {
+    let splitByAddSub = (arr) => {
         let result = [];
         let temp = [];
 
@@ -168,13 +168,10 @@ function runCalcOnAllObjects(newCalcArray, clgMsg) {
             result.push(temp);
         }
         return result;
-    }
+    };
 
-    const numberedNewCalcArr = newCalcArray.map(item =>
-        typeof item === "string" ? parseFloat(item) : item
-    );
+    let calcArrSplitByAddSub = splitByAddSub(arr)
 
-    let calcArrSplitByAddSub = splitByAdditionAndSubtraction(numberedNewCalcArr);
     let addAndSubLeft = []
 
     if (calcArrSplitByAddSub.length === 1) {
@@ -193,24 +190,6 @@ function runCalcOnAllObjects(newCalcArray, clgMsg) {
     }
 
     let finalResult = reduceThisItem(addAndSubLeft)
-
-    // function reduceThisBlock(arr) {
-    //     const sum = arr.reduce((acc, curr, i, arr) => {
-    //         if (typeof curr === "function") {
-    //             let currFunc = curr;
-    //             if (currFunc.name = "reminder" && typeof arr[i + 1] === "function") {
-    //                 let result = arr[i + 1](acc / 100, arr[i + 2])
-    //                 return result;
-    //             } else if (arr[i-1].name === "reminder") {
-    //                 return acc;
-    //             } else {
-    //                 return curr(acc, arr[i + 1]);
-    //             }
-    //         }
-    //         return acc;
-    //     }, arr[0]);
-    //     return sum;
-    // }
 
     function reduceThisItem(arr) {
         const sum = arr.reduce((acc, curr, i, arr) => {
@@ -240,7 +219,7 @@ function runCalcOnAllObjects(newCalcArray, clgMsg) {
 
 }
 
-function showCalculation() {
+function showCalculation(newCalcArray) {
     let displayString = "";
 
     newCalcArray.forEach(item => {
@@ -258,7 +237,6 @@ function showCalculation() {
             }
         }
     })
-    console.log(typeof displayString);
     return displayString
 }
 
@@ -274,16 +252,17 @@ function displayCalcAndSum() {
         calculationDisplayEqualSign.classList.remove("show")
     }
 
-    calculationDisplayText.textContent = showCalculation();
-    liveResult = runCalcOnAllObjects(newCalcArray);
+    calculationDisplayText.textContent = showCalculation(newCalcArray);
+
+    const numberedNewCalcArr = newCalcArray.map(item =>
+        typeof item === "string" ? parseFloat(item) : item
+    );
+
+    liveResult = runCalcOnAllObjects(numberedNewCalcArr);
     console.log(typeof liveResult);
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("Result is NaN");
-        // let slicedResult = runCalcOnAllObjects(newCalcArray.slice(0, -1), "slice");
-        // if (slicedResult) {
-        //     fadeInLiveResult(slicedResult)            
-        // }
     } else if (resultContainer.textContent !== liveResult.toString()) {
         console.log("live result is " + liveResult);
         fadeInLiveResult(liveResult)
@@ -350,16 +329,10 @@ function clearCalc() {
 function clearOneCalc() {
     allNewDigits = "";
 
-    console.log(newCalcArray);
-
     if (typeof newCalcArray.at(-1) === "string") {
         let stringNumber = newCalcArray.at(-1);
-        console.log(`Clear one: The stringNumber to delete from is ${stringNumber}`);
-
-        console.log(stringNumber);
 
         if (stringNumber.length >= 2) {
-            console.log("we are slicing");
             let newSlicedNumber = stringNumber.slice(0, -1);
             newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
             allNewDigits = newSlicedNumber;
@@ -370,7 +343,6 @@ function clearOneCalc() {
         }
     } else if (typeof newCalcArray.at(-1) === "number") {
         let number = newCalcArray.at(-1);
-        console.log(`The number to cut is ${number}`);
     
         if (Math.abs(number) >= 10) {  // Better check for two-digit numbers
             function removeLastDigit(num) {
@@ -384,7 +356,6 @@ function clearOneCalc() {
             newCalcArray.pop(); // Properly remove last item
         }
     } else if (typeof newCalcArray.at(-1) === "function") {
-        console.log("Clear one: its a function");
         newCalcArray.pop();
 
         if (typeof newCalcArray.at(-1) === "function") {
@@ -415,7 +386,7 @@ function regNum(btn) {
     } else {
         allNewDigits += newDigit;
     }
-    console.log(allNewDigits);
+    console.log("new digits are ", typeof allNewDigits, allNewDigits);
 
     // allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
 
@@ -440,7 +411,7 @@ function plusMinus() {
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
     if (negNumber && allNewDigits === "") {
-        newCalcArray.push("( )")
+        newCalcArray.push("(-)")
     } else {
         newCalcArray[newCalcArray.length - 1] = compiledDigits
     }
@@ -449,7 +420,12 @@ function plusMinus() {
 }
 
 function makeNegNumberOrNot(allNewDigits, negNumber) {
-    return allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
+    let endsWithDot = false;
+    if (allNewDigits.at(-1) === ".") endsWithDot = true;
+
+    allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
+    if (endsWithDot && negNumber) allNewDigits += ".";
+    return allNewDigits
 }
 
 
