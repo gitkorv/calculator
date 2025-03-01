@@ -193,10 +193,9 @@ function runCalcOnAllObjects(arr, clgMsg) {
 
     function reduceThisItem(arr) {
         const sum = arr.reduce((acc, curr, i, arr) => {
-            if (arr.length === 2 && arr.at(-1).name === "reminder") {
-                return arr[0] / 100;
+            if (arr.length > 1 && arr.at(-1).name === "reminder" && typeof arr.at(-2) !== "function") {
+                return arr.at(-2) / 100;
             }
-
             if (typeof curr === "function") {
                 let currFunc = curr;
                 if (currFunc.name = "reminder" && typeof arr[i + 1] === "function") {
@@ -209,7 +208,6 @@ function runCalcOnAllObjects(arr, clgMsg) {
                     return curr(acc, arr[i + 1]);
                 }
             }
-
             return acc;
         }, arr[0]);
         return sum;
