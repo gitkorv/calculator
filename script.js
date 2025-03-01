@@ -317,7 +317,7 @@ function clearCalc() {
             welcomeText.innerHTML = `You stink at maths!<br>Let's try again`
             welcomeText.classList.remove("fly-out")
 
-            negNumber = false;
+            // negNumber = false;
             flipExtraBtns()
             loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
         },
@@ -328,32 +328,23 @@ function clearCalc() {
 
 function clearOneCalc() {
     allNewDigits = "";
-
+    console.log(newCalcArray);
+    
     if (typeof newCalcArray.at(-1) === "string") {
         let stringNumber = newCalcArray.at(-1);
 
-        if (stringNumber.length >= 2) {
+        if (stringNumber === "(-)") {
+            newCalcArray.pop();
+            allNewDigits = "";
+        } else if (stringNumber.length >= 2) {
             let newSlicedNumber = stringNumber.slice(0, -1);
             newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
             allNewDigits = newSlicedNumber;
+            console.log(allNewDigits);
         } else {
             newCalcArray.pop();
             allNewDigits = "";
-            negNumber = false;
-        }
-    } else if (typeof newCalcArray.at(-1) === "number") {
-        let number = newCalcArray.at(-1);
-    
-        if (Math.abs(number) >= 10) {  // Better check for two-digit numbers
-            function removeLastDigit(num) {
-                return Math.trunc(num / 10);  // Just remove the last digit
-            }
-    
-            let newTruncNumber = removeLastDigit(number);
-            newCalcArray[newCalcArray.length - 1] = newTruncNumber; // Correct assignment
-            allNewDigits = newTruncNumber;
-        } else {
-            newCalcArray.pop(); // Properly remove last item
+            // negNumber = false;
         }
     } else if (typeof newCalcArray.at(-1) === "function") {
         newCalcArray.pop();
@@ -369,6 +360,8 @@ function clearOneCalc() {
 }
 
 function regNum(btn) {
+
+    console.log("negNumber is ", negNumber);
 
     cancelAnimationFrame(loopBtnAnim)
     newDigit = btn.textContent;
@@ -421,10 +414,13 @@ function plusMinus() {
 
 function makeNegNumberOrNot(allNewDigits, negNumber) {
     let endsWithDot = false;
+    let startsWithMinus = false;
     if (allNewDigits.at(-1) === ".") endsWithDot = true;
+    if (allNewDigits.at(0) === "-") startsWithMinus = true;
 
     allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
     if (endsWithDot && negNumber) allNewDigits += ".";
+    if (startsWithMinus && negNumber) allNewDigits = "-" + allNewDigits;
     return allNewDigits
 }
 
