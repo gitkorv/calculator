@@ -171,8 +171,19 @@ function runCalcOnAllObjects(arr, clgMsg) {
     };
 
     let calcArrSplitByAddSub = splitByAddSub(arr)
+    console.log(calcArrSplitByAddSub);
 
     let addAndSubLeft = []
+
+
+    // calcArrSplitByAddSub.forEach(calcItem => {
+    //     if (calcItem.length > 1) {
+    //         const sum = reduceThisItem(calcItem, "prev")
+    //         addAndSubLeft.push(sum);
+    //     } else {
+    //         addAndSubLeft.push(calcItem[0]);
+    //     }
+    // });
 
     if (calcArrSplitByAddSub.length === 1) {
         calcArrSplitByAddSub[0].forEach(item => {
@@ -181,7 +192,7 @@ function runCalcOnAllObjects(arr, clgMsg) {
     } else {
         calcArrSplitByAddSub.forEach(calcItem => {
             if (calcItem.length > 1) {
-                const sum = reduceThisItem(calcItem)
+                const sum = reduceThisItem(calcItem, "prev")
                 addAndSubLeft.push(sum);
             } else {
                 addAndSubLeft.push(calcItem[0]);
@@ -189,29 +200,41 @@ function runCalcOnAllObjects(arr, clgMsg) {
         });
     }
 
-    let finalResult = reduceThisItem(addAndSubLeft)
+    let finalResult = reduceThisItem(addAndSubLeft, "final")
 
-    function reduceThisItem(arr) {
+    function reduceThisItem(arr, id) {
+        // console.log("id: ", id, arr);
         const sum = arr.reduce((acc, curr, i, arr) => {
-            if (arr.length > 1 && arr.at(-1).name === "reminder" && typeof arr.at(-2) !== "function") {
-                return arr.at(-2) / 100;
-            }
-            if (arr.length > 1 && curr.name === "reminder" && arr.at(-2).name === "reminder") {
-                console.log("hereeee");
-                return reminder(arr.at(-2)/100, arr.at(+1))
-            }
+            // console.log("id ", id, curr);
+
             if (typeof curr === "function") {
                 let currFunc = curr;
-                if (currFunc.name = "reminder" && typeof arr[i + 1] === "function") {
-                    // return acc;
-                    let result = arr[i + 1](acc / 100, arr[i + 2])
-                    return result;
-                } else if (arr[i - 1].name === "reminder") {
-                    return acc;
+
+                if (currFunc.name === "reminder") {
+                    // console.log("It's a remFunc");
+                    if (typeof arr[i + 1] === "function" && typeof arr[i + 2] === "string") {
+                        // console.log("After remFunc is a func then a string");
+                        return arr.at(+1)(arr[i - 1] / 100, arr[i + 2]);
+                    } else if (typeof arr[i + 1] !== "string") {
+                        // console.log("After remFunc is not string");
+                        return (acc / 100).toString();
+                    } else if (typeof arr[i + 1] === "string") {
+                        // console.log("After remFunc is a string");
+                        let next = arr[i + 1];
+                        return reminder(acc, next)
+                    } else {
+                        // console.log("else");
+                        return acc
+                    }
                 } else {
-                    return curr(acc, arr[i + 1]);
+                    // console.log("lets return a normal calc func");
+                    return curr(parseFloat(acc), parseFloat(arr[i + 1]));
                 }
+            } else {
+                // console.log(curr, " is a string");
             }
+
+            // console.log(acc);
             return acc;
         }, arr[0]);
         return sum;
@@ -224,13 +247,23 @@ function runCalcOnAllObjects(arr, clgMsg) {
 function showCalculation(newCalcArray) {
     let displayString = "";
 
-    newCalcArray.forEach(item => {
+    newCalcArray.forEach((item, i) => {
         if (typeof item === "function") {
             if (item.name === "multiply") displayString += "x ";
             if (item.name === "divide") displayString += "/ ";
             if (item.name === "add") displayString += "+ ";
             if (item.name === "sub") displayString += "- ";
-            if (item.name === "reminder") displayString += "% ";
+            if (item.name === "reminder") {
+                console.log(newCalcArray[i - 1]);
+                if (newCalcArray[i - 1] && newCalcArray[i - 1].name !== "reminder") {
+                    // console.log("i confirm prev is not a reminder");
+                    if (!newCalcArray[i + 1] || typeof newCalcArray[i + 1] === "function") {
+                        // console.log("no item after, or item is a func!");
+                        displayString = displayString.slice(0, -1)
+                    }
+                }
+                displayString += "% ";
+            }
         } else {
             if (item < 0) {
                 displayString += `(${item}) `;
@@ -259,8 +292,9 @@ function displayCalcAndSum() {
     const numberedNewCalcArr = newCalcArray.map(item =>
         typeof item === "string" ? parseFloat(item) : item
     );
+    // console.log(numberedNewCalcArr);
 
-    liveResult = runCalcOnAllObjects(numberedNewCalcArr);
+    liveResult = runCalcOnAllObjects(newCalcArray);
     console.log(typeof liveResult);
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
@@ -278,9 +312,9 @@ function fadeInLiveResult(liveResult) {
 
     setTimeout(() => {
         resultContainer.classList.remove("fade", "mini")
-        liveResult = Math.round(liveResult * 100) / 100;
+        liveResult = Math.round(liveResult * 10000) / 10000;
         let formattedNumber = new Intl.NumberFormat('us-US').format(liveResult);
-        resultContainer.textContent = formattedNumber;
+        resultContainer.textContent = isNaN(formattedNumber) ? "0" : formattedNumber;
         resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
     }, fadeTime);
 }
@@ -331,14 +365,21 @@ function clearCalc() {
 function clearOneCalc() {
     allNewDigits = "";
     console.log(newCalcArray);
-    
+
     if (typeof newCalcArray.at(-1) === "string") {
         let stringNumber = newCalcArray.at(-1);
 
         if (stringNumber === "(-)") {
+            console.log("dfgddf");
+            plusMinus()
+
             newCalcArray.pop();
-            allNewDigits = "";
+            console.log(calculationDisplayText.textContent);
+
+            // allNewDigits = "";
+
         } else if (stringNumber.length >= 2) {
+            console.log("oahaha");
             let newSlicedNumber = stringNumber.slice(0, -1);
             newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
             allNewDigits = newSlicedNumber;
@@ -349,6 +390,7 @@ function clearOneCalc() {
             // negNumber = false;
         }
     } else if (typeof newCalcArray.at(-1) === "function") {
+        console.log("its a func");
         newCalcArray.pop();
 
         if (typeof newCalcArray.at(-1) === "function") {
@@ -362,8 +404,6 @@ function clearOneCalc() {
 }
 
 function regNum(btn) {
-
-    console.log("negNumber is ", negNumber);
 
     cancelAnimationFrame(loopBtnAnim)
     newDigit = btn.textContent;
@@ -381,7 +421,7 @@ function regNum(btn) {
     } else {
         allNewDigits += newDigit;
     }
-    console.log("new digits are ", typeof allNewDigits, allNewDigits);
+    // console.log("new digits are ", typeof allNewDigits, allNewDigits);
 
     // allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
 
@@ -397,7 +437,7 @@ function regNum(btn) {
         flipExtraBtns()
         welcomeText.classList.add("fly-out")
     }
-    console.log(newCalcArray);
+    // console.log(newCalcArray);
 }
 
 function plusMinus() {
@@ -444,18 +484,15 @@ function opSymbol(btn) {
     if (typeof (newCalcArray.at(-1)) === "function") {
         let prevOperator = newCalcArray.at(-1)
         if (prevOperator.name !== "reminder" && typeof newCalcArray.at(-2) !== "function") {
-            console.log("one");
             newCalcArray[newCalcArray.length - 1] = operator
-        } else if (prevOperator.name === "reminder" && typeof newCalcArray.at(-2) !== "function" && operator.name !== "reminder") {
-            console.log("two");
+        } else if (prevOperator.name === "reminder" && typeof newCalcArray.at(-2) !== "function") {
             newCalcArray.push(operator)
         } else if (newCalcArray.at(-2).name === "reminder" && operator.name !== "reminder") {
-            console.log("three");
             newCalcArray[newCalcArray.length - 1] = operator
         } else if (newCalcArray.at(-2).name === "reminder" && operator.name === "reminder") {
-            console.log("four");
         }
     } else {
+        // console.log("this");
         newCalcArray.push(operator)
     }
 }
