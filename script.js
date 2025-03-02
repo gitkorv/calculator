@@ -526,7 +526,6 @@ function opSymbol(btn) {
     } else if (newCalcArray.at(-1) === "(-)"){
         console.log("this is (-)");
         // newCalcArray[newCalcArray.length - 1] = operator
-
     } else {
         newCalcArray.push(operator)
     }
