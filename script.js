@@ -154,16 +154,25 @@ function runCalcOnAllObjects(arr, clgMsg) {
     let = checkedFor2timesReminder = []
 
     for (let i = 0; i < arr.length; i++) {
-        if (arr[i -1] && arr[i - 1].name === "reminder" && typeof arr[i] !== "string"){
-            console.log("here is two", checkedFor2timesReminder.at(-2));
-            let newVal = checkedFor2timesReminder.at(-2) / 100;
-            checkedFor2timesReminder.splice(-2, 2);
-            checkedFor2timesReminder.push(newVal)
-            checkedFor2timesReminder.push(arr[i])
-            i++
-        } else {
+        if (arr[i].name === "reminder") {
+            
+            if (arr[i - 1] && arr[i - 1].name === "reminder" && typeof arr[i + 1] === "string") {
+                console.log("one");
+                checkedFor2timesReminder.splice(-2, 2);
+                let moduloVal = reminder(arr[i -1], arr[i + 1])
+                checkedFor2timesReminder.push(moduloVal)
+                i++
+            } else if (arr[i - 1] && typeof arr[i - 1] === "string" && typeof arr[i + 1] === "function") {
+                console.log("two");
+                checkedFor2timesReminder.splice(-1, 1);
+                let percentVal = arr[i - 1] / 100;
+                checkedFor2timesReminder.push(percentVal)
+            }
+        }
+        else {
             checkedFor2timesReminder.push(arr[i])
         }
+
     }
     console.log(checkedFor2timesReminder);
 
@@ -502,6 +511,8 @@ function opSymbol(btn) {
     else if (opSym === "/") { operator = divide; }
     else { operator = add; }
 
+    console.log(newCalcArray.at(-1));
+
     if (typeof (newCalcArray.at(-1)) === "function") {
         let prevOperator = newCalcArray.at(-1)
         if (prevOperator.name !== "reminder" && typeof newCalcArray.at(-2) !== "function") {
@@ -512,8 +523,11 @@ function opSymbol(btn) {
             newCalcArray[newCalcArray.length - 1] = operator
         } else if (newCalcArray.at(-2).name === "reminder" && operator.name === "reminder") {
         }
+    } else if (newCalcArray.at(-1) === "(-)"){
+        console.log("this is (-)");
+        // newCalcArray[newCalcArray.length - 1] = operator
+
     } else {
-        // console.log("this");
         newCalcArray.push(operator)
     }
 }
