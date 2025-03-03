@@ -301,6 +301,8 @@ div.calc__keyboard__numbers div{
 }
 
 .calc__btn-wrapper{
+    position: relative;
+    left: 0;
     flex: 1 0 auto;
     perspective: 500px;
     overflow: hidden;
@@ -336,6 +338,8 @@ div.calc__keyboard__numbers div{
                 font-variation-settings 1s, 
                 height 1s ;
 }
+
+
 
 .btn-num.blob {
     background-color: var(--grayColorLight);
@@ -443,6 +447,24 @@ div.calc__keyboard__numbers div{
 
 .btn-plus-minus.is-on.hover {
     background-color: var(--grayColorBlack);
+}
+
+.calc__btn-wrapper.shake {
+    /* background-color: orange; */
+    animation: shake .05s ease-out;
+    animation-iteration-count: 10;
+}
+
+@keyframes shake {
+    33% {
+        left: 2px;
+    }
+    66% {
+        left: -2px;
+    }
+    100% {
+        left: 0;
+    }
 }
 
 .footer {
