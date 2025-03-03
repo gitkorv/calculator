@@ -255,7 +255,7 @@ function runCalcOnAllObjects(arr) {
             let result = performCalculation(num1, operator, num2);
                         //index:0 1 2 3 4
             //example resultArr[1,+,3,/,3...]
-            //we are at i =3, we solve 3 / 3 so result is 4, we want to insert that 1 to [1,+,(3,/,3)...]
+            //we are at i =3, we solve 3 / 3 so result is 1, we want to insert that 1 to [1,+,(3,/,3)...]
             resultArr.splice(i - 1, 3, result);
             //we are expecting this [1,+,(1)...]
             //everytime we remove/add item from resultArr the length of resultArr change too
