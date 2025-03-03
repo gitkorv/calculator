@@ -54,7 +54,7 @@ const extraButtons = {
     restBtns: {
         parentContainer: document.querySelector(".calc__keyboard__extras"),
         btnTexts: ["±", "%"],
-        elClass: ["btn-plus-minus", "btn-op btn-reminder"],
+        elClass: ["btn-plus-minus", "btn-op btn-remainder"],
         elements: []
     },
     deleteBtns: {
@@ -168,9 +168,9 @@ function showCalculation(calcArray) {
             let operatorName = currentItem.name;
 
 
-            if (operatorName === 'reminder') {
-                if (i - 1 < calcArray.length && calcArray[i - 1].name === 'reminder') {
-                    newArr.push('%'); //if last item is a string then we make % an opertor
+            if (operatorName === 'remainder') {
+                if (i - 1 < calcArray.length && calcArray[i - 1].name === 'remainder') {
+                    newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
                     // if last element is number then we just add % to it example 9,% becomes 9%
                     let temp = newArr[newArr.length - 1];
@@ -519,7 +519,7 @@ function opSymbol(btn) {
     let operator
     if (opSym === "-") { operator = sub; }
     else if (opSym === "x" || opSym === "*") { operator = multiply; }
-    else if (opSym === "%") { operator = reminder; }
+    else if (opSym === "%") { operator = remainder; }
     else if (opSym === "/") { operator = divide; }
     else { operator = add; }
 
@@ -527,13 +527,13 @@ function opSymbol(btn) {
 
     if (typeof (newCalcArray.at(-1)) === "function") {
         let prevOperator = newCalcArray.at(-1)
-        if (prevOperator.name !== "reminder" && typeof newCalcArray.at(-2) !== "function") {
+        if (prevOperator.name !== "remainder" && typeof newCalcArray.at(-2) !== "function") {
             newCalcArray[newCalcArray.length - 1] = operator
-        } else if (prevOperator.name === "reminder" && typeof newCalcArray.at(-2) !== "function") {
+        } else if (prevOperator.name === "remainder" && typeof newCalcArray.at(-2) !== "function") {
             newCalcArray.push(operator)
-        } else if (newCalcArray.at(-2).name === "reminder" && operator.name !== "reminder") {
+        } else if (newCalcArray.at(-2).name === "remainder" && operator.name !== "remainder") {
             newCalcArray[newCalcArray.length - 1] = operator
-        } else if (newCalcArray.at(-2).name === "reminder" && operator.name === "reminder") {
+        } else if (newCalcArray.at(-2).name === "remainder" && operator.name === "remainder") {
         }
     } else if (newCalcArray.at(-1) === "(-)") {
         console.log("this is (-)");
@@ -549,7 +549,7 @@ function sub(a, b) { return a - b; }
 function multiply(a, b) { return a * b; }
 function divide(a, b) { return a / b; }
 
-function reminder(a, b) {
+function remainder(a, b) {
     let result = a % b;
     return result < 0 ? Math.abs(result) : result;
 }
