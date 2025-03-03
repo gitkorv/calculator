@@ -468,8 +468,11 @@ function fadeInLiveResult(liveResult) {
     setTimeout(() => {
         resultContainer.classList.remove("fade", "mini")
         liveResult = Math.round(liveResult * 10000) / 10000;
-        let formattedNumber = new Intl.NumberFormat('us-US').format(liveResult);
-        resultContainer.textContent = isNaN(formattedNumber) ? "0" : formattedNumber;
+        console.log(liveResult);
+        let nanOrNot = isNaN(liveResult) ? "0" : liveResult
+        // let formattedNumber = new Intl.NumberFormat('en-US').format(liveResult);
+        console.log(nanOrNot);
+        resultContainer.textContent = new Intl.NumberFormat('en-US').format(nanOrNot);
         resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
     }, fadeTime);
 }
