@@ -146,195 +146,336 @@ btnContainer.addEventListener("mouseover", e => {
 })
 
 
-function runCalcOnAllObjects(arr, clgMsg) {
-    clgMsg = clgMsg || "original";
+// function runCalcOnAllObjects(arr, clgMsg) {
+    // clgMsg = clgMsg || "original";
 
-    console.log(arr);
+    // console.log(arr);
 
-    let = checkedFor2timesReminder = []
+    // let = checkedFor2timesReminder = []
 
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i].name === "reminder") {
+    // for (let i = 0; i < arr.length; i++) {
+    //     if (arr[i].name === "reminder") {
             
-            if (arr[i - 1] && arr[i - 1].name === "reminder" && typeof arr[i + 1] === "string") {
-                console.log("one");
-                checkedFor2timesReminder.splice(-2, 2);
-                let moduloVal = reminder(arr[i -1], arr[i + 1])
-                checkedFor2timesReminder.push(moduloVal)
-                i++
-            } else if (arr[i - 1] && typeof arr[i - 1] === "string" && typeof arr[i + 1] === "function") {
-                console.log("two");
-                checkedFor2timesReminder.splice(-1, 1);
-                let percentVal = arr[i - 1] / 100;
-                checkedFor2timesReminder.push(percentVal)
-            }
-        }
-        else {
-            checkedFor2timesReminder.push(arr[i])
-        }
-
-    }
-    console.log(checkedFor2timesReminder);
-
-    let splitByAddSub = (checkedFor2timesReminder) => {
-        arr = checkedFor2timesReminder
-        let result = [];
-        let temp = [];
-
-        for (let i = 0; i < arr.length; i++) {
-            let item = arr[i];
-
-            if (item === add || item === sub) {
-                result.push(temp);
-                result.push([item]);
-                temp = [];
-            } else {
-                temp.push(item);
-            }
-        }
-        if (temp.length) {
-            result.push(temp);
-        }
-        return result;
-    };
-
-    let calcArrSplitByAddSub = splitByAddSub(arr)
-    console.log(calcArrSplitByAddSub);
-
-    let addAndSubLeft = []
-
-
-    // calcArrSplitByAddSub.forEach(calcItem => {
-    //     if (calcItem.length > 1) {
-    //         const sum = reduceThisItem(calcItem, "prev")
-    //         addAndSubLeft.push(sum);
-    //     } else {
-    //         addAndSubLeft.push(calcItem[0]);
+    //         if (arr[i - 1] && arr[i - 1].name === "reminder" && typeof arr[i + 1] === "string") {
+    //             console.log("one");
+    //             checkedFor2timesReminder.splice(-2, 2);
+    //             let moduloVal = reminder(arr[i -1], arr[i + 1])
+    //             checkedFor2timesReminder.push(moduloVal)
+    //             i++
+    //         } else if (arr[i - 1] && typeof arr[i - 1] === "string" && typeof arr[i + 1] === "function") {
+    //             console.log("two");
+    //             checkedFor2timesReminder.splice(-1, 1);
+    //             let percentVal = arr[i - 1] / 100;
+    //             checkedFor2timesReminder.push(percentVal)
+    //         }
     //     }
-    // });
+    //     else {
+    //         checkedFor2timesReminder.push(arr[i])
+    //     }
 
-    if (calcArrSplitByAddSub.length === 1) {
-        calcArrSplitByAddSub[0].forEach(item => {
-            addAndSubLeft.push(item);
-        });
-    } else {
-        calcArrSplitByAddSub.forEach(calcItem => {
-            if (calcItem.length > 1) {
-                const sum = reduceThisItem(calcItem, "prev")
-                addAndSubLeft.push(sum);
-            } else {
-                addAndSubLeft.push(calcItem[0]);
-            }
-        });
-    }
+    // }
+    // console.log(checkedFor2timesReminder);
 
-    let finalResult = reduceThisItem(addAndSubLeft, "final")
+    // let splitByAddSub = (checkedFor2timesReminder) => {
+    //     arr = checkedFor2timesReminder
+    //     let result = [];
+    //     let temp = [];
 
-    function reduceThisItem(arr, id) {
-        // console.log("id: ", id, arr);
-        const sum = arr.reduce((acc, curr, i, arr) => {
-            // console.log("id ", id, curr);
+    //     for (let i = 0; i < arr.length; i++) {
+    //         let item = arr[i];
 
-            if (typeof curr === "function") {
-                let currFunc = curr;
+    //         if (item === add || item === sub) {
+    //             result.push(temp);
+    //             result.push([item]);
+    //             temp = [];
+    //         } else {
+    //             temp.push(item);
+    //         }
+    //     }
+    //     if (temp.length) {
+    //         result.push(temp);
+    //     }
+    //     return result;
+    // };
 
-                if (currFunc.name === "reminder") {
-                    // console.log("It's a remFunc");
-                    if (typeof arr[i + 1] === "function" && typeof arr[i + 2] === "string") {
-                        // console.log("After remFunc is a func then a string");
-                        return arr.at(+1)(arr[i - 1] / 100, arr[i + 2]);
-                    } else if (typeof arr[i + 1] !== "string") {
-                        // console.log("After remFunc is not string");
-                        return (acc / 100).toString();
-                    } else if (typeof arr[i + 1] === "string") {
-                        // console.log("After remFunc is a string");
-                        let next = arr[i + 1];
-                        return reminder(acc, next)
-                    } else {
-                        // console.log("else");
-                        return acc
-                    }
+    // let calcArrSplitByAddSub = splitByAddSub(arr)
+    // console.log(calcArrSplitByAddSub);
+
+    // let addAndSubLeft = []
+
+
+    // // calcArrSplitByAddSub.forEach(calcItem => {
+    // //     if (calcItem.length > 1) {
+    // //         const sum = reduceThisItem(calcItem, "prev")
+    // //         addAndSubLeft.push(sum);
+    // //     } else {
+    // //         addAndSubLeft.push(calcItem[0]);
+    // //     }
+    // // });
+
+    // if (calcArrSplitByAddSub.length === 1) {
+    //     calcArrSplitByAddSub[0].forEach(item => {
+    //         addAndSubLeft.push(item);
+    //     });
+    // } else {
+    //     calcArrSplitByAddSub.forEach(calcItem => {
+    //         if (calcItem.length > 1) {
+    //             const sum = reduceThisItem(calcItem, "prev")
+    //             addAndSubLeft.push(sum);
+    //         } else {
+    //             addAndSubLeft.push(calcItem[0]);
+    //         }
+    //     });
+    // }
+
+    // let finalResult = reduceThisItem(addAndSubLeft, "final")
+
+    // function reduceThisItem(arr, id) {
+    //     // console.log("id: ", id, arr);
+    //     const sum = arr.reduce((acc, curr, i, arr) => {
+    //         // console.log("id ", id, curr);
+
+    //         if (typeof curr === "function") {
+    //             let currFunc = curr;
+
+    //             if (currFunc.name === "reminder") {
+    //                 // console.log("It's a remFunc");
+    //                 if (typeof arr[i + 1] === "function" && typeof arr[i + 2] === "string") {
+    //                     // console.log("After remFunc is a func then a string");
+    //                     return arr.at(+1)(arr[i - 1] / 100, arr[i + 2]);
+    //                 } else if (typeof arr[i + 1] !== "string") {
+    //                     // console.log("After remFunc is not string");
+    //                     return (acc / 100).toString();
+    //                 } else if (typeof arr[i + 1] === "string") {
+    //                     // console.log("After remFunc is a string");
+    //                     let next = arr[i + 1];
+    //                     return reminder(acc, next)
+    //                 } else {
+    //                     // console.log("else");
+    //                     return acc
+    //                 }
+    //             } else {
+    //                 // console.log("lets return a normal calc func");
+    //                 return curr(parseFloat(acc), parseFloat(arr[i + 1]));
+    //             }
+    //         } else {
+    //             // console.log(curr, " is a string");
+    //         }
+
+    //         // console.log(acc);
+    //         return acc;
+    //     }, arr[0]);
+    //     return sum;
+    // }
+
+    // return finalResult
+
+// }
+
+// function showCalculation(newCalcArray) {
+//     let displayString = "";
+
+//     newCalcArray.forEach((item, i) => {
+//         if (typeof item === "function") {
+//             if (item.name === "multiply") displayString += "x ";
+//             if (item.name === "divide") displayString += "/ ";
+//             if (item.name === "add") displayString += "+ ";
+//             if (item.name === "sub") displayString += "- ";
+//             if (item.name === "reminder") {
+//                 console.log(newCalcArray[i - 1]);
+//                 if (newCalcArray[i - 1] && newCalcArray[i - 1].name !== "reminder") {
+//                     // console.log("i confirm prev is not a reminder");
+//                     if (!newCalcArray[i + 1] || typeof newCalcArray[i + 1] === "function") {
+//                         // console.log("no item after, or item is a func!");
+//                         displayString = displayString.slice(0, -1)
+//                     }
+//                 }
+//                 displayString += "% ";
+//             }
+//         } else {
+//             if (item < 0) {
+//                 displayString += `(${item}) `;
+//             } else {
+//                 displayString += `${item} `;
+//             }
+//         }
+//     })
+//     return displayString
+// }
+
+function showCalculation(calcArray) {
+    let newArr = [];
+    for (let i = 0; i < calcArray.length; i++) {
+        let currentItem = calcArray[i];
+
+        if (typeof currentItem === 'string') {
+            newArr.push(currentItem);
+        } else if (typeof currentItem === 'function') {
+            let operatorName = currentItem.name;
+
+
+            if (operatorName === 'reminder') {
+                if (i -1 < calcArray.length && calcArray[i-1].name === 'reminder') {
+                    newArr.push('%');
                 } else {
-                    // console.log("lets return a normal calc func");
-                    return curr(parseFloat(acc), parseFloat(arr[i + 1]));
+                    let temp = newArr[newArr.length-1];
+                    newArr.pop();
+                    newArr.push( temp + `%`);
                 }
+
+
+            } else if (operatorName === 'add') {
+                newArr.push('+');
+            } else if (operatorName === 'sub') {
+                newArr.push('-');
+            } else if (operatorName === 'multiply') {
+                newArr.push('x');
+            } else if (operatorName === 'divide') {
+                newArr.push('/');
             } else {
-                // console.log(curr, " is a string");
-            }
-
-            // console.log(acc);
-            return acc;
-        }, arr[0]);
-        return sum;
-    }
-
-    return finalResult
-
-}
-
-function showCalculation(newCalcArray) {
-    let displayString = "";
-
-    newCalcArray.forEach((item, i) => {
-        if (typeof item === "function") {
-            if (item.name === "multiply") displayString += "x ";
-            if (item.name === "divide") displayString += "/ ";
-            if (item.name === "add") displayString += "+ ";
-            if (item.name === "sub") displayString += "- ";
-            if (item.name === "reminder") {
-                console.log(newCalcArray[i - 1]);
-                if (newCalcArray[i - 1] && newCalcArray[i - 1].name !== "reminder") {
-                    // console.log("i confirm prev is not a reminder");
-                    if (!newCalcArray[i + 1] || typeof newCalcArray[i + 1] === "function") {
-                        // console.log("no item after, or item is a func!");
-                        displayString = displayString.slice(0, -1)
-                    }
-                }
-                displayString += "% ";
-            }
-        } else {
-            if (item < 0) {
-                displayString += `(${item}) `;
-            } else {
-                displayString += `${item} `;
+                newArr.push(operatorName);
             }
         }
-    })
-    return displayString
+    }
+    console.log(`NEW ARR AFTER SHOWCALCU: ` + newArr);
+    return newArr;
 }
 
-let lastLiveResult = []
 
 function displayCalcAndSum() {
-
     if (newCalcArray.length === 0) {
-        clearCalc()
+        clearCalc();
     } else if (newCalcArray.length > 2) {
-        calculationDisplayEqualSign.classList.add("show")
+        calculationDisplayEqualSign.classList.add("show");
     } else {
-        calculationDisplayEqualSign.classList.remove("show")
+        calculationDisplayEqualSign.classList.remove("show");
     }
 
-    console.log(newCalcArray);
+    let reduceArray = showCalculation(newCalcArray);
+    calculationDisplayText.textContent = reduceArray.join(" ");
 
-    calculationDisplayText.textContent = showCalculation(newCalcArray);
-
-    const numberedNewCalcArr = newCalcArray.map(item =>
-        typeof item === "string" ? parseFloat(item) : item
-    );
-    // console.log(numberedNewCalcArr);
-
-    liveResult = runCalcOnAllObjects(newCalcArray);
-    console.log(typeof liveResult);
+    liveResult = runCalcOnAllObjects(reduceArray);
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
+        console.log("live result is " + liveResult);
         console.log("Result is NaN");
     } else if (resultContainer.textContent !== liveResult.toString()) {
         console.log("live result is " + liveResult);
-        fadeInLiveResult(liveResult)
+        fadeInLiveResult(liveResult);
     }
-    negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
 }
+
+
+function runCalcOnAllObjects(arr) {
+    let resultArr = [...arr];
+
+    let i = 1;
+    while (i < resultArr.length) {
+        if (resultArr[i] === 'x' || resultArr[i] === '/' || resultArr[i] === `%`) {
+            let num1 = checkAndDivideByPercent(resultArr[i - 1]);
+            let operator = resultArr[i];
+            let num2 = checkAndDivideByPercent(resultArr[i + 1]);
+
+            let result = performCalculation(num1, operator, num2);
+
+            resultArr.splice(i - 1, 3, result);
+            i -= 2;
+        }
+        i += 2;
+    }
+
+    i = 1;
+    while (i < resultArr.length) {
+        if (resultArr[i] === '+' || resultArr[i] === '-') {
+            let num1 = checkAndDivideByPercent(resultArr[i - 1]);
+            let operator = resultArr[i];
+            let num2 = checkAndDivideByPercent(resultArr[i + 1]);
+
+            let result = performCalculation(num1, operator, num2);
+
+            resultArr.splice(i - 1, 3, result);
+            i -= 2;
+        }
+        i += 2;
+    }
+
+    let finalResult = checkAndDivideByPercent(resultArr[0]);
+    console.log(`finalResult: ${finalResult}`);
+    return Number(finalResult);
+}
+
+
+function performCalculation(num1, operator, num2) {
+    if (operator === 'x') return num1 * num2;
+    if (operator === '/') return num1 / num2;
+    if (operator === '+') return num1 + num2;
+    if (operator === '-') return num1 - num2;
+    if (operator === `%`) return num1 % num2;
+}
+
+
+function checkAndDivideByPercent(element) {
+    if (String(element).includes('%')) {
+        let number = parseFloat(element.replace('%', ''));
+        return number / 100;
+    }
+    return parseFloat(element);
+}
+
+
+
+
+
+
+
+// function displayCalcAndSum() {
+
+//     if (newCalcArray.length === 0) {
+//         clearCalc()
+//     } else if (newCalcArray.length > 2) {
+//         calculationDisplayEqualSign.classList.add("show")
+//     } else {
+//         calculationDisplayEqualSign.classList.remove("show")
+//     }
+
+//     console.log(newCalcArray);
+
+//     calculationDisplayText.textContent = showCalculation(newCalcArray);
+
+//     const numberedNewCalcArr = newCalcArray.map(item =>
+//         typeof item === "string" ? parseFloat(item) : item
+//     );
+//     // console.log(numberedNewCalcArr);
+
+//     liveResult = runCalcOnAllObjects(newCalcArray);
+//     console.log(typeof liveResult);
+
+//     if (Number.isNaN(liveResult) || liveResult === undefined) {
+//         console.log("Result is NaN");
+//     } else if (resultContainer.textContent !== liveResult.toString()) {
+//         console.log("live result is " + liveResult);
+//         fadeInLiveResult(liveResult)
+//     }
+//     negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function fadeInLiveResult(liveResult) {
     let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
@@ -468,6 +609,8 @@ function regNum(btn) {
         welcomeText.classList.add("fly-out")
     }
     // console.log(newCalcArray);
+
+    displayCalcAndSum();
 }
 
 function plusMinus() {
@@ -529,6 +672,7 @@ function opSymbol(btn) {
     } else {
         newCalcArray.push(operator)
     }
+    displayCalcAndSum();
 }
 
 function add(a, b) { return a + b; }
