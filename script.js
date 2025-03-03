@@ -148,7 +148,11 @@ btnContainer.addEventListener("mouseover", e => {
 
 
 
-//convert the array [n,f,n,f,f,n] to [n,f,n,f,n...]
+
+
+
+
+//this function convert the array from [n,f,n,f,f,n] to [n,f,n,f,n...]
 function showCalculation(calcArray) {
     let newArr = []; //new Array conatainer for formatted newCalcArray
 
@@ -198,6 +202,12 @@ function showCalculation(calcArray) {
 
 
 
+
+
+
+
+
+//this function will format the newCalArray into n,f,n,f then display it in expression conatiner then solve it by calling runCalc....
 function displayCalcAndSum() {
     if (newCalcArray.length === 0) {
         clearCalc();
@@ -207,10 +217,12 @@ function displayCalcAndSum() {
         calculationDisplayEqualSign.classList.remove("show");
     }
 
-    let reduceArray = showCalculation(newCalcArray);
-    calculationDisplayText.textContent = reduceArray.join(" ");
 
-    liveResult = runCalcOnAllObjects(reduceArray);
+
+    let reduceArray = showCalculation(newCalcArray); //reduceArray is the formatted array 
+    calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
+
+    liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("live result is " + liveResult);
@@ -222,6 +234,15 @@ function displayCalcAndSum() {
 }
 
 
+
+
+
+
+
+
+
+
+
 function runCalcOnAllObjects(arr) {
     let resultArr = [...arr];
 
@@ -229,7 +250,8 @@ function runCalcOnAllObjects(arr) {
     while (i < resultArr.length) {
         //we look for mult div and mod first
         if (resultArr[i] === 'x' || resultArr[i] === '/' || resultArr[i] === `%`) {
-            let num1 = checkAndDivideByPercent(resultArr[i - 1]);
+            //i could simplify this by just checking if elements have % or not using .includes and only call the checkAndDIvidebyPercent for those
+            let num1 = checkAndDivideByPercent(resultArr[i - 1]); //alwasy check if theres % in the element 
             let operator = resultArr[i];
             let num2 = checkAndDivideByPercent(resultArr[i + 1]);
 
@@ -273,7 +295,7 @@ function runCalcOnAllObjects(arr) {
     return Number(finalResult);
 }
 
-
+//helper function to solve the operator and the number before and after it
 function performCalculation(num1, operator, num2) {
     if (operator === 'x') return num1 * num2;
     if (operator === '/') return num1 / num2;
@@ -282,7 +304,7 @@ function performCalculation(num1, operator, num2) {
     if (operator === `%`) return num1 % num2;
 }
 
-
+//if item has % in it this function will divide the number by 100 and return the value
 function checkAndDivideByPercent(element) {
     if (String(element).includes('%')) {
         let number = parseFloat(element.replace('%', ''));
@@ -290,6 +312,13 @@ function checkAndDivideByPercent(element) {
     }
     return parseFloat(element);
 }
+
+
+
+
+
+
+
 
 
 
@@ -411,7 +440,7 @@ function clearOneCalc() {
         }
 
     }
-    displayCalcAndSum()
+    displayCalcAndSum();
 }
 
 function regNum(btn) {
