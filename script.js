@@ -152,6 +152,50 @@ btnContainer.addEventListener("mouseover", e => {
 
 
 
+
+
+
+
+
+
+/*
+ I CHANGED THIS- START
+*/
+
+
+
+
+
+//this function will format the newCalArray into n,f,n,f then display it in expression conatiner then solve it by calling runCalc....
+function displayCalcAndSum() {
+    if (newCalcArray.length === 0) {
+        clearCalc();
+    } else if (newCalcArray.length > 2) {
+        calculationDisplayEqualSign.classList.add("show");
+    } else {
+        calculationDisplayEqualSign.classList.remove("show");
+    }
+
+
+
+    let reduceArray = showCalculation(newCalcArray); //reduceArray is the formatted array 
+    calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
+
+    liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
+
+    if (Number.isNaN(liveResult) || liveResult === undefined) {
+        console.log("live result is " + liveResult);
+        console.log("Result is NaN");
+    } else if (resultContainer.textContent !== liveResult.toString()) {
+        console.log("live result is " + liveResult);
+        fadeInLiveResult(liveResult);
+    }
+}
+
+
+
+
+
 //this function convert the array from [n,f,n,f,f,n] to [n,f,n,f,n...]
 function showCalculation(calcArray) {
     let newArr = []; //new Array conatainer for formatted newCalcArray
@@ -195,54 +239,7 @@ function showCalculation(calcArray) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-//this function will format the newCalArray into n,f,n,f then display it in expression conatiner then solve it by calling runCalc....
-function displayCalcAndSum() {
-    if (newCalcArray.length === 0) {
-        clearCalc();
-    } else if (newCalcArray.length > 2) {
-        calculationDisplayEqualSign.classList.add("show");
-    } else {
-        calculationDisplayEqualSign.classList.remove("show");
-    }
-
-
-
-    let reduceArray = showCalculation(newCalcArray); //reduceArray is the formatted array 
-    calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
-
-    liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
-
-    if (Number.isNaN(liveResult) || liveResult === undefined) {
-        console.log("live result is " + liveResult);
-        console.log("Result is NaN");
-    } else if (resultContainer.textContent !== liveResult.toString()) {
-        console.log("live result is " + liveResult);
-        fadeInLiveResult(liveResult);
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
+//perform MDAS here
 function runCalcOnAllObjects(arr) {
     let resultArr = [...arr];
 
@@ -315,17 +312,9 @@ function checkAndDivideByPercent(element) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+/*
+ I CHANGED THIS- END
+*/
 
 
 
