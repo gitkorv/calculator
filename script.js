@@ -175,7 +175,8 @@ function displayCalcAndSum() {
     calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
 
     let noParenthesesArr = reduceArray.map(item => item.replace(/\((.*?)\)/, "$1")); // look if anything is within "( )" and if so extract it
-    liveResult = runCalcOnAllObjects(noParenthesesArr);//solve the formatted array and return the result as number saving in liveResult
+    console.log("noParrArr ", noParenthesesArr);
+    liveResult = runCalcOnAllItems(noParenthesesArr);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("live result is " + liveResult);
@@ -186,11 +187,14 @@ function displayCalcAndSum() {
     }
 }
 
+let arrIndex = 1;
+
 //this function convert the array from [n,f,n,f,f,n] to [n,f,n,f,n...]
 function showCalculation(calcArray) {
     let newArr = []; //new Array conatainer for formatted newCalcArray
 
-    console.log("calcArray is ", calcArray);
+    console.log("calcArray is ", calcArray) ;
+    arrIndex++
 
     //we iterate all the elements of calcArray>>newCalcArray
     for (let i = 0; i < calcArray.length; i++) {
@@ -206,7 +210,11 @@ function showCalculation(calcArray) {
 
 
             if (operatorName === 'remainder') {
-                if (calcArray[i - 1].name === 'remainder') {
+                console.log(typeof calcArray[i + 1]);
+
+                if (i + 1 < calcArray.length && typeof calcArray[i + 1] === 'string' ) {
+                    newArr.push('%'); //if this is the second remainder then we make it as an operator
+                } else if (calcArray[i - 1].name === 'remainder') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
                     // if last element is number then we just add % to it example 9,% becomes 9%
@@ -231,15 +239,17 @@ function showCalculation(calcArray) {
 
 
 //perform MDAS here
-function runCalcOnAllObjects(arr) {
+function runCalcOnAllItems(arr) {
     let resultArr = [...arr];
+
+    console.log("runCalcArr ", arr);
 
     let i = 1;
     while (i < resultArr.length) {
         //we look for mult div and mod first
         if (resultArr[i] === 'x' || resultArr[i] === '/' || resultArr[i] === `%`) {
             //i could simplify this by just checking if elements have % or not using .includes and only call the checkAndDIvidebyPercent for those
-            let num1 = checkAndDivideByPercent(resultArr[i - 1]); //alwasy check if theres % in the element 
+            let num1 = checkAndDivideByPercent(resultArr[i - 1]); //always check if theres % in the element 
             let operator = resultArr[i];
             let num2 = checkAndDivideByPercent(resultArr[i + 1]);
 
@@ -402,7 +412,7 @@ function clearOneCalc() {
         }
 
     }
-    displayCalcAndSum();
+    // displayCalcAndSum();
 }
 
 function regNum(btn) {
@@ -439,9 +449,7 @@ function regNum(btn) {
         flipExtraBtns()
         welcomeText.classList.add("fly-out")
     }
-    // console.log(newCalcArray);
-
-    displayCalcAndSum();
+    
 }
 
 function plusMinus() {
@@ -521,7 +529,7 @@ function opSymbol(btn) {
     } else {
         newCalcArray.push(operator)
     }
-    displayCalcAndSum();
+    // displayCalcAndSum();
 
 }
 
@@ -660,7 +668,7 @@ document.addEventListener("keydown", (event) => {
         const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
         // console.log(matchedElement);
         regNum(matchedElement)
-        displayCalcAndSum()
+        // displayCalcAndSum()
         keyDown = true;
     } else if (event.key === "Backspace") {
         if (btnsFoldedOut) {
@@ -677,7 +685,7 @@ document.addEventListener("keydown", (event) => {
         const matchedElement = btnOperators.find(element => element.textContent.trim() === operatorSymbol)
         if (btnsFoldedOut) {
             opSymbol(matchedElement)
-            displayCalcAndSum()
+            // displayCalcAndSum()
         }
     }
 });
