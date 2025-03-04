@@ -126,9 +126,7 @@ btnContainer.addEventListener("mouseout", (e) => {
 })
 
 function pressABtn(activeBtn) {
-    console.log(shakeBtn);
     if (shakeBtn && !activeBtn.classList.contains("btn-op")) {
-        console.log("no op");
         shakeBtn = false;
     }
 
@@ -175,7 +173,6 @@ function displayCalcAndSum() {
     calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
 
     let noParenthesesArr = reduceArray.map(item => item.replace(/\((.*?)\)/, "$1")); // look if anything is within "( )" and if so extract it
-    console.log("noParrArr ", noParenthesesArr);
     liveResult = runCalcOnAllItems(noParenthesesArr);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
@@ -187,14 +184,9 @@ function displayCalcAndSum() {
     }
 }
 
-let arrIndex = 1;
-
 //this function convert the array from [n,f,n,f,f,n] to [n,f,n,f,n...]
 function showCalculation(calcArray) {
     let newArr = []; //new Array conatainer for formatted newCalcArray
-
-    console.log("calcArray is ", calcArray) ;
-    arrIndex++
 
     //we iterate all the elements of calcArray>>newCalcArray
     for (let i = 0; i < calcArray.length; i++) {
@@ -202,7 +194,6 @@ function showCalculation(calcArray) {
 
 
         if (typeof currentItem === 'string') {
-            console.log("current item first letter is ",currentItem.charAt(0));
             currentItem = currentItem.charAt(0) === "-" ? `(${currentItem})` : currentItem;
             newArr.push(currentItem);
         } else if (typeof currentItem === 'function') {
@@ -210,7 +201,6 @@ function showCalculation(calcArray) {
 
 
             if (operatorName === 'remainder') {
-                console.log(typeof calcArray[i + 1]);
 
                 if (i + 1 < calcArray.length && typeof calcArray[i + 1] === 'string' ) {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
@@ -233,7 +223,6 @@ function showCalculation(calcArray) {
             }
         }
     }
-    console.log(`NEW ARR AFTER SHOWCALCU: ` + newArr);
     return newArr;
 }
 
@@ -241,8 +230,6 @@ function showCalculation(calcArray) {
 //perform MDAS here
 function runCalcOnAllItems(arr) {
     let resultArr = [...arr];
-
-    console.log("runCalcArr ", arr);
 
     let i = 1;
     while (i < resultArr.length) {
@@ -289,7 +276,7 @@ function runCalcOnAllItems(arr) {
 
     //this is the final result
     let finalResult = checkAndDivideByPercent(resultArr[0]);
-    console.log(`finalResult: ${finalResult}`);
+    console.log(`run finalResult: ${finalResult}`);
     return Number(finalResult);
 }
 
@@ -325,7 +312,6 @@ function fadeInLiveResult(liveResult) {
         console.log(liveResult);
         let nanOrNot = isNaN(liveResult) ? "0" : liveResult
         // let formattedNumber = new Intl.NumberFormat('en-US').format(liveResult);
-        console.log(nanOrNot);
         resultContainer.textContent = new Intl.NumberFormat('en-US').format(nanOrNot);
         resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
     }, fadeTime);
@@ -382,27 +368,18 @@ function clearOneCalc() {
         let stringNumber = newCalcArray.at(-1);
 
         if (stringNumber === "(-)") {
-            console.log("dfgddf");
             plusMinus()
-
             newCalcArray.pop();
-            console.log(calculationDisplayText.textContent);
-
-            // allNewDigits = "";
-
         } else if (stringNumber.length >= 2) {
-            console.log("oahaha");
             let newSlicedNumber = stringNumber.slice(0, -1);
             newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
             allNewDigits = newSlicedNumber;
-            console.log(allNewDigits);
         } else {
             newCalcArray.pop();
             allNewDigits = "";
             // negNumber = false;
         }
     } else if (typeof newCalcArray.at(-1) === "function") {
-        console.log("its a func");
         newCalcArray.pop();
 
         if (typeof newCalcArray.at(-1) === "function") {
@@ -412,7 +389,7 @@ function clearOneCalc() {
         }
 
     }
-    // displayCalcAndSum();
+    displayCalcAndSum();
 }
 
 function regNum(btn) {
@@ -433,9 +410,6 @@ function regNum(btn) {
     } else {
         allNewDigits += newDigit;
     }
-    // console.log("new digits are ", typeof allNewDigits, allNewDigits);
-
-    // allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
@@ -457,12 +431,9 @@ function plusMinus() {
     // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
-    console.log(newCalcArray);
 
     if (negNumber && newCalcArray.at(-1).name === "remainder" && typeof newCalcArray.at(-2) === "string") {
-        console.log("LAST ONE WAS AS REMINDER");
         let newNegValue = newCalcArray.at(-2) *-1;
-        console.log(newNegValue);
         newCalcArray[newCalcArray.length - 2] = newNegValue.toString(); 
     } else if (negNumber && allNewDigits === "") {
         newCalcArray.push("(-)")
@@ -486,7 +457,6 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
 }
 
 function opSymbol(btn) {
-    console.log(btn);
     if (shakeBtn) {
         shakeOpsOnPress(btn)
         return;
@@ -504,8 +474,6 @@ function opSymbol(btn) {
     else if (opSym === "/") { operator = divide; }
     else { operator = add; }
 
-    console.log(newCalcArray.at(-1));
-
     if (typeof (newCalcArray.at(-1)) === "function") {
         let prevOperator = newCalcArray.at(-1)
         if (prevOperator.name !== "remainder" && typeof newCalcArray.at(-2) !== "function") {
@@ -517,16 +485,12 @@ function opSymbol(btn) {
         } else if (newCalcArray.at(-2).name === "remainder" && operator.name === "remainder") {
         }
     } else if (newCalcArray.at(-1) === "(-)") {
-        console.log("this is (-)");
         negNumber = true;
         negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
         shakeBtn = true;
         pressABtn(btn)
 
-        // console.log(btnOperators);
-        
-        // newCalcArray[newCalcArray.length - 1] = operator
-    } else {
+        } else {
         newCalcArray.push(operator)
     }
     // displayCalcAndSum();
@@ -534,7 +498,6 @@ function opSymbol(btn) {
 }
 
 function shakeOpsOnPress(btn) {
-    console.log(btn);
     
     btn.parentElement.classList.add("shake");
     setTimeout(() => {
@@ -581,7 +544,6 @@ const plusMinusBtn = document.querySelector(".btn-plus-minus")
 let isRunning = false;
 
 function flipExtraBtns() {
-    // console.log('flippin extra buttons');
     if (isRunning) return;
     isRunning = true;
 
