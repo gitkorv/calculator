@@ -174,6 +174,7 @@ function displayCalcAndSum() {
     let reduceArray = showCalculation(newCalcArray); //reduceArray is the formatted array 
     calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
 
+    let noParenthesesArr = reduceArray.map(item => item.replace(/\((.*?)\)/, "$1")); // look if anything is within "( )" and if so extract it
     liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
@@ -189,6 +190,7 @@ function displayCalcAndSum() {
 function showCalculation(calcArray) {
     let newArr = []; //new Array conatainer for formatted newCalcArray
 
+    console.log("calcArray is ", calcArray);
 
     //we iterate all the elements of calcArray>>newCalcArray
     for (let i = 0; i < calcArray.length; i++) {
@@ -196,19 +198,19 @@ function showCalculation(calcArray) {
 
 
         if (typeof currentItem === 'string') {
+            console.log("current item first letter is ",currentItem.charAt(0));
+            currentItem = currentItem.charAt(0) === "-" ? `(${currentItem})` : currentItem;
             newArr.push(currentItem);
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
 
 
             if (operatorName === 'remainder') {
-                if (i - 1 < calcArray.length && calcArray[i - 1].name === 'remainder') {
+                if (calcArray[i - 1].name === 'remainder') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
                     // if last element is number then we just add % to it example 9,% becomes 9%
-                    let temp = newArr[newArr.length - 1];
-                    newArr.pop();
-                    newArr.push(temp + `%`);
+                    newArr[newArr.length - 1] += "%";
                 }
             } else if (operatorName === 'add') {
                 newArr.push('+');
@@ -447,6 +449,15 @@ function plusMinus() {
     // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
+    console.log(newCalcArray);
+
+    // if (negNumber && newCalcArray.at(-1).name === "remainder" && typeof newCalcArray.at(-2) === "string") {
+    //     console.log("LAST ONE WAS AS REMINDER");
+    //     let newNegValue = newCalcArray.at(-2) *-1;
+    //     console.log(newNegValue);
+    //     newCalcArray[newCalcArray.length - 2] = newNegValue.toString(); 
+    // } else 
+    
     if (negNumber && allNewDigits === "") {
         newCalcArray.push("(-)")
     } else {
