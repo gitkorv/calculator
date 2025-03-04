@@ -175,7 +175,7 @@ function displayCalcAndSum() {
     calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
 
     let noParenthesesArr = reduceArray.map(item => item.replace(/\((.*?)\)/, "$1")); // look if anything is within "( )" and if so extract it
-    liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
+    liveResult = runCalcOnAllObjects(noParenthesesArr);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
         console.log("live result is " + liveResult);
@@ -451,14 +451,12 @@ function plusMinus() {
 
     console.log(newCalcArray);
 
-    // if (negNumber && newCalcArray.at(-1).name === "remainder" && typeof newCalcArray.at(-2) === "string") {
-    //     console.log("LAST ONE WAS AS REMINDER");
-    //     let newNegValue = newCalcArray.at(-2) *-1;
-    //     console.log(newNegValue);
-    //     newCalcArray[newCalcArray.length - 2] = newNegValue.toString(); 
-    // } else 
-    
-    if (negNumber && allNewDigits === "") {
+    if (negNumber && newCalcArray.at(-1).name === "remainder" && typeof newCalcArray.at(-2) === "string") {
+        console.log("LAST ONE WAS AS REMINDER");
+        let newNegValue = newCalcArray.at(-2) *-1;
+        console.log(newNegValue);
+        newCalcArray[newCalcArray.length - 2] = newNegValue.toString(); 
+    } else if (negNumber && allNewDigits === "") {
         newCalcArray.push("(-)")
     } else {
         newCalcArray[newCalcArray.length - 1] = compiledDigits
