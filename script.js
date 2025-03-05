@@ -371,6 +371,7 @@ function clearOneCalc() {
             plusMinus()
             newCalcArray.pop();
         } else if (stringNumber.length >= 2) {
+            console.log("lets slice");
             let newSlicedNumber = stringNumber.slice(0, -1);
             newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
             allNewDigits = newSlicedNumber;
@@ -428,9 +429,11 @@ function regNum(btn) {
 
 function plusMinus() {
     negNumber = !negNumber;
-    // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
-    compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
+    console.log("allNewDigits ", allNewDigits);
+
+    compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+    console.log("comp ", compiledDigits, negNumber);
 
     if (negNumber && newCalcArray.at(-1).name === "remainder" && typeof newCalcArray.at(-2) === "string") {
         let newNegValue = newCalcArray.at(-2) *-1;
@@ -448,11 +451,20 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
     let endsWithDot = false;
     let startsWithMinus = false;
     if (allNewDigits.at(-1) === ".") endsWithDot = true;
+    console.log(endsWithDot);
     if (allNewDigits.at(0) === "-") startsWithMinus = true;
 
-    allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
-    if (endsWithDot && negNumber) allNewDigits += ".";
-    if (startsWithMinus && negNumber) allNewDigits = "-" + allNewDigits;
+    // allNewDigits = Math.abs(parseFloat(allNewDigits)).toString()
+
+    if (negNumber && allNewDigits > 0) {
+        allNewDigits = (allNewDigits * -1).toString()
+    } else if (!negNumber && allNewDigits < 0) {
+        allNewDigits = Math.abs(allNewDigits).toString()
+    } 
+
+    // allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
+    // if (endsWithDot && negNumber) allNewDigits += ".";
+    // if (startsWithMinus && negNumber) allNewDigits = "-" + allNewDigits;
     return allNewDigits
 }
 
@@ -626,30 +638,37 @@ document.addEventListener("keydown", (event) => {
 
     if (key1Pressed && key2Pressed) {
         clearCalc()
-    } else if (!keyDown && event.key >= "0" && event.key <= "9" || event.key === ".") {
-        const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
-        // console.log(matchedElement);
-        regNum(matchedElement)
-        // displayCalcAndSum()
-        keyDown = true;
     } else if (event.key === "Backspace") {
-        if (btnsFoldedOut) {
-            if (newCalcArray.length === 0) {
-                clearCalc()
-            } else {
-                clearOneCalc()
+            if (btnsFoldedOut) {
+                if (newCalcArray.length === 0) {
+                    clearCalc()
+                } else {
+                    clearOneCalc()
+                }
+            }
+            event.preventDefault() 
+    } else {
+        if (!keyDown && event.key >= "0" && event.key <= "9" || event.key === ".") {
+            const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
+            // console.log(matchedElement);
+            regNum(matchedElement)
+            // displayCalcAndSum()
+            keyDown = true;
+        } else if (["+", "-", "*", "x", "/", "%"].includes(event.key)) {
+            let operatorSymbol = event.key;
+            operatorSymbol = operatorSymbol === "*" ? "x" : operatorSymbol;
+            const matchedElement = btnOperators.find(element => element.textContent.trim() === operatorSymbol)
+            if (btnsFoldedOut) {
+                opSymbol(matchedElement)
+                // displayCalcAndSum()
             }
         }
-        event.preventDefault()
-    } else if (["+", "-", "*", "x", "/", "%"].includes(event.key)) {
-        let operatorSymbol = event.key;
-        operatorSymbol = operatorSymbol === "*" ? "x" : operatorSymbol;
-        const matchedElement = btnOperators.find(element => element.textContent.trim() === operatorSymbol)
-        if (btnsFoldedOut) {
-            opSymbol(matchedElement)
-            // displayCalcAndSum()
-        }
+        displayCalcAndSum()
+
     }
+    
+    
+    
 });
 
 document.addEventListener("keyup", event => {
