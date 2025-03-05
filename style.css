@@ -485,12 +485,28 @@ div.calc__keyboard__numbers div{
     /* background-color: rgb(134, 134, 160); */
 }
 
-@media (min-width: 425px) {
+@media (min-width: 425px) and (min-height:500px) {
     div.calc__keyboard__numbers {
         width: 200px;
         height: 250px;
     }
 }
+
+@media (max-height:600px) {
+    main {
+        /* margin-top: 0px; */
+        overflow-y: scroll;
+    }
+    .calc--wrapper {
+        margin-top: 32px;
+    }
+    .footer {
+        height: 32px;
+        margin-bottom: 24px;
+    }
+}
+
+
 
 @media (min-width: 768px) {
     :root {
