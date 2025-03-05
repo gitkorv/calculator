@@ -51,19 +51,16 @@ const extraButtons = {
         parentContainer: document.querySelector(".calc__keyboard__operators"),
         btnTexts: ["/", "x", "-", "+"],
         elClass: ["btn-op"],
-        elements: []
     },
     restBtns: {
         parentContainer: document.querySelector(".calc__keyboard__extras"),
         btnTexts: ["±", "%"],
-        elClass: ["btn-plus-minus", "btn-op btn-remainder"],
-        elements: []
+        elClass: ["btn-plus-minus", "btn-num"],
     },
     deleteBtns: {
         parentContainer: document.querySelector(".calc__keyboard__deletes"),
         btnTexts: ["ac", "c"],
         elClass: ["clear clear-ac", "clear clear-c"],
-        elements: []
     }
 }
 
@@ -143,7 +140,7 @@ function pressABtn(activeBtn) {
         if (activeBtn.matches(".btn-num")) regNum(activeBtn);
         if (activeBtn.matches(".btn-plus-minus")) plusMinus();
         if (activeBtn.matches(".btn-op")) opSymbol(activeBtn);
-        
+
         displayCalcAndSum()
     }
     setTimeout(() => activeBtn.classList.remove("active"), 300);
@@ -197,16 +194,32 @@ function showCalculation(calcArray) {
         console.log(negNumber);
 
         if (typeof currentItem === 'string') {
-            
-            if (currentItem.charAt(0) === "-" && calcArray[i + 1] && calcArray[i + 1].name !== "remainder") {
-                currentItem = `(${currentItem})`;
-                console.log("this one");
-            } 
-            newArr.push(currentItem);
 
+            if (calcArray[i - 1] && newArr[i - 1] === "%" && negNumber) {
+                console.log(")))))))");
+                calcArray.pop()
+                console.log(calcArray[i - 2]);
+                allNewDigits = "";
+                calcArray[i - 2] += Math.abs(currentItem).toString();
+                // calcArray[i - 2] = allNewDigits + Math.abs(currentItem).toString();
+                console.log(allNewDigits);
+                // calcArray.splice(i - 2, 2, `${newArr[i - 2]}${Math.abs(currentItem).toString()}%`);
+                // newArr.splice(i - 2, 1, `(${newArr[i - 2]}${Math.abs(currentItem).toString()})`);
+                // newArr[i - 2] = `(${newArr[i - 2]}${Math.abs(currentItem).toString()}%)`;
+                newArr[i - 2] = calcArray[i - 2];
+                newArr.pop()
+                // newArr.push(currentItem)
 
-            // console.log(calcArray);
-            // console.log(newArr);
+            } else {
+                if (currentItem.charAt(0) === "-" && calcArray[i + 1] && calcArray[i + 1].name !== "remainder") {
+                    currentItem = `(${currentItem})`;
+                    console.log("this one");
+                }
+                newArr.push(currentItem);
+            }
+
+            console.log(calcArray);
+            console.log(newArr);
 
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
@@ -214,12 +227,15 @@ function showCalculation(calcArray) {
 
             if (operatorName === 'remainder') {
 
-                if (i + 1 < calcArray.length && typeof calcArray[i + 1] === 'string' ) {
+                if (i + 1 < calcArray.length && typeof calcArray[i + 1] === 'string') {
                     console.log("jajajaj");
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else if (calcArray[i - 1].name === 'remainder') {
-                    console.log("Pre");
+                    console.log("yo!!!");
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
+                } else if (typeof calcArray[i - 1] === 'string' && calcArray[i - 1].charAt(0) === "-") {
+                    // if last element is number then we just add % to it example 9,% becomes 9%
+                    newArr[newArr.length - 1] = `(${newArr[newArr.length - 1]}%)`;
                 } else {
                     // if last element is number then we just add % to it example 9,% becomes 9%
                     newArr[newArr.length - 1] += "%";
@@ -238,7 +254,6 @@ function showCalculation(calcArray) {
         }
 
     }
-    console.log(calcArray);
     console.log(newArr);
 
     return newArr;
@@ -259,13 +274,13 @@ function runCalcOnAllItems(arr) {
             let num2 = checkAndDivideByPercent(resultArr[i + 1]);
 
             let result = performCalculation(num1, operator, num2);
-                        //index:0 1 2 3 4
+            //index:0 1 2 3 4
             //example resultArr[1,+,3,/,3...]
             //we are at i =3, we solve 3 / 3 so result is 1, we want to insert that 1 to [1,+,(3,/,3)...]
             resultArr.splice(i - 1, 3, result);
             //we are expecting this [1,+,(1)...]
             //everytime we remove/add item from resultArr the length of resultArr change too
- 
+
             //current index i is 3,
 
             i -= 2;//so we compensate the removal of 2 elements  with this
@@ -422,30 +437,48 @@ function regNum(btn) {
         }, 1000);
     }
 
-    // console.log(allNewDigits);
+    let lastCalcArrItem = newCalcArray[newCalcArray.length - 1]
 
     if (newDigit === "." && allNewDigits.includes(".")) {
     } else if (allNewDigits === "0" && newDigit !== ".") {
         allNewDigits = newDigit;
+    } else if (lastCalcArrItem && typeof lastCalcArrItem === "string" && lastCalcArrItem.includes("%")) {
+        if (newDigit !== "%") allNewDigits = allNewDigits.slice(0, -1) + newDigit + allNewDigits.slice(-1);
     } else {
         allNewDigits += newDigit;
     }
 
-    console.log(allNewDigits);
-
-    let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+    allNewDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
     if (newCalcArray.length === 0 || typeof (newCalcArray.at(-1)) === "function") {
-        newCalcArray.push(negOrNotDigits)
+        newCalcArray.push(allNewDigits)
     } else {
-        newCalcArray[newCalcArray.length - 1] = negOrNotDigits
+        newCalcArray[newCalcArray.length - 1] = allNewDigits
     }
 
     if (!btnsFoldedOut) {
         flipExtraBtns()
         welcomeText.classList.add("fly-out")
     }
-    
+
+}
+
+function makeNegNumberOrNot(allNewDigits, negNumber) {
+    let isPercent = false;
+
+    if (allNewDigits[allNewDigits.length -1] === "%") {
+        isPercent = true;
+        allNewDigits = allNewDigits.slice(0, -1)
+    }
+
+    if (negNumber && allNewDigits > 0) {
+        allNewDigits = (allNewDigits * -1).toString()
+    } else if (!negNumber && allNewDigits < 0) {
+        allNewDigits = Math.abs(allNewDigits).toString()
+    }
+
+    isPercent ? allNewDigits +="%" : allNewDigits;
+    return allNewDigits
 }
 
 function plusMinus() {
@@ -457,8 +490,8 @@ function plusMinus() {
     console.log("comp ", compiledDigits, negNumber);
 
     if (negNumber && newCalcArray.at(-1).name === "remainder" && typeof newCalcArray.at(-2) === "string") {
-        let newNegValue = newCalcArray.at(-2) *-1;
-        newCalcArray[newCalcArray.length - 2] = newNegValue.toString(); 
+        let newNegValue = newCalcArray.at(-2) * -1;
+        newCalcArray[newCalcArray.length - 2] = newNegValue.toString();
     } else if (negNumber && allNewDigits === "") {
         newCalcArray.push("(-)")
     } else {
@@ -468,26 +501,7 @@ function plusMinus() {
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
 }
 
-function makeNegNumberOrNot(allNewDigits, negNumber) {
-    let endsWithDot = false;
-    let startsWithMinus = false;
-    if (allNewDigits.at(-1) === ".") endsWithDot = true;
-    console.log(endsWithDot);
-    if (allNewDigits.at(0) === "-") startsWithMinus = true;
 
-    // allNewDigits = Math.abs(parseFloat(allNewDigits)).toString()
-
-    if (negNumber && allNewDigits > 0) {
-        allNewDigits = (allNewDigits * -1).toString()
-    } else if (!negNumber && allNewDigits < 0) {
-        allNewDigits = Math.abs(allNewDigits).toString()
-    } 
-
-    // allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
-    // if (endsWithDot && negNumber) allNewDigits += ".";
-    // if (startsWithMinus && negNumber) allNewDigits = "-" + allNewDigits;
-    return allNewDigits
-}
 
 function opSymbol(btn) {
     if (shakeBtn) {
@@ -523,7 +537,7 @@ function opSymbol(btn) {
         shakeBtn = true;
         pressABtn(btn)
 
-        } else {
+    } else {
         newCalcArray.push(operator)
     }
     // displayCalcAndSum();
@@ -531,7 +545,7 @@ function opSymbol(btn) {
 }
 
 function shakeOpsOnPress(btn) {
-    
+
     btn.parentElement.classList.add("shake");
     setTimeout(() => {
         btn.parentElement.classList.remove("shake");
@@ -660,14 +674,14 @@ document.addEventListener("keydown", (event) => {
     if (key1Pressed && key2Pressed) {
         clearCalc()
     } else if (event.key === "Backspace") {
-            if (btnsFoldedOut) {
-                if (newCalcArray.length === 0) {
-                    clearCalc()
-                } else {
-                    clearOneCalc()
-                }
+        if (btnsFoldedOut) {
+            if (newCalcArray.length === 0) {
+                clearCalc()
+            } else {
+                clearOneCalc()
             }
-            event.preventDefault() 
+        }
+        event.preventDefault()
     } else {
         if (!keyDown && event.key >= "0" && event.key <= "9" || event.key === ".") {
             const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
@@ -687,9 +701,9 @@ document.addEventListener("keydown", (event) => {
         displayCalcAndSum()
 
     }
-    
-    
-    
+
+
+
 });
 
 document.addEventListener("keyup", event => {
