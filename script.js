@@ -197,32 +197,16 @@ function showCalculation(calcArray) {
         console.log(negNumber);
 
         if (typeof currentItem === 'string') {
+            
+            if (currentItem.charAt(0) === "-" && calcArray[i + 1] && calcArray[i + 1].name !== "remainder") {
+                currentItem = `(${currentItem})`;
+                console.log("this one");
+            } 
+            newArr.push(currentItem);
 
-            if (calcArray[i - 1] && newArr[i - 1] === "%" && negNumber) {
-                console.log(")))))))");
-                calcArray.pop()
-                console.log(calcArray[i - 2]);
-                allNewDigits = "";
-                calcArray[i - 2] += Math.abs(currentItem).toString();
-                // calcArray[i - 2] = allNewDigits + Math.abs(currentItem).toString();
-                console.log(allNewDigits);
-                // calcArray.splice(i - 2, 2, `${newArr[i - 2]}${Math.abs(currentItem).toString()}%`);
-                // newArr.splice(i - 2, 1, `(${newArr[i - 2]}${Math.abs(currentItem).toString()})`);
-                // newArr[i - 2] = `(${newArr[i - 2]}${Math.abs(currentItem).toString()}%)`;
-                newArr[i - 2] = calcArray[i - 2];
-                // newArr.pop()
-                // newArr.push(currentItem)
 
-            } else {
-                if (currentItem.charAt(0) === "-" && calcArray[i + 1] && calcArray[i + 1].name !== "remainder") {
-                    currentItem = `(${currentItem})`;
-                    console.log("this one");
-                } 
-                newArr.push(currentItem);
-            }
-
-            console.log(calcArray);
-            console.log(newArr);
+            // console.log(calcArray);
+            // console.log(newArr);
 
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
@@ -234,11 +218,8 @@ function showCalculation(calcArray) {
                     console.log("jajajaj");
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else if (calcArray[i - 1].name === 'remainder') {
-                    console.log("yo!!!");
+                    console.log("Pre");
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
-                } else if (typeof calcArray[i - 1] === 'string' && calcArray[i - 1].charAt(0) === "-") {
-                    // if last element is number then we just add % to it example 9,% becomes 9%
-                    newArr[newArr.length - 1] =`(${newArr[newArr.length - 1]}%)`;
                 } else {
                     // if last element is number then we just add % to it example 9,% becomes 9%
                     newArr[newArr.length - 1] += "%";
@@ -257,6 +238,7 @@ function showCalculation(calcArray) {
         }
 
     }
+    console.log(calcArray);
     console.log(newArr);
 
     return newArr;
@@ -440,7 +422,7 @@ function regNum(btn) {
         }, 1000);
     }
 
-    console.log(allNewDigits);
+    // console.log(allNewDigits);
 
     if (newDigit === "." && allNewDigits.includes(".")) {
     } else if (allNewDigits === "0" && newDigit !== ".") {
