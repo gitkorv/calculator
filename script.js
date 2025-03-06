@@ -443,10 +443,12 @@ function regNum(btn) {
         }, 1000);
     }
 
-
+//working on this
     if (newDigit === "." && allNewDigits.includes(".")) {
     } else if (allNewDigits === "0" && newDigit !== ".") {
         allNewDigits = newDigit;
+    }else if (newDigit === '%' && typeof newCalcArray[newCalcArray.length-1] === 'string' && !newCalcArray[newCalcArray.length-1].includes('%')  ) {
+        allNewDigits.replace(/(\d+)(%)$/, `$1${newDigit}$2`);
     } else {
         allNewDigits += newDigit;
     }
@@ -508,7 +510,7 @@ function opSymbol(btn) {
     let operator
     if (opSym === "-") { operator = sub; }
     else if (opSym === "x" || opSym === "*") { operator = multiply; }
-    else if (opSym === "%") { operator = remainder; }
+    // else if (opSym === "%") { operator = remainder; }
     else if (opSym === "/") { operator = divide; }
     else { operator = add; }
 
