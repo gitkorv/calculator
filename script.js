@@ -7,6 +7,8 @@ let allBtns = [...document.querySelectorAll(".calc__btn")];
 const btnNumbers = [...document.querySelectorAll(".btn-num")];
 const clearAllBtn = document.querySelector(".clear-ac")
 const oneClearBtn = document.querySelector(".clear-c")
+let remainderBtn
+
 
 // Displays
 const calcDisplayContainer = document.querySelector(".calc__display")
@@ -55,7 +57,7 @@ const extraButtons = {
     restBtns: {
         parentContainer: document.querySelector(".calc__keyboard__extras"),
         btnTexts: ["±", "%"],
-        elClass: ["btn-plus-minus", "btn-num"],
+        elClass: ["btn-plus-minus", "btn-num btn-rem"],
     },
     deleteBtns: {
         parentContainer: document.querySelector(".calc__keyboard__deletes"),
@@ -166,17 +168,19 @@ function displayCalcAndSum() {
         calculationDisplayEqualSign.classList.remove("show");
     }
 
-    let reduceArray = showCalculation(newCalcArray); //reduceArray is the formatted array 
-    calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
+    console.log(newCalcArray);
 
-    let noParenthesesArr = reduceArray.map(item => item.replace(/\((.*?)\)/, "$1")); // look if anything is within "( )" and if so extract it
-    liveResult = runCalcOnAllItems(noParenthesesArr);//solve the formatted array and return the result as number saving in liveResult
+    // let reduceArray = showCalculation(newCalcArray); //reduceArray is the formatted array 
+    // calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
+
+    // let noParenthesesArr = reduceArray.map(item => item.replace(/\((.*?)\)/, "$1")); // look if anything is within "( )" and if so extract it
+    // liveResult = runCalcOnAllItems(noParenthesesArr);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
-        console.log("live result is " + liveResult);
-        console.log("Result is NaN");
+        // console.log("live result is " + liveResult);
+        // console.log("Result is NaN");
     } else if (resultContainer.textContent !== liveResult.toString()) {
-        console.log("live result is " + liveResult);
+        // console.log("live result is " + liveResult);
         fadeInLiveResult(liveResult);
     }
 }
@@ -185,30 +189,21 @@ let lockedNum = false;
 function showCalculation(calcArray) {
     let newArr = []; //new Array conatainer for formatted newCalcArray
 
+    console.log(calcArray);
     //we iterate all the elements of calcArray>>newCalcArray
     for (let i = 0; i < calcArray.length; i++) {
         let currentItem = calcArray[i];
 
-        console.log(calcArray);
-        console.log(newArr);
-        console.log(negNumber);
-
         if (typeof currentItem === 'string') {
+            console.log("its a string");
 
             if (calcArray[i - 1] && newArr[i - 1] === "%" && negNumber) {
-                console.log(")))))))");
-                calcArray.pop()
-                console.log(calcArray[i - 2]);
+                console.log(currentItem);
+                console.log(calcArray[i - 1]);
                 allNewDigits = "";
-                calcArray[i - 2] += Math.abs(currentItem).toString();
-                // calcArray[i - 2] = allNewDigits + Math.abs(currentItem).toString();
-                console.log(allNewDigits);
-                // calcArray.splice(i - 2, 2, `${newArr[i - 2]}${Math.abs(currentItem).toString()}%`);
-                // newArr.splice(i - 2, 1, `(${newArr[i - 2]}${Math.abs(currentItem).toString()})`);
-                // newArr[i - 2] = `(${newArr[i - 2]}${Math.abs(currentItem).toString()}%)`;
-                newArr[i - 2] = calcArray[i - 2];
-                newArr.pop()
-                // newArr.push(currentItem)
+                calcArray.push(currentItem)
+
+                
 
             } else {
                 if (currentItem.charAt(0) === "-" && calcArray[i + 1] && calcArray[i + 1].name !== "remainder") {
@@ -218,12 +213,10 @@ function showCalculation(calcArray) {
                 newArr.push(currentItem);
             }
 
-            console.log(calcArray);
-            console.log(newArr);
 
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
-
+            console.log("its a func");
 
             if (operatorName === 'remainder') {
 
@@ -309,7 +302,7 @@ function runCalcOnAllItems(arr) {
 
     //this is the final result
     let finalResult = checkAndDivideByPercent(resultArr[0]);
-    console.log(`run finalResult: ${finalResult}`);
+    // console.log(`run finalResult: ${finalResult}`);
     return Number(finalResult);
 }
 
@@ -342,9 +335,7 @@ function fadeInLiveResult(liveResult) {
     setTimeout(() => {
         resultContainer.classList.remove("fade", "mini")
         liveResult = Math.round(liveResult * 10000) / 10000;
-        console.log(liveResult);
         let nanOrNot = isNaN(liveResult) ? "0" : liveResult
-        // let formattedNumber = new Intl.NumberFormat('en-US').format(liveResult);
         resultContainer.textContent = new Intl.NumberFormat('en-US').format(nanOrNot);
         resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
     }, fadeTime);
@@ -363,71 +354,7 @@ function handleResultTransitionEnd() {
     resultContainer.removeEventListener("transitionend", handleResultTransitionEnd);
 }
 
-function clearCalc() {
-    newDigit = "";
-    allNewDigits = "";
-    newCalcArray = [];
-    calculationDisplayEqualSign.style.transitionDuration = ".25s"
-    calculationDisplayEqualSign.classList.remove("show")
-    calculationDisplayText.classList.add("shrink");
-    negNumber = false;
-    plusMinusBtn.classList.remove("is-on");
-    resultContainer.style.fontSize = "";
-    resultContainer.classList.add("mini");
-    resultContainer.addEventListener(
-        "transitionend",
-        (e) => {
-            calculationDisplayText.textContent = "";
-            calculationDisplayEqualSign.style.transitionDuration = ""
-
-            resultContainer.textContent = "";
-            welcomeText.innerHTML = `You stink at maths!<br>Let's try again`
-            welcomeText.classList.remove("fly-out")
-
-            // negNumber = false;
-            flipExtraBtns()
-            loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
-        },
-        { once: true }
-    );
-    console.log("delete all!");
-}
-
-function clearOneCalc() {
-    allNewDigits = "";
-    console.log(newCalcArray);
-
-    if (typeof newCalcArray.at(-1) === "string") {
-        let stringNumber = newCalcArray.at(-1);
-
-        if (stringNumber === "(-)") {
-            plusMinus()
-            newCalcArray.pop();
-        } else if (stringNumber.length >= 2) {
-            console.log("lets slice");
-            let newSlicedNumber = stringNumber.slice(0, -1);
-            newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
-            allNewDigits = newSlicedNumber;
-        } else {
-            newCalcArray.pop();
-            allNewDigits = "";
-            // negNumber = false;
-        }
-    } else if (typeof newCalcArray.at(-1) === "function") {
-        newCalcArray.pop();
-
-        if (typeof newCalcArray.at(-1) === "function") {
-            allNewDigits = "";
-        } else {
-            allNewDigits = newCalcArray.at(-1) ?? null;
-        }
-
-    }
-    displayCalcAndSum();
-}
-
 function regNum(btn) {
-
     cancelAnimationFrame(loopBtnAnim)
     newDigit = btn.textContent;
 
@@ -436,19 +363,26 @@ function regNum(btn) {
             calculationDisplayText.classList.remove("shrink")
         }, 1000);
     }
-
-    let lastCalcArrItem = newCalcArray[newCalcArray.length - 1]
-
-    if (newDigit === "." && allNewDigits.includes(".")) {
-    } else if (allNewDigits === "0" && newDigit !== ".") {
+    console.log(allNewDigits);
+    if (newDigit === "." && allNewDigits.includes(".")) { // If the new digit is ".", and lastCalcArrItem includes a ".", do nothing
+    } else if (allNewDigits === "0" && newDigit !== ".") { // If lastCalcArrItem is 0, and the new digit is NOT ".", replace allNewDigits with the new digit
         allNewDigits = newDigit;
-    } else if (lastCalcArrItem && typeof lastCalcArrItem === "string" && lastCalcArrItem.includes("%")) {
-        if (newDigit !== "%") allNewDigits = allNewDigits.slice(0, -1) + newDigit + allNewDigits.slice(-1);
+    } else if (allNewDigits.endsWith("%" && newDigit === "%")) {
+        opSymbol(remainderBtn)
+        allNewDigits = ""
+        return
     } else {
         allNewDigits += newDigit;
     }
 
-    allNewDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+    if (typeof newDigit === "string" && negNumber) {
+        console.log("this is going on");
+        allNewDigits = "-" + allNewDigits.slice(1)
+        
+    }
+    // allNewDigits += newDigit;
+
+
 
     if (newCalcArray.length === 0 || typeof (newCalcArray.at(-1)) === "function") {
         newCalcArray.push(allNewDigits)
@@ -458,50 +392,34 @@ function regNum(btn) {
 
     if (!btnsFoldedOut) {
         flipExtraBtns()
+
         welcomeText.classList.add("fly-out")
     }
-
-}
-
-function makeNegNumberOrNot(allNewDigits, negNumber) {
-    let isPercent = false;
-
-    if (allNewDigits[allNewDigits.length -1] === "%") {
-        isPercent = true;
-        allNewDigits = allNewDigits.slice(0, -1)
-    }
-
-    if (negNumber && allNewDigits > 0) {
-        allNewDigits = (allNewDigits * -1).toString()
-    } else if (!negNumber && allNewDigits < 0) {
-        allNewDigits = Math.abs(allNewDigits).toString()
-    }
-
-    isPercent ? allNewDigits +="%" : allNewDigits;
-    return allNewDigits
+    remainderBtn = document.querySelector(".btn-rem")
 }
 
 function plusMinus() {
     negNumber = !negNumber;
 
-    console.log("allNewDigits ", allNewDigits);
-
-    compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
-    console.log("comp ", compiledDigits, negNumber);
-
-    if (negNumber && newCalcArray.at(-1).name === "remainder" && typeof newCalcArray.at(-2) === "string") {
-        let newNegValue = newCalcArray.at(-2) * -1;
-        newCalcArray[newCalcArray.length - 2] = newNegValue.toString();
-    } else if (negNumber && allNewDigits === "") {
-        newCalcArray.push("(-)")
-    } else {
-        newCalcArray[newCalcArray.length - 1] = compiledDigits
+    if (allNewDigits.charAt(0) === "-" && !negNumber) {
+        allNewDigits = allNewDigits.slice(1)
+    } else if (allNewDigits.charAt(0) !== "-" && negNumber) {
+        allNewDigits = "-" + allNewDigits;
     }
 
+    newCalcArray[newCalcArray.length - 1] = allNewDigits
+    console.log(allNewDigits);
+
+    // let lastCalcArrItem = newCalcArray[newCalcArray.length - 1] || "";
+
+    // if (lastCalcArrItem && typeof lastCalcArrItem === "string" && parseFloat(lastCalcArrItem) > 0) {
+    //     newCalcArray[newCalcArray.length - 1] = "-" + lastCalcArrItem;
+    // } else {
+    //     newCalcArray[newCalcArray.length - 1] = lastCalcArrItem.slice(1)
+    // }
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
+
 }
-
-
 
 function opSymbol(btn) {
     if (shakeBtn) {
@@ -542,6 +460,67 @@ function opSymbol(btn) {
     }
     // displayCalcAndSum();
 
+}
+
+function clearCalc() {
+    newDigit = "";
+    allNewDigits = "";
+    newCalcArray = [];
+    calculationDisplayEqualSign.style.transitionDuration = ".25s"
+    calculationDisplayEqualSign.classList.remove("show")
+    calculationDisplayText.classList.add("shrink");
+    negNumber = false;
+    plusMinusBtn.classList.remove("is-on");
+    resultContainer.style.fontSize = "";
+    resultContainer.classList.add("mini");
+    resultContainer.addEventListener(
+        "transitionend",
+        (e) => {
+            calculationDisplayText.textContent = "";
+            calculationDisplayEqualSign.style.transitionDuration = ""
+
+            resultContainer.textContent = "";
+            welcomeText.innerHTML = `You stink at maths!<br>Let's try again`
+            welcomeText.classList.remove("fly-out")
+
+            // negNumber = false;
+            flipExtraBtns()
+            loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
+        },
+        { once: true }
+    );
+    console.log("delete all!");
+}
+
+function clearOneCalc() {
+    allNewDigits = "";
+
+    if (typeof newCalcArray.at(-1) === "string") {
+        let stringNumber = newCalcArray.at(-1);
+
+        if (stringNumber === "(-)") {
+            plusMinus()
+            newCalcArray.pop();
+        } else if (stringNumber.length >= 2) {
+            let newSlicedNumber = stringNumber.slice(0, -1);
+            newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
+            allNewDigits = newSlicedNumber;
+        } else {
+            newCalcArray.pop();
+            allNewDigits = "";
+            // negNumber = false;
+        }
+    } else if (typeof newCalcArray.at(-1) === "function") {
+        newCalcArray.pop();
+
+        if (typeof newCalcArray.at(-1) === "function") {
+            allNewDigits = "";
+        } else {
+            allNewDigits = newCalcArray.at(-1) ?? null;
+        }
+
+    }
+    displayCalcAndSum();
 }
 
 function shakeOpsOnPress(btn) {
@@ -685,20 +664,20 @@ document.addEventListener("keydown", (event) => {
     } else {
         if (!keyDown && event.key >= "0" && event.key <= "9" || event.key === ".") {
             const matchedElement = btnNumbers.find(element => element.textContent.trim() === event.key)
-            // console.log(matchedElement);
             regNum(matchedElement)
-            // displayCalcAndSum()
             keyDown = true;
+            displayCalcAndSum()
+
         } else if (["+", "-", "*", "x", "/", "%"].includes(event.key)) {
             let operatorSymbol = event.key;
             operatorSymbol = operatorSymbol === "*" ? "x" : operatorSymbol;
             const matchedElement = btnOperators.find(element => element.textContent.trim() === operatorSymbol)
             if (btnsFoldedOut) {
                 opSymbol(matchedElement)
-                // displayCalcAndSum()
             }
+            displayCalcAndSum()
+
         }
-        displayCalcAndSum()
 
     }
 
