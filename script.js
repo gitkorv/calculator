@@ -177,10 +177,10 @@ function displayCalcAndSum() {
     liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
-        console.log("live result is " + liveResult);
+        // console.log("live result is " + liveResult);
         console.log("Result is NaN");
     } else if (resultContainer.textContent !== liveResult.toString()) {
-        console.log("live result is " + liveResult);
+        // console.log("live result is " + liveResult);
         fadeInLiveResult(liveResult);
     }
 }
@@ -196,19 +196,17 @@ function showCalculation(calcArray) {
 
 
         if (typeof currentItem === 'string') {
-            newArr.push(currentItem);
+                newArr.push(currentItem);
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
 
 
             if (operatorName === 'remainder') {
-                if (i - 1 < calcArray.length && calcArray[i - 1].name === 'remainder') {
+                if (calcArray[i - 1].name === 'remainder' || typeof calcArray[i+1] === 'string') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
                     // if last element is number then we just add % to it example 9,% becomes 9%
-                    let temp = newArr[newArr.length - 1];
-                    newArr.pop();
-                    newArr.push(temp + `%`);
+                    newArr[newArr.length-1]+= `%`;
                 }
             } else if (operatorName === 'add') {
                 newArr.push('+');
@@ -223,6 +221,7 @@ function showCalculation(calcArray) {
             }
         }
     }
+    console.log(`ORIG ARRAY IS: ` + newCalcArray);
     console.log(`NEW ARR AFTER SHOWCALCU: ` + newArr);
     return newArr;
 }
@@ -262,17 +261,23 @@ function runCalcOnAllObjects(arr) {
     i = 1;
     //then we look for add sub
     while (i < resultArr.length) {
-        if (resultArr[i] === '+' || resultArr[i] === '-') {
-            let num1 = checkAndDivideByPercent(resultArr[i - 1]);
-            let operator = resultArr[i];
-            let num2 = checkAndDivideByPercent(resultArr[i + 1]);
-
+        if (resultArr[i] === '+' ||
+            resultArr[i] === '-'
+        ) {
+            const operator = resultArr[i];
+            const num1 = checkAndDivideByPercent(resultArr[i - 1]);
+            let num2 = String(resultArr[i + 1]).endsWith('%')
+            ? num1 * checkAndDivideByPercent(resultArr[i + 1])
+            : checkAndDivideByPercent(resultArr[i + 1]);
+        
             let result = performCalculation(num1, operator, num2);
 
+            // resultArr[i - 1] = result;
             resultArr.splice(i - 1, 3, result);
             i -= 2;
         }
         i += 2;
+
     }
 
     //this is the final result
