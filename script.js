@@ -145,7 +145,7 @@ function pressABtn(activeBtn) {
         if (activeBtn.matches(".btn-num")) regNum(activeBtn);
         if (activeBtn.matches(".btn-plus-minus")) plusMinus();
         if (activeBtn.matches(".btn-op")) opSymbol(activeBtn);
-        
+
         displayCalcAndSum()
     }
     setTimeout(() => activeBtn.classList.remove("active"), 300);
@@ -196,17 +196,19 @@ function showCalculation(calcArray) {
 
 
         if (typeof currentItem === 'string') {
-                newArr.push(currentItem);
+            if(Number(currentItem) < 0) newArr.push(`(` + currentItem + `)`);
+            else newArr.push(currentItem);
+
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
 
 
             if (operatorName === 'remainder') {
-                if (calcArray[i - 1].name === 'remainder' || typeof calcArray[i+1] === 'string') {
+                if (calcArray[i - 1].name === 'remainder' || typeof calcArray[i + 1] === 'string') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
                     // if last element is number then we just add % to it example 9,% becomes 9%
-                    newArr[newArr.length-1]+= `%`;
+                    newArr[newArr.length - 1] += `%`;
                 }
             } else if (operatorName === 'add') {
                 newArr.push('+');
@@ -241,13 +243,13 @@ function runCalcOnAllObjects(arr) {
             let num2 = checkAndDivideByPercent(resultArr[i + 1]);
 
             let result = performCalculation(num1, operator, num2);
-                        //index:0 1 2 3 4
+            //index:0 1 2 3 4
             //example resultArr[1,+,3,/,3...]
             //we are at i =3, we solve 3 / 3 so result is 1, we want to insert that 1 to [1,+,(3,/,3)...]
             resultArr.splice(i - 1, 3, result);
             //we are expecting this [1,+,(1)...]
             //everytime we remove/add item from resultArr the length of resultArr change too
- 
+
             //current index i is 3,
 
             i -= 2;//so we compensate the removal of 2 elements  with this
@@ -267,9 +269,9 @@ function runCalcOnAllObjects(arr) {
             const operator = resultArr[i];
             const num1 = checkAndDivideByPercent(resultArr[i - 1]);
             let num2 = String(resultArr[i + 1]).endsWith('%')
-            ? num1 * checkAndDivideByPercent(resultArr[i + 1])
-            : checkAndDivideByPercent(resultArr[i + 1]);
-        
+                ? num1 * checkAndDivideByPercent(resultArr[i + 1])
+                : checkAndDivideByPercent(resultArr[i + 1]);
+
             let result = performCalculation(num1, operator, num2);
 
             // resultArr[i - 1] = result;
@@ -297,11 +299,13 @@ function performCalculation(num1, operator, num2) {
 
 //if item has % in it this function will divide the number by 100 and return the value
 function checkAndDivideByPercent(element) {
-    if (String(element).includes('%')) {
-        let number = parseFloat(element.replace('%', ''));
+
+    const el =String(element).replace(/[()]/g, "");
+    if (el.includes('%')) {
+        let number = parseFloat(el.replace('%', ''));
         return number / 100;
     }
-    return parseFloat(element);
+    return parseFloat(el);
 }
 
 /*
@@ -447,6 +451,7 @@ function regNum(btn) {
     displayCalcAndSum();
 }
 
+
 function plusMinus() {
     negNumber = !negNumber;
     // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
@@ -472,6 +477,8 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
     if (startsWithMinus && negNumber) allNewDigits = "-" + allNewDigits;
     return allNewDigits
 }
+
+
 
 function opSymbol(btn) {
     console.log(btn);
@@ -512,7 +519,7 @@ function opSymbol(btn) {
         pressABtn(btn)
 
         // console.log(btnOperators);
-        
+
         // newCalcArray[newCalcArray.length - 1] = operator
     } else {
         newCalcArray.push(operator)
@@ -523,7 +530,7 @@ function opSymbol(btn) {
 
 function shakeOpsOnPress(btn) {
     console.log(btn);
-    
+
     btn.parentElement.classList.add("shake");
     setTimeout(() => {
         btn.parentElement.classList.remove("shake");
