@@ -196,7 +196,7 @@ function showCalculation(calcArray) {
 
 
         if (typeof currentItem === 'string') {
-            if(Number(currentItem) < 0) newArr.push(`(` + currentItem + `)`);
+            if (Number(currentItem) < 0) newArr.push(`(` + currentItem + `)`);
             else newArr.push(currentItem);
 
         } else if (typeof currentItem === 'function') {
@@ -207,8 +207,12 @@ function showCalculation(calcArray) {
                 if (calcArray[i - 1].name === 'remainder' || typeof calcArray[i + 1] === 'string') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
-                    // if last element is number then we just add % to it example 9,% becomes 9%
-                    newArr[newArr.length - 1] += `%`;
+                    if(Number(calcArray[i - 1] < 0)){
+                        newArr[newArr.length - 1] = "(" + String(calcArray[i-1]) + "%)";
+                    } else {
+                        newArr[newArr.length - 1] += `%`; // if last element is number then we just add % to it example 9,% becomes 9%
+                        console.log("ENTERED");
+                    }
                 }
             } else if (operatorName === 'add') {
                 newArr.push('+');
@@ -223,7 +227,7 @@ function showCalculation(calcArray) {
             }
         }
     }
-    console.log(`ORIG ARRAY IS: ` + newCalcArray);
+    console.log(newCalcArray);
     console.log(`NEW ARR AFTER SHOWCALCU: ` + newArr);
     return newArr;
 }
@@ -300,7 +304,7 @@ function performCalculation(num1, operator, num2) {
 //if item has % in it this function will divide the number by 100 and return the value
 function checkAndDivideByPercent(element) {
 
-    const el =String(element).replace(/[()]/g, "");
+    const el = String(element).replace(/[()]/g, "");
     if (el.includes('%')) {
         let number = parseFloat(el.replace('%', ''));
         return number / 100;
@@ -319,10 +323,10 @@ function fadeInLiveResult(liveResult) {
     setTimeout(() => {
         resultContainer.classList.remove("fade", "mini")
         liveResult = Math.round(liveResult * 10000) / 10000;
-        console.log(liveResult);
+        // console.log(liveResult);
         let nanOrNot = isNaN(liveResult) ? "0" : liveResult
         // let formattedNumber = new Intl.NumberFormat('en-US').format(liveResult);
-        console.log(nanOrNot);
+        // console.log(nanOrNot);
         resultContainer.textContent = new Intl.NumberFormat('en-US').format(nanOrNot);
         resultContainer.addEventListener("transitionend", handleResultTransitionEnd);
     }, fadeTime);
@@ -410,6 +414,7 @@ function clearOneCalc() {
 
     }
     displayCalcAndSum();
+
 }
 
 function regNum(btn) {
@@ -452,33 +457,48 @@ function regNum(btn) {
 }
 
 
+
 function plusMinus() {
     negNumber = !negNumber;
     // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
+
+    if (typeof newCalcArray[newCalcArray.length - 2] === 'string' && newCalcArray[newCalcArray.length - 1]?.name === 'remainder') {
+        allNewDigits = newCalcArray[newCalcArray.length - 2];
+    }
+
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
     if (negNumber && allNewDigits === "") {
         newCalcArray.push("(-)")
+    } else if (typeof newCalcArray[newCalcArray.length - 2] === 'string' && newCalcArray[newCalcArray.length - 1]?.name === 'remainder') { 
+        newCalcArray[newCalcArray.length - 2] = compiledDigits;
     } else {
-        newCalcArray[newCalcArray.length - 1] = compiledDigits
+        newCalcArray[newCalcArray.length - 1] = compiledDigits;
     }
 
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
+
+    displayCalcAndSum();
 }
 
 function makeNegNumberOrNot(allNewDigits, negNumber) {
+
     let endsWithDot = false;
     let startsWithMinus = false;
     if (allNewDigits.at(-1) === ".") endsWithDot = true;
-    if (allNewDigits.at(0) === "-") startsWithMinus = true;
+    if (allNewDigits.at(1) === "-") startsWithMinus = true;
+
 
     allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
     if (endsWithDot && negNumber) allNewDigits += ".";
     if (startsWithMinus && negNumber) allNewDigits = "-" + allNewDigits;
-    return allNewDigits
+
+
+    console.log(`ALLNEWDIGITS:`, allNewDigits);
+
+    return allNewDigits;
+
 }
-
-
 
 function opSymbol(btn) {
     console.log(btn);
