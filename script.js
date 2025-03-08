@@ -463,20 +463,15 @@ function plusMinus() {
     // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
     console.log(negNumber);
 
-    if (typeof newCalcArray[newCalcArray.length - 2] === 'string' && newCalcArray[newCalcArray.length - 1]?.name === 'remainder') {
-        allNewDigits = Math.abs(newCalcArray[newCalcArray.length - 2]).toString();
-    }
-
-    // allNewDigits = Math.abs(allNewDigits).toString()
-
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
     if (newCalcArray.at(-1) === "(-)") {
         newCalcArray.pop(); // Remove "(-)" if it's the last element
-    } else if (negNumber && allNewDigits === "") {
-        newCalcArray.push("(-)")
     } else if (typeof newCalcArray[newCalcArray.length - 2] === 'string' && newCalcArray[newCalcArray.length - 1]?.name === 'remainder') { 
-        newCalcArray[newCalcArray.length - 2] = compiledDigits;
+        newCalcArray[newCalcArray.length - 2] = makeNegNumberOrNot(Math.abs(newCalcArray[newCalcArray.length - 2]).toString(), negNumber);
+    } 
+    else if (negNumber && allNewDigits === "") {
+        newCalcArray.push("(-)")
     } else {
         newCalcArray[newCalcArray.length - 1] = compiledDigits;
     }
