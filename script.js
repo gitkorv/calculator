@@ -468,7 +468,9 @@ function plusMinus() {
 
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
-    if (negNumber && allNewDigits === "") {
+    if (newCalcArray.at(-1) === "(-)") {
+        newCalcArray.pop(); // Remove "(-)" if it's the last element
+    } else if (negNumber && allNewDigits === "") {
         newCalcArray.push("(-)")
     } else if (typeof newCalcArray[newCalcArray.length - 2] === 'string' && newCalcArray[newCalcArray.length - 1]?.name === 'remainder') { 
         newCalcArray[newCalcArray.length - 2] = compiledDigits;
@@ -491,7 +493,7 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
 
     allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
     if (endsWithDot && negNumber) allNewDigits += ".";
-    if (startsWithMinus && negNumber) allNewDigits = "-" + allNewDigits;
+    if (startsWithMinus && negNumber) allNewDigits = String(Number(allNewDigits) * -1);
 
 
     console.log(`ALLNEWDIGITS:`, allNewDigits);
