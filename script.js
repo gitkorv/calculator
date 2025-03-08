@@ -126,7 +126,7 @@ btnContainer.addEventListener("mouseout", (e) => {
 })
 
 function pressABtn(activeBtn) {
-    console.log(shakeBtn);
+    // console.log(shakeBtn);
     if (shakeBtn && !activeBtn.classList.contains("btn-op")) {
         console.log("no op");
         shakeBtn = false;
@@ -461,10 +461,13 @@ function regNum(btn) {
 function plusMinus() {
     negNumber = !negNumber;
     // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
+    console.log(negNumber);
 
     if (typeof newCalcArray[newCalcArray.length - 2] === 'string' && newCalcArray[newCalcArray.length - 1]?.name === 'remainder') {
-        allNewDigits = newCalcArray[newCalcArray.length - 2];
+        allNewDigits = Math.abs(newCalcArray[newCalcArray.length - 2]).toString();
     }
+
+    // allNewDigits = Math.abs(allNewDigits).toString()
 
     compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
@@ -492,6 +495,7 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
 
 
     allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
+    console.log(allNewDigits);
     if (endsWithDot && negNumber) allNewDigits += ".";
     if (startsWithMinus && negNumber) allNewDigits = String(Number(allNewDigits) * -1);
 
