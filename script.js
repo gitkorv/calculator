@@ -394,14 +394,8 @@ function clearOneCalc() {
     if (typeof newCalcArray.at(-1) === "string") {
         let stringNumber = newCalcArray.at(-1);
 
-        if (stringNumber === "(-)") {
-            // console.log("dfgddf");
-            // plusMinus()
+        if (stringNumber === "(-)") {// this code doesnt exec
             newCalcArray.pop();
-            // console.log(calculationDisplayText.textContent);
-
-            // allNewDigits = "";
-
         } else if (stringNumber.length >= 2) {
             console.log("oahaha");
             let newSlicedNumber = stringNumber.slice(0, -1);
@@ -451,8 +445,6 @@ function regNum(btn) {
     } else {
         allNewDigits += newDigit;
     }
-
-    console.log(`ALLNEWDIGS at regNum` + allNewDigits);
 
 
 
@@ -551,7 +543,7 @@ function opSymbol(btn) {
         }
     }
 
-    console.log(btn);
+    // console.log(btn);
     if (shakeBtn) {
         shakeOpsOnPress(btn)
         return;
@@ -569,7 +561,7 @@ function opSymbol(btn) {
     else if (opSym === "/") { operator = divide; }
     else { operator = add; }
 
-    console.log(newCalcArray.at(-1));
+    // console.log(newCalcArray.at(-1));
 
     if (typeof (newCalcArray.at(-1)) === "function") {
         let prevOperator = newCalcArray.at(-1)
@@ -582,7 +574,6 @@ function opSymbol(btn) {
         } else if (newCalcArray.at(-2).name === "remainder" && operator.name === "remainder") {
         }
     } else if (newCalcArray.at(-1) === "-") {
-        console.log("this is (-)");
         negNumber = true;
         negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
         shakeBtn = true;
