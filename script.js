@@ -439,10 +439,6 @@ function regNum(btn) {
 
     console.log(`ALLNEWDIGS at regNum` + allNewDigits);
 
-    // console.log("new digits are ", typeof allNewDigits, allNewDigits);
-
-    // allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
-
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     // let negOrNotDigits = allNewDigits;
 
@@ -505,6 +501,7 @@ function plusMinus() {
         String(newCalcArray.at(-2)).startsWith("-") 
         ? String(newCalcArray.at(-2)).slice(1) 
         : "-" + newCalcArray.at(-2);
+        negNumber = !negNumber;
     } else {// lastEl is operator/function normal case
         newCalcArray.push("-");
     }
