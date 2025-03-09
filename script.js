@@ -207,8 +207,8 @@ function showCalculation(calcArray) {
                 if (calcArray[i - 1].name === 'remainder' || typeof calcArray[i + 1] === 'string') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
-                    if(Number(calcArray[i - 1] < 0)){
-                        newArr[newArr.length - 1] = "(" + String(calcArray[i-1]) + "%)";
+                    if (Number(calcArray[i - 1] < 0)) {
+                        newArr[newArr.length - 1] = "(" + String(calcArray[i - 1]) + "%)";
                     } else {
                         newArr[newArr.length - 1] += `%`; // if last element is number then we just add % to it example 9,% becomes 9%
                         console.log("ENTERED");
@@ -456,30 +456,26 @@ function regNum(btn) {
     displayCalcAndSum();
 }
 
-
-
 function plusMinus() {
     negNumber = !negNumber;
-    // allNewDigits = allNewDigits = "" ? 0 : allNewDigits;
     console.log(negNumber);
-
-    compiledDigits = makeNegNumberOrNot(allNewDigits, negNumber);
 
     if (newCalcArray.at(-1) === "(-)") {
         newCalcArray.pop(); // Remove "(-)" if it's the last element
-    } else if (typeof newCalcArray[newCalcArray.length - 2] === 'string' && newCalcArray[newCalcArray.length - 1]?.name === 'remainder') { 
-        newCalcArray[newCalcArray.length - 2] = makeNegNumberOrNot(Math.abs(newCalcArray[newCalcArray.length - 2]).toString(), negNumber);
-    } 
-    else if (negNumber && allNewDigits === "") {
-        newCalcArray.push("(-)")
-    } else {
-        newCalcArray[newCalcArray.length - 1] = compiledDigits;
+    } else if (!isNaN(newCalcArray.at(-1))) { //If lastEl is a number we toggle the - sign
+        newCalcArray[newCalcArray.length - 1] = (parseFloat(newCalcArray.at(-1)) * -1).toString();
+       
+        
+        //Special case where lastEl is % but before it is a number
+    } else if (typeof newCalcArray[newCalcArray.length - 2] === "string" && newCalcArray[newCalcArray.length - 1]?.name === "remainder") {
+        newCalcArray[newCalcArray.length - 2] = (parseFloat(newCalcArray.at(-2)) * -1).toString();
+    } else {// lastEl is operator/function normal case
+        newCalcArray.push("(-)");
     }
-
-    negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
-
+    negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
     displayCalcAndSum();
 }
+
 
 function makeNegNumberOrNot(allNewDigits, negNumber) {
 
