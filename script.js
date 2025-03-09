@@ -177,8 +177,10 @@ function displayCalcAndSum() {
     liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
-        // console.log("live result is " + liveResult);
         console.log("Result is NaN");
+        if (newCalcArray.length === 1) {
+            fadeInLiveResult(liveResult); // show 0 if its the only element and isNaN.. ex newCalcArray is only this (-)
+        }
     } else if (resultContainer.textContent !== liveResult.toString()) {
         // console.log("live result is " + liveResult);
         fadeInLiveResult(liveResult);
@@ -501,7 +503,7 @@ function plusMinus() {
         String(newCalcArray.at(-2)).startsWith("-") 
         ? String(newCalcArray.at(-2)).slice(1) 
         : "-" + newCalcArray.at(-2);
-        negNumber = !negNumber;
+        negNumber = !negNumber;// I hate negNumber!!! 
     } else {// lastEl is operator/function normal case
         newCalcArray.push("-");
     }
@@ -511,6 +513,9 @@ function plusMinus() {
 
 
 function opSymbol(btn) {
+
+    if (newCalcArray.length === 0) return ;
+
 
     if (newCalcArray.at(-1) !== undefined && newCalcArray.at(-1) !== null && String(newCalcArray.at(-1)).includes(".") && typeof newCalcArray.at(-1) !== "function") { 
         console.log(`Entered incluide decimal pioit`);
