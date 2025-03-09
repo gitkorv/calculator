@@ -203,7 +203,7 @@ function showCalculation(calcArray) {
             } else {
                 newArr.push(currentItem);
             }
-            
+
 
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
@@ -381,6 +381,15 @@ function clearCalc() {
 function clearOneCalc() {
     allNewDigits = "";
 
+    if (newCalcArray.at(-1) && typeof newCalcArray.at(-1) === "string" && newCalcArray.at(-1).startsWith("-")) {
+        negNumber = true;
+        negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
+    } else {
+        negNumber = false;
+        negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
+    }
+
+
 
     if (typeof newCalcArray.at(-1) === "string") {
         let stringNumber = newCalcArray.at(-1);
@@ -400,9 +409,13 @@ function clearOneCalc() {
             allNewDigits = newSlicedNumber;
             console.log(`ALLNEWDIGITS at clealOne: ` + allNewDigits);
         } else {
+            if (newCalcArray.at(-1) === "-") {
+                negNumber = false;
+                negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
+            }
+
             newCalcArray.pop();
             allNewDigits = "";
-            // negNumber = false;
         }
     } else if (typeof newCalcArray.at(-1) === "function") {
         console.log("its a func");
@@ -441,6 +454,19 @@ function regNum(btn) {
 
     console.log(`ALLNEWDIGS at regNum` + allNewDigits);
 
+
+
+    if (newCalcArray.at(-1) && typeof newCalcArray.at(-1) === "string" && newCalcArray.at(-1).startsWith("-")) {
+        negNumber = true;
+        negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
+    } else {
+        negNumber = false;
+        negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
+    }
+
+
+
+
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
     // let negOrNotDigits = allNewDigits;
 
@@ -469,9 +495,9 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
 
 
 
-    allNewDigits = negNumber 
-    ? (allNewDigits.startsWith("-") ? allNewDigits.slice(1) : "-" + allNewDigits) 
-    : allNewDigits;
+    allNewDigits = negNumber
+        ? (allNewDigits.startsWith("-") ? allNewDigits.slice(1) : "-" + allNewDigits)
+        : allNewDigits;
 
     // console.log(allNewDigits);
     // if (endsWithDot && negNumber) allNewDigits += ".";
@@ -491,18 +517,18 @@ function plusMinus() {
     if (newCalcArray.at(-1) === "(-)" || newCalcArray.at(-1) === "-") {
         newCalcArray.pop(); // Remove "(-)" if it's the last element
     } else if (!isNaN(newCalcArray.at(-1))) { //If lastEl is a number we toggle the - sign
-        newCalcArray[newCalcArray.length - 1] = 
-        String(newCalcArray.at(-1)).startsWith("-") 
-        ? String(newCalcArray.at(-1)).slice(1) 
-        : "-" + newCalcArray.at(-1);
-       
-        
+        newCalcArray[newCalcArray.length - 1] =
+            String(newCalcArray.at(-1)).startsWith("-")
+                ? String(newCalcArray.at(-1)).slice(1)
+                : "-" + newCalcArray.at(-1);
+
+
         //Special case where lastEl is % but before it is a number
     } else if (typeof newCalcArray[newCalcArray.length - 2] === "string" && newCalcArray[newCalcArray.length - 1]?.name === "remainder") {
-        newCalcArray[newCalcArray.length - 2] = 
-        String(newCalcArray.at(-2)).startsWith("-") 
-        ? String(newCalcArray.at(-2)).slice(1) 
-        : "-" + newCalcArray.at(-2);
+        newCalcArray[newCalcArray.length - 2] =
+            String(newCalcArray.at(-2)).startsWith("-")
+                ? String(newCalcArray.at(-2)).slice(1)
+                : "-" + newCalcArray.at(-2);
         negNumber = !negNumber;// I hate negNumber!!! 
     } else {// lastEl is operator/function normal case
         newCalcArray.push("-");
@@ -514,10 +540,10 @@ function plusMinus() {
 
 function opSymbol(btn) {
 
-    if (newCalcArray.length === 0) return ;
+    if (newCalcArray.length === 0) return;
 
 
-    if (newCalcArray.at(-1) !== undefined && newCalcArray.at(-1) !== null && String(newCalcArray.at(-1)).includes(".") && typeof newCalcArray.at(-1) !== "function") { 
+    if (newCalcArray.at(-1) !== undefined && newCalcArray.at(-1) !== null && String(newCalcArray.at(-1)).includes(".") && typeof newCalcArray.at(-1) !== "function") {
         console.log(`Entered incluide decimal pioit`);
         let [beforeDot, afterDot] = String(newCalcArray.at(-1)).split(".");
         if (isNaN(afterDot[0])) {
@@ -561,14 +587,14 @@ function opSymbol(btn) {
         negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
         shakeBtn = true;
         pressABtn(btn)
-    
+
         // console.log(btnOperators);
 
         // newCalcArray[newCalcArray.length - 1] = operator
     } else {
         newCalcArray.push(operator)
     }
-    
+
     displayCalcAndSum();
 
 }
