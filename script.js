@@ -490,7 +490,7 @@ function plusMinus() {
     negNumber = !negNumber;
     console.log(negNumber);
 
-    if (newCalcArray.at(-1) === "(-)") {
+    if (newCalcArray.at(-1) === "(-)" || newCalcArray.at(-1) === "-") {
         newCalcArray.pop(); // Remove "(-)" if it's the last element
     } else if (!isNaN(newCalcArray.at(-1))) { //If lastEl is a number we toggle the - sign
         newCalcArray[newCalcArray.length - 1] = 
@@ -506,7 +506,7 @@ function plusMinus() {
         ? String(newCalcArray.at(-2)).slice(1) 
         : "-" + newCalcArray.at(-2);
     } else {// lastEl is operator/function normal case
-        newCalcArray.push("(-)");
+        newCalcArray.push("-");
     }
     negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
     displayCalcAndSum();
