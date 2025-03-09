@@ -219,7 +219,7 @@ function showCalculation(calcArray) {
             } else if (operatorName === 'sub') {
                 newArr.push('-');
             } else if (operatorName === 'multiply') {
-                newArr.push('x');
+                newArr.push('×');
             } else if (operatorName === 'divide') {
                 newArr.push('/');
             } else {
@@ -240,7 +240,7 @@ function runCalcOnAllObjects(arr) {
     let i = 1;
     while (i < resultArr.length) {
         //we look for mult div and mod first
-        if (resultArr[i] === 'x' || resultArr[i] === '/' || resultArr[i] === `%`) {
+        if (resultArr[i] === '×' || resultArr[i] === '/' || resultArr[i] === `%`) {
             //i could simplify this by just checking if elements have % or not using .includes and only call the checkAndDIvidebyPercent for those
             let num1 = checkAndDivideByPercent(resultArr[i - 1]); //alwasy check if theres % in the element 
             let operator = resultArr[i];
@@ -294,7 +294,7 @@ function runCalcOnAllObjects(arr) {
 
 //helper function to solve the operator and the number before and after it
 function performCalculation(num1, operator, num2) {
-    if (operator === 'x') return num1 * num2;
+    if (operator === '×') return num1 * num2;
     if (operator === '/') return num1 / num2;
     if (operator === '+') return num1 + num2;
     if (operator === '-') return num1 - num2;
@@ -384,10 +384,9 @@ function clearOneCalc() {
 
         if (stringNumber === "(-)") {
             // console.log("dfgddf");
-            plusMinus()
-
+            // plusMinus()
             newCalcArray.pop();
-            console.log(calculationDisplayText.textContent);
+            // console.log(calculationDisplayText.textContent);
 
             // allNewDigits = "";
 
