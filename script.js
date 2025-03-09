@@ -209,7 +209,7 @@ function showCalculation(calcArray) {
                 if (calcArray[i - 1].name === 'remainder' || typeof calcArray[i + 1] === 'string') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
                 } else {
-                    if (Number(calcArray[i - 1] < 0)) {
+                    if (String(calcArray[i - 1]).startsWith("-")) {
                         newArr[newArr.length - 1] = "(" + String(calcArray[i - 1]) + "%)";
                     } else {
                         newArr[newArr.length - 1] += `%`; // if last element is number then we just add % to it example 9,% becomes 9%
@@ -378,7 +378,7 @@ function clearCalc() {
 
 function clearOneCalc() {
     allNewDigits = "";
-    console.log(newCalcArray);
+
 
     if (typeof newCalcArray.at(-1) === "string") {
         let stringNumber = newCalcArray.at(-1);
@@ -394,9 +394,9 @@ function clearOneCalc() {
         } else if (stringNumber.length >= 2) {
             console.log("oahaha");
             let newSlicedNumber = stringNumber.slice(0, -1);
-            newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "(-)" : newSlicedNumber;
+            newCalcArray[newCalcArray.length - 1] = newSlicedNumber === "-" ? "-" : newSlicedNumber;
             allNewDigits = newSlicedNumber;
-            console.log(allNewDigits);
+            console.log(`ALLNEWDIGITS at clealOne: ` + allNewDigits);
         } else {
             newCalcArray.pop();
             allNewDigits = "";
@@ -428,7 +428,6 @@ function regNum(btn) {
         }, 1000);
     }
 
-    console.log(`ALLNEWDIGS` + allNewDigits);
     if (newDigit === "." && allNewDigits.includes(".")) {
     } else if ((allNewDigits === "0" || allNewDigits === "-0") && newDigit !== ".") {
         allNewDigits = newDigit;
@@ -437,6 +436,9 @@ function regNum(btn) {
     } else {
         allNewDigits += newDigit;
     }
+
+    console.log(`ALLNEWDIGS at regNum` + allNewDigits);
+
     // console.log("new digits are ", typeof allNewDigits, allNewDigits);
 
     // allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
@@ -445,7 +447,7 @@ function regNum(btn) {
     // let negOrNotDigits = allNewDigits;
 
     if (newCalcArray.length === 0 || typeof (newCalcArray.at(-1)) === "function") {
-        newCalcArray.push(negOrNotDigits)
+        newCalcArray.push(negOrNotDigits);
     } else {
         newCalcArray[newCalcArray.length - 1] = negOrNotDigits;
     }
@@ -464,7 +466,9 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
     let endsWithDot = false;
     let startsWithMinus = false;
     if (allNewDigits.at(-1) === ".") endsWithDot = true;
-    if (allNewDigits.at(1) === "-") startsWithMinus = true;
+    if (allNewDigits.at(0) === "-") startsWithMinus = true;
+
+
 
 
     allNewDigits = negNumber 
