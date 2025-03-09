@@ -196,13 +196,15 @@ function showCalculation(calcArray) {
 
 
         if (typeof currentItem === 'string') {
-            if (Number(currentItem) < 0) newArr.push(`(` + currentItem + `)`);
-            else newArr.push(currentItem);
+            if (String(currentItem).startsWith("-")) {
+                newArr.push(`(${currentItem})`);
+            } else {
+                newArr.push(currentItem);
+            }
+            
 
         } else if (typeof currentItem === 'function') {
             let operatorName = currentItem.name;
-
-
             if (operatorName === 'remainder') {
                 if (calcArray[i - 1].name === 'remainder' || typeof calcArray[i + 1] === 'string') {
                     newArr.push('%'); //if this is the second remainder then we make it as an operator
@@ -211,7 +213,6 @@ function showCalculation(calcArray) {
                         newArr[newArr.length - 1] = "(" + String(calcArray[i - 1]) + "%)";
                     } else {
                         newArr[newArr.length - 1] += `%`; // if last element is number then we just add % to it example 9,% becomes 9%
-                        console.log("ENTERED");
                     }
                 }
             } else if (operatorName === 'add') {
@@ -288,7 +289,7 @@ function runCalcOnAllObjects(arr) {
 
     //this is the final result
     let finalResult = checkAndDivideByPercent(resultArr[0]);
-    console.log(`finalResult: ${finalResult}`);
+    // console.log(`finalResult: ${finalResult}`);
     return Number(finalResult);
 }
 
@@ -431,6 +432,8 @@ function regNum(btn) {
     if (newDigit === "." && allNewDigits.includes(".")) {
     } else if (allNewDigits === "0" && newDigit !== ".") {
         allNewDigits = newDigit;
+    } else if (allNewDigits == "" && newDigit === ".") {
+        allNewDigits = "0.";
     } else {
         allNewDigits += newDigit;
     }
@@ -439,11 +442,12 @@ function regNum(btn) {
     // allNewDigits = allNewDigits.charAt(0) === "-" ? allNewDigits.slice(1) : allNewDigits;
 
     let negOrNotDigits = makeNegNumberOrNot(allNewDigits, negNumber);
+    // let negOrNotDigits = allNewDigits;
 
     if (newCalcArray.length === 0 || typeof (newCalcArray.at(-1)) === "function") {
         newCalcArray.push(negOrNotDigits)
     } else {
-        newCalcArray[newCalcArray.length - 1] = negOrNotDigits
+        newCalcArray[newCalcArray.length - 1] = negOrNotDigits;
     }
 
     if (!btnsFoldedOut) {
@@ -455,27 +459,6 @@ function regNum(btn) {
     displayCalcAndSum();
 }
 
-function plusMinus() {
-    negNumber = !negNumber;
-    console.log(negNumber);
-
-    if (newCalcArray.at(-1) === "(-)") {
-        newCalcArray.pop(); // Remove "(-)" if it's the last element
-    } else if (!isNaN(newCalcArray.at(-1))) { //If lastEl is a number we toggle the - sign
-        newCalcArray[newCalcArray.length - 1] = (parseFloat(newCalcArray.at(-1)) * -1).toString();
-       
-        
-        //Special case where lastEl is % but before it is a number
-    } else if (typeof newCalcArray[newCalcArray.length - 2] === "string" && newCalcArray[newCalcArray.length - 1]?.name === "remainder") {
-        newCalcArray[newCalcArray.length - 2] = (parseFloat(newCalcArray.at(-2)) * -1).toString();
-    } else {// lastEl is operator/function normal case
-        newCalcArray.push("(-)");
-    }
-    negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
-    displayCalcAndSum();
-}
-
-
 function makeNegNumberOrNot(allNewDigits, negNumber) {
 
     let endsWithDot = false;
@@ -484,19 +467,58 @@ function makeNegNumberOrNot(allNewDigits, negNumber) {
     if (allNewDigits.at(1) === "-") startsWithMinus = true;
 
 
-    allNewDigits = negNumber ? (allNewDigits * -1).toString() : allNewDigits;
-    console.log(allNewDigits);
-    if (endsWithDot && negNumber) allNewDigits += ".";
-    if (startsWithMinus && negNumber) allNewDigits = String(Number(allNewDigits) * -1);
+    allNewDigits = negNumber 
+    ? (allNewDigits.startsWith("-") ? allNewDigits.slice(1) : "-" + allNewDigits) 
+    : allNewDigits;
+
+    // console.log(allNewDigits);
+    // if (endsWithDot && negNumber) allNewDigits += ".";
+    if (startsWithMinus && negNumber) allNewDigits = String("-" + allNewDigits);
 
 
-    console.log(`ALLNEWDIGITS:`, allNewDigits);
+    // console.log(`ALLNEWDIGITS:`, allNewDigits);
 
     return allNewDigits;
-
 }
 
+
+function plusMinus() {
+    negNumber = !negNumber;
+    console.log(negNumber);
+
+    if (newCalcArray.at(-1) === "(-)") {
+        newCalcArray.pop(); // Remove "(-)" if it's the last element
+    } else if (!isNaN(newCalcArray.at(-1))) { //If lastEl is a number we toggle the - sign
+        newCalcArray[newCalcArray.length - 1] = 
+        String(newCalcArray.at(-1)).startsWith("-") 
+        ? String(newCalcArray.at(-1)).slice(1) 
+        : "-" + newCalcArray.at(-1);
+       
+        
+        //Special case where lastEl is % but before it is a number
+    } else if (typeof newCalcArray[newCalcArray.length - 2] === "string" && newCalcArray[newCalcArray.length - 1]?.name === "remainder") {
+        newCalcArray[newCalcArray.length - 2] = 
+        String(newCalcArray.at(-2)).startsWith("-") 
+        ? String(newCalcArray.at(-2)).slice(1) 
+        : "-" + newCalcArray.at(-2);
+    } else {// lastEl is operator/function normal case
+        newCalcArray.push("(-)");
+    }
+    negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on");
+    displayCalcAndSum();
+}
+
+
 function opSymbol(btn) {
+
+    if (newCalcArray.at(-1) !== undefined && newCalcArray.at(-1) !== null && String(newCalcArray.at(-1)).includes(".") && typeof newCalcArray.at(-1) !== "function") { 
+        console.log(`Entered incluide decimal pioit`);
+        let [beforeDot, afterDot] = String(newCalcArray.at(-1)).split(".");
+        if (isNaN(afterDot[0])) {
+            newCalcArray[newCalcArray.length - 1] = (beforeDot + afterDot).toString();
+        }
+    }
+
     console.log(btn);
     if (shakeBtn) {
         shakeOpsOnPress(btn)
@@ -533,13 +555,14 @@ function opSymbol(btn) {
         negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
         shakeBtn = true;
         pressABtn(btn)
-
+    
         // console.log(btnOperators);
 
         // newCalcArray[newCalcArray.length - 1] = operator
     } else {
         newCalcArray.push(operator)
     }
+    
     displayCalcAndSum();
 
 }
