@@ -383,7 +383,7 @@ function clearOneCalc() {
         let stringNumber = newCalcArray.at(-1);
 
         if (stringNumber === "(-)") {
-            console.log("dfgddf");
+            // console.log("dfgddf");
             plusMinus()
 
             newCalcArray.pop();
