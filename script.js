@@ -581,7 +581,7 @@ function opSymbol(btn) {
             newCalcArray[newCalcArray.length - 1] = operator
         } else if (newCalcArray.at(-2).name === "remainder" && operator.name === "remainder") {
         }
-    } else if (newCalcArray.at(-1) === "(-)") {
+    } else if (newCalcArray.at(-1) === "-") {
         console.log("this is (-)");
         negNumber = true;
         negNumber ? plusMinusBtn.classList.add("is-on") : plusMinusBtn.classList.remove("is-on")
