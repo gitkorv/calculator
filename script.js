@@ -222,7 +222,7 @@ function showCalculation(calcArray) {
             } else if (operatorName === 'multiply') {
                 newArr.push('×');
             } else if (operatorName === 'divide') {
-                newArr.push('/');
+                newArr.push('÷');
             } else {
                 newArr.push(operatorName);
             }
@@ -241,7 +241,7 @@ function runCalcOnAllObjects(arr) {
     let i = 1;
     while (i < resultArr.length) {
         //we look for mult div and mod first
-        if (resultArr[i] === '×' || resultArr[i] === '/' || resultArr[i] === `%`) {
+        if (resultArr[i] === '×' || resultArr[i] === '÷' || resultArr[i] === `%`) {
             //i could simplify this by just checking if elements have % or not using .includes and only call the checkAndDIvidebyPercent for those
             let num1 = checkAndDivideByPercent(resultArr[i - 1]); //alwasy check if theres % in the element 
             let operator = resultArr[i];
@@ -296,7 +296,7 @@ function runCalcOnAllObjects(arr) {
 //helper function to solve the operator and the number before and after it
 function performCalculation(num1, operator, num2) {
     if (operator === '×') return num1 * num2;
-    if (operator === '/') return num1 / num2;
+    if (operator === '÷') return num1 / num2;
     if (operator === '+') return num1 + num2;
     if (operator === '-') return num1 - num2;
     if (operator === `%`) return num1 % num2;
@@ -428,11 +428,11 @@ function regNum(btn) {
         }, 1000);
     }
 
-
+    console.log(`ALLNEWDIGS` + allNewDigits);
     if (newDigit === "." && allNewDigits.includes(".")) {
-    } else if (allNewDigits === "0" && newDigit !== ".") {
+    } else if ((allNewDigits === "0" || allNewDigits === "-0") && newDigit !== ".") {
         allNewDigits = newDigit;
-    } else if (allNewDigits == "" && newDigit === ".") {
+    } else if ((allNewDigits === "" || allNewDigits === "-") && newDigit === ".") {
         allNewDigits = "0.";
     } else {
         allNewDigits += newDigit;
