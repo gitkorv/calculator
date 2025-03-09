@@ -508,6 +508,9 @@ function plusMinus() {
 
     if (newCalcArray.at(-1) === "(-)" || newCalcArray.at(-1) === "-") {
         newCalcArray.pop(); // Remove "(-)" if it's the last element
+        if (newCalcArray.length === 0) {
+            clearCalc();
+        }
     } else if (!isNaN(newCalcArray.at(-1))) { //If lastEl is a number we toggle the - sign
         newCalcArray[newCalcArray.length - 1] =
             String(newCalcArray.at(-1)).startsWith("-")
