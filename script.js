@@ -54,7 +54,7 @@ const extraButtons = {
     restBtns: {
         parentContainer: document.querySelector(".calc__keyboard__extras"),
         btnTexts: ["±", "%"],
-        elClass: ["btn-plus-minus", "btn-op btn-reminder"],
+        elClass: ["btn-plus-minus", "btn-op btn-remainder"],
         elements: []
     },
     deleteBtns: {
@@ -146,195 +146,194 @@ btnContainer.addEventListener("mouseover", e => {
 })
 
 
-function runCalcOnAllObjects(arr, clgMsg) {
-    clgMsg = clgMsg || "original";
-
-    console.log(arr);
-
-    let = checkedFor2timesReminder = []
-
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i].name === "reminder") {
-            
-            if (arr[i - 1] && arr[i - 1].name === "reminder" && typeof arr[i + 1] === "string") {
-                console.log("one");
-                checkedFor2timesReminder.splice(-2, 2);
-                let moduloVal = reminder(arr[i -1], arr[i + 1])
-                checkedFor2timesReminder.push(moduloVal)
-                i++
-            } else if (arr[i - 1] && typeof arr[i - 1] === "string" && typeof arr[i + 1] === "function") {
-                console.log("two");
-                checkedFor2timesReminder.splice(-1, 1);
-                let percentVal = arr[i - 1] / 100;
-                checkedFor2timesReminder.push(percentVal)
-            }
-        }
-        else {
-            checkedFor2timesReminder.push(arr[i])
-        }
-
-    }
-    console.log(checkedFor2timesReminder);
-
-    let splitByAddSub = (checkedFor2timesReminder) => {
-        arr = checkedFor2timesReminder
-        let result = [];
-        let temp = [];
-
-        for (let i = 0; i < arr.length; i++) {
-            let item = arr[i];
-
-            if (item === add || item === sub) {
-                result.push(temp);
-                result.push([item]);
-                temp = [];
-            } else {
-                temp.push(item);
-            }
-        }
-        if (temp.length) {
-            result.push(temp);
-        }
-        return result;
-    };
-
-    let calcArrSplitByAddSub = splitByAddSub(arr)
-    console.log(calcArrSplitByAddSub);
-
-    let addAndSubLeft = []
 
 
-    // calcArrSplitByAddSub.forEach(calcItem => {
-    //     if (calcItem.length > 1) {
-    //         const sum = reduceThisItem(calcItem, "prev")
-    //         addAndSubLeft.push(sum);
-    //     } else {
-    //         addAndSubLeft.push(calcItem[0]);
-    //     }
-    // });
 
-    if (calcArrSplitByAddSub.length === 1) {
-        calcArrSplitByAddSub[0].forEach(item => {
-            addAndSubLeft.push(item);
-        });
-    } else {
-        calcArrSplitByAddSub.forEach(calcItem => {
-            if (calcItem.length > 1) {
-                const sum = reduceThisItem(calcItem, "prev")
-                addAndSubLeft.push(sum);
-            } else {
-                addAndSubLeft.push(calcItem[0]);
-            }
-        });
-    }
 
-    let finalResult = reduceThisItem(addAndSubLeft, "final")
 
-    function reduceThisItem(arr, id) {
-        // console.log("id: ", id, arr);
-        const sum = arr.reduce((acc, curr, i, arr) => {
-            // console.log("id ", id, curr);
 
-            if (typeof curr === "function") {
-                let currFunc = curr;
 
-                if (currFunc.name === "reminder") {
-                    // console.log("It's a remFunc");
-                    if (typeof arr[i + 1] === "function" && typeof arr[i + 2] === "string") {
-                        // console.log("After remFunc is a func then a string");
-                        return arr.at(+1)(arr[i - 1] / 100, arr[i + 2]);
-                    } else if (typeof arr[i + 1] !== "string") {
-                        // console.log("After remFunc is not string");
-                        return (acc / 100).toString();
-                    } else if (typeof arr[i + 1] === "string") {
-                        // console.log("After remFunc is a string");
-                        let next = arr[i + 1];
-                        return reminder(acc, next)
-                    } else {
-                        // console.log("else");
-                        return acc
-                    }
-                } else {
-                    // console.log("lets return a normal calc func");
-                    return curr(parseFloat(acc), parseFloat(arr[i + 1]));
-                }
-            } else {
-                // console.log(curr, " is a string");
-            }
 
-            // console.log(acc);
-            return acc;
-        }, arr[0]);
-        return sum;
-    }
 
-    return finalResult
 
-}
 
-function showCalculation(newCalcArray) {
-    let displayString = "";
 
-    newCalcArray.forEach((item, i) => {
-        if (typeof item === "function") {
-            if (item.name === "multiply") displayString += "x ";
-            if (item.name === "divide") displayString += "/ ";
-            if (item.name === "add") displayString += "+ ";
-            if (item.name === "sub") displayString += "- ";
-            if (item.name === "reminder") {
-                console.log(newCalcArray[i - 1]);
-                if (newCalcArray[i - 1] && newCalcArray[i - 1].name !== "reminder") {
-                    // console.log("i confirm prev is not a reminder");
-                    if (!newCalcArray[i + 1] || typeof newCalcArray[i + 1] === "function") {
-                        // console.log("no item after, or item is a func!");
-                        displayString = displayString.slice(0, -1)
-                    }
-                }
-                displayString += "% ";
-            }
-        } else {
-            if (item < 0) {
-                displayString += `(${item}) `;
-            } else {
-                displayString += `${item} `;
-            }
-        }
-    })
-    return displayString
-}
+/*
+ I CHANGED THIS- START
+*/
 
-let lastLiveResult = []
 
+
+
+
+//this function will format the newCalArray into n,f,n,f then display it in expression conatiner then solve it by calling runCalc....
 function displayCalcAndSum() {
-
     if (newCalcArray.length === 0) {
-        clearCalc()
+        clearCalc();
     } else if (newCalcArray.length > 2) {
-        calculationDisplayEqualSign.classList.add("show")
+        calculationDisplayEqualSign.classList.add("show");
     } else {
-        calculationDisplayEqualSign.classList.remove("show")
+        calculationDisplayEqualSign.classList.remove("show");
     }
 
-    console.log(newCalcArray);
 
-    calculationDisplayText.textContent = showCalculation(newCalcArray);
 
-    const numberedNewCalcArr = newCalcArray.map(item =>
-        typeof item === "string" ? parseFloat(item) : item
-    );
-    // console.log(numberedNewCalcArr);
+    let reduceArray = showCalculation(newCalcArray); //reduceArray is the formatted array 
+    calculationDisplayText.textContent = reduceArray.join(" "); // to show in the text display
 
-    liveResult = runCalcOnAllObjects(newCalcArray);
-    console.log(typeof liveResult);
+    liveResult = runCalcOnAllObjects(reduceArray);//solve the formatted array and return the result as number saving in liveResult
 
     if (Number.isNaN(liveResult) || liveResult === undefined) {
+        console.log("live result is " + liveResult);
         console.log("Result is NaN");
     } else if (resultContainer.textContent !== liveResult.toString()) {
         console.log("live result is " + liveResult);
-        fadeInLiveResult(liveResult)
+        fadeInLiveResult(liveResult);
     }
-    negNumber ? plusMinusBtn.textContent = "(±)" : plusMinusBtn.textContent = "±";
 }
+
+
+
+
+
+//this function convert the array from [n,f,n,f,f,n] to [n,f,n,f,n...]
+function showCalculation(calcArray) {
+    let newArr = []; //new Array conatainer for formatted newCalcArray
+
+
+    //we iterate all the elements of calcArray>>newCalcArray
+    for (let i = 0; i < calcArray.length; i++) {
+        let currentItem = calcArray[i];
+
+
+        if (typeof currentItem === 'string') {
+            newArr.push(currentItem);
+        } else if (typeof currentItem === 'function') {
+            let operatorName = currentItem.name;
+
+
+            if (operatorName === 'remainder') {
+                if (i - 1 < calcArray.length && calcArray[i - 1].name === 'remainder') {
+                    newArr.push('%'); //if this is the second remainder then we make it as an operator
+                } else {
+                    // if last element is number then we just add % to it example 9,% becomes 9%
+                    let temp = newArr[newArr.length - 1];
+                    newArr.pop();
+                    newArr.push(temp + `%`);
+                }
+            } else if (operatorName === 'add') {
+                newArr.push('+');
+            } else if (operatorName === 'sub') {
+                newArr.push('-');
+            } else if (operatorName === 'multiply') {
+                newArr.push('x');
+            } else if (operatorName === 'divide') {
+                newArr.push('/');
+            } else {
+                newArr.push(operatorName);
+            }
+        }
+    }
+    console.log(`NEW ARR AFTER SHOWCALCU: ` + newArr);
+    return newArr;
+}
+
+
+//perform MDAS here
+function runCalcOnAllObjects(arr) {
+    let resultArr = [...arr];
+
+    let i = 1;
+    while (i < resultArr.length) {
+        //we look for mult div and mod first
+        if (resultArr[i] === 'x' || resultArr[i] === '/' || resultArr[i] === `%`) {
+            //i could simplify this by just checking if elements have % or not using .includes and only call the checkAndDIvidebyPercent for those
+            let num1 = checkAndDivideByPercent(resultArr[i - 1]); //alwasy check if theres % in the element 
+            let operator = resultArr[i];
+            let num2 = checkAndDivideByPercent(resultArr[i + 1]);
+
+            let result = performCalculation(num1, operator, num2);
+                        //index:0 1 2 3 4
+            //example resultArr[1,+,3,/,3...]
+            //we are at i =3, we solve 3 / 3 so result is 1, we want to insert that 1 to [1,+,(3,/,3)...]
+            resultArr.splice(i - 1, 3, result);
+            //we are expecting this [1,+,(1)...]
+            //everytime we remove/add item from resultArr the length of resultArr change too
+ 
+            //current index i is 3,
+
+            i -= 2;//so we compensate the removal of 2 elements  with this
+
+        }
+        i += 2; //we only iterate for odd numbers in the array since those are the postions of operators
+        // index 0 1 2 3 4 5,7
+        //      [1,+,3,*,6,/,8 ]   operators happen at 1, 3, 5 and so on
+    }
+
+    i = 1;
+    //then we look for add sub
+    while (i < resultArr.length) {
+        if (resultArr[i] === '+' || resultArr[i] === '-') {
+            let num1 = checkAndDivideByPercent(resultArr[i - 1]);
+            let operator = resultArr[i];
+            let num2 = checkAndDivideByPercent(resultArr[i + 1]);
+
+            let result = performCalculation(num1, operator, num2);
+
+            resultArr.splice(i - 1, 3, result);
+            i -= 2;
+        }
+        i += 2;
+    }
+
+    //this is the final result
+    let finalResult = checkAndDivideByPercent(resultArr[0]);
+    console.log(`finalResult: ${finalResult}`);
+    return Number(finalResult);
+}
+
+//helper function to solve the operator and the number before and after it
+function performCalculation(num1, operator, num2) {
+    if (operator === 'x') return num1 * num2;
+    if (operator === '/') return num1 / num2;
+    if (operator === '+') return num1 + num2;
+    if (operator === '-') return num1 - num2;
+    if (operator === `%`) return num1 % num2;
+}
+
+//if item has % in it this function will divide the number by 100 and return the value
+function checkAndDivideByPercent(element) {
+    if (String(element).includes('%')) {
+        let number = parseFloat(element.replace('%', ''));
+        return number / 100;
+    }
+    return parseFloat(element);
+}
+
+
+
+/*
+ I CHANGED THIS- END
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function fadeInLiveResult(liveResult) {
     let fadeTime = parseFloat(getComputedStyle(resultContainer).transitionDuration) * 1000;
@@ -430,7 +429,7 @@ function clearOneCalc() {
         }
 
     }
-    displayCalcAndSum()
+    displayCalcAndSum();
 }
 
 function regNum(btn) {
@@ -444,10 +443,12 @@ function regNum(btn) {
         }, 1000);
     }
 
-
+//working on this
     if (newDigit === "." && allNewDigits.includes(".")) {
     } else if (allNewDigits === "0" && newDigit !== ".") {
         allNewDigits = newDigit;
+    }else if (newDigit === '%' && typeof newCalcArray[newCalcArray.length-1] === 'string' && !newCalcArray[newCalcArray.length-1].includes('%')  ) {
+        allNewDigits.replace(/(\d+)(%)$/, `$1${newDigit}$2`);
     } else {
         allNewDigits += newDigit;
     }
@@ -468,6 +469,8 @@ function regNum(btn) {
         welcomeText.classList.add("fly-out")
     }
     // console.log(newCalcArray);
+
+    displayCalcAndSum();
 }
 
 function plusMinus() {
@@ -507,7 +510,7 @@ function opSymbol(btn) {
     let operator
     if (opSym === "-") { operator = sub; }
     else if (opSym === "x" || opSym === "*") { operator = multiply; }
-    else if (opSym === "%") { operator = reminder; }
+    // else if (opSym === "%") { operator = remainder; }
     else if (opSym === "/") { operator = divide; }
     else { operator = add; }
 
@@ -515,20 +518,21 @@ function opSymbol(btn) {
 
     if (typeof (newCalcArray.at(-1)) === "function") {
         let prevOperator = newCalcArray.at(-1)
-        if (prevOperator.name !== "reminder" && typeof newCalcArray.at(-2) !== "function") {
+        if (prevOperator.name !== "remainder" && typeof newCalcArray.at(-2) !== "function") {
             newCalcArray[newCalcArray.length - 1] = operator
-        } else if (prevOperator.name === "reminder" && typeof newCalcArray.at(-2) !== "function") {
+        } else if (prevOperator.name === "remainder" && typeof newCalcArray.at(-2) !== "function") {
             newCalcArray.push(operator)
-        } else if (newCalcArray.at(-2).name === "reminder" && operator.name !== "reminder") {
+        } else if (newCalcArray.at(-2).name === "remainder" && operator.name !== "remainder") {
             newCalcArray[newCalcArray.length - 1] = operator
-        } else if (newCalcArray.at(-2).name === "reminder" && operator.name === "reminder") {
+        } else if (newCalcArray.at(-2).name === "remainder" && operator.name === "remainder") {
         }
-    } else if (newCalcArray.at(-1) === "(-)"){
+    } else if (newCalcArray.at(-1) === "(-)") {
         console.log("this is (-)");
         // newCalcArray[newCalcArray.length - 1] = operator
     } else {
         newCalcArray.push(operator)
     }
+    displayCalcAndSum();
 }
 
 function add(a, b) { return a + b; }
@@ -536,7 +540,7 @@ function sub(a, b) { return a - b; }
 function multiply(a, b) { return a * b; }
 function divide(a, b) { return a / b; }
 
-function reminder(a, b) {
+function remainder(a, b) {
     let result = a % b;
     return result < 0 ? Math.abs(result) : result;
 }
