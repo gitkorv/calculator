@@ -49,7 +49,7 @@ const foldOutBtnContainers = [];
 const extraButtons = {
     operatorBtns: {
         parentContainer: document.querySelector(".calc__keyboard__operators"),
-        btnTexts: ["/", "x", "-", "+"],
+        btnTexts: ["÷", "×", "-", "+"],
         elClass: ["btn-op"],
         elements: []
     },
@@ -559,9 +559,9 @@ function opSymbol(btn) {
     allNewDigits = "";
     let operator
     if (opSym === "-") { operator = sub; }
-    else if (opSym === "x" || opSym === "*") { operator = multiply; }
+    else if (opSym === "×" || opSym === "*") { operator = multiply; }
     else if (opSym === "%") { operator = remainder; }
-    else if (opSym === "/") { operator = divide; }
+    else if (opSym === "÷") { operator = divide; }
     else { operator = add; }
 
     // console.log(newCalcArray.at(-1));
@@ -741,7 +741,7 @@ document.addEventListener("keydown", (event) => {
         event.preventDefault()
     } else if (["+", "-", "*", "x", "/", "%"].includes(event.key)) {
         let operatorSymbol = event.key;
-        operatorSymbol = operatorSymbol === "*" ? "x" : operatorSymbol;
+        operatorSymbol = operatorSymbol === "*" || operatorSymbol === "x" ? "×" : operatorSymbol;
         const matchedElement = btnOperators.find(element => element.textContent.trim() === operatorSymbol)
         if (btnsFoldedOut) {
             opSymbol(matchedElement)
