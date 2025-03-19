@@ -1,5 +1,7 @@
 // Body
 const calcWrapper = document.querySelector(".calc--wrapper")
+// Main
+const main = document.querySelector(".page-wrapper")
 
 // Btns
 const btnContainer = document.querySelector(".calc__keyboard")
@@ -707,6 +709,21 @@ decimalBtn.style.pointerEvents = "none"
 
 const btnOperators = [...document.querySelectorAll(".btn-op")]
 
+let calcWrapperHeight = calcWrapper.offsetHeight + parseFloat(getComputedStyle(calcWrapper).marginTop);
+let windowHeight = window.innerHeight;
+
+function checkForVerticalScroll(calcWrapperHeight, mainHeight) {
+
+    // if (calcWrapperHeight > mainHeight) {
+    //     main.style.overflowY = "scroll"
+    // } else {
+    //     main.style.overflowY = "";
+    // }
+}
+
+checkForVerticalScroll(calcWrapperHeight, windowHeight)
+
+
 let key1Pressed = false;
 let key2Pressed = false;
 
@@ -791,3 +808,12 @@ function blobBtnNumbers(currentTime) {
 }
 
 loopBtnAnim = requestAnimationFrame(blobBtnNumbers)
+
+window.addEventListener("resize", e => {
+    console.log(e.currentTarget.innerHeight);
+    windowHeight = e.currentTarget.innerHeight;
+    calcWrapperHeight = calcWrapper.offsetHeight + parseFloat(getComputedStyle(calcWrapper).marginTop);
+
+    checkForVerticalScroll(calcWrapperHeight, windowHeight)
+
+})
